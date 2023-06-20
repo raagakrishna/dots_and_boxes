@@ -537,11 +537,36 @@ definitions:
         type: integer
       y: 
         type: integer
+  Line: 
+    type: object 
+    properties:
+      dot1: 
+        $ref: '#/definitions/Dot'
+      dot2: 
+        $ref: '#/definitions/Dot'
       status: 
         type: string 
         enum: 
           - EMPTY 
           - OCCUPIED 
+      player:
+        $ref: '#/definitions/Player'
+  Box: 
+    type: object
+    properties:
+      line1: 
+        $ref: '#/definitions/Line'
+      line2: 
+        $ref: '#/definitions/Line'
+      line3: 
+        $ref: '#/definitions/Line'
+      line4: 
+        $ref: '#/definitions/Line'
+      status:
+        type: string 
+        enum: 
+          - EMPTY
+          - OCCUPIED
       player:
         $ref: '#/definitions/Player'
   Score: 
@@ -558,8 +583,14 @@ definitions:
         type: string 
       room:
         $ref: '#/definitions/Room'
-      dots: 
-        $ref: '#/definitions/Dot'
+      lines:
+        type: array
+        items:
+          $ref: '#/definitions/Line'
+      boxes: 
+        type: array
+        items: 
+          $ref: '#/definitions/Box'
       scores:
         type: array 
         items: 
