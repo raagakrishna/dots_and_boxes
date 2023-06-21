@@ -7,7 +7,7 @@ public class DatasourceConnection {
     Connection connection;
 
     private String cleanInputValue(String string) {
-        return string.replaceAll("[^a-zA-Z\\d]", string);
+        return string.replaceAll("[^a-zA-Z\\d]", "");
     }
 
     public DatasourceConnection() throws SQLException {
