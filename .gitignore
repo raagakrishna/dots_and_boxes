@@ -1,0 +1,21 @@
+server/target/
+server/pom.xml.tag
+server/pom.xml.releaseBackup
+server/pom.xml.versionsBackup
+server/pom.xml.next
+server/release.properties
+server/dependency-reduced-pom.xml
+server/buildNumber.properties
+server/.mvn/timing.properties
+# https://github.com/takari/maven-wrapper#usage-without-binary-jar
+server/.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse m2e generated files
+# Eclipse Core
+server/.project
+# JDT-specific (Eclipse Java Development Tools)
+server/.classpath
+server/.idea
+.idea
+target
+.mvn

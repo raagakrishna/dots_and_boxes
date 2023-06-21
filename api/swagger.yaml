@@ -1,0 +1,602 @@
+swagger: '2.0'
+info:
+  title: Dots and Boxes API
+  version: 1.0.0
+tags:
+  - name: player
+    description: Player of the Game
+  - name: room
+    description: The Game Room 
+  - name: game
+    description: The Game itself
+schemes:
+  - https
+  - http
+paths:
+  /room:
+    get:
+      tags:
+        - room
+      summary: Get all rooms
+      operationId: getRooms
+      responses:
+        '200':
+          description: Successfully retrieved all rooms
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Room'
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+    post:
+      tags:
+        - room
+      summary: Create a room
+      operationId: createRoom
+      parameters:
+        - name: creatorUsername
+          in: query
+          description: Username of the creator
+          required: true
+          type: string
+        - name: Session-Id
+          in: header
+          description: Session ID of the player
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Room created successfully
+          schema:
+            $ref: '#/definitions/Room'  
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+        '409':
+          description: Conflict
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+      consumes:
+        - application/json
+        - application/xml
+  /room/{roomId}:
+    get:
+      tags:
+        - room
+      summary: Get room by Id
+      operationId: getRoomById
+      parameters:
+        - name: roomId
+          in: path
+          description: Id of the room
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved the room
+          schema:
+            $ref: '#/definitions/Room'  
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '404':
+          description: Room not found
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+  /room/{roomId}/delete/{username}:
+    delete:
+      tags:
+        - room
+      summary: Delete a room
+      operationId: deleteRoomById
+      parameters:
+        - name: roomId
+          in: path
+          description: ID of the room to delete
+          required: true
+          type: string
+        - name: username
+          in: path
+          description: Username of the player deleting the room
+          required: true
+          type: string
+        - name: Session-Id
+          in: header
+          description: Session ID of the player
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Room deleted successfully
+          schema:
+            $ref: '#/definitions/Room'
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '404':
+          description: Player or room not found
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+      consumes:
+        - application/json
+        - application/xml
+  /room/{roomId}/join/{username}:
+    post:
+      tags:
+        - room
+      summary: Join a room
+      operationId: joinRoom
+      parameters:
+        - name: roomId
+          in: path
+          description: Id of the room to join
+          required: true
+          type: string
+        - name: username
+          in: path
+          description: Username of the player joining the room
+          required: true
+          type: string
+        - name: Session-Id
+          in: header
+          description: Session ID of the player
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successfully joined the room
+          schema:
+            $ref: '#/definitions/Room'  
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+        '409':
+          description: Conflict
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+      consumes:
+        - application/json
+        - application/xml
+  /room/{roomId}/leave/{username}:
+    post:
+      tags:
+        - room
+      summary: Leave a room
+      operationId: leaveRoom
+      parameters:
+        - name: roomId
+          in: path
+          description: Id of the room to leave
+          required: true
+          type: string
+        - name: username
+          in: path
+          description: Username of the player leaving the room
+          required: true
+          type: string
+        - name: Session-Id
+          in: header
+          description: Session ID of the player
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successfully left the room
+          schema:
+            $ref: '#/definitions/Room'  
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+        '409':
+          description: Conflict
+          schema:
+            type: string
+        '404':
+          description: Player or room not found
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+  /room/{roomId}/start/{username}:
+    post:
+      tags:
+        - room
+      summary: Start a room
+      operationId: startRoom
+      parameters:
+        - name: roomId
+          in: path
+          description: Id of the room to start
+          required: true
+          type: string
+        - name: username
+          in: path
+          description: Username of the player starting the room
+          required: true
+          type: string
+        - name: Session-Id
+          in: header
+          description: Session ID of the client
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Room started successfully
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '404':
+          description: Room not found
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+  
+  /players:
+    get:
+      tags:
+        - player
+      summary: Get all players
+      operationId: getPlayers
+      responses:
+        '200':
+          description: Successfully retrieved all players
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Player'
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+  
+  /player:
+    post:
+      tags:
+        - player
+      summary: Create a player
+      operationId: createPlayer
+      parameters:
+        - name: player
+          in: body
+          description: Player to be created 
+          required: true
+          schema:
+            $ref: '#/definitions/Player'
+      responses:
+        '200':
+          description: Client created successfully
+          schema:
+            type: string
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+        '409':
+          description: Conflict
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+      consumes:
+        - application/json
+        - application/xml
+  /player/{username}:
+    get:
+      tags:
+        - player
+      summary: Get player by username
+      operationId: getPlayerByUsername
+      parameters:
+        - name: username
+          in: path
+          description: username of the player
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved the player
+          schema:
+            $ref: '#/definitions/Player'
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+        '404':
+          description: Player not found
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+    put:
+      tags:
+        - player
+      summary: Update a player
+      operationId: updatePlayer
+      parameters:
+        - name: username
+          in: path
+          description: username of the client to update
+          required: true
+          type: string
+        - name: player
+          in: body
+          description: Updated player object
+          required: true
+          schema:
+            $ref: '#/definitions/Player'
+      responses:
+        '200':
+          description: Player updated successfully
+          schema:
+            $ref: '#/definitions/Player'
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+      consumes:
+        - application/json
+        - application/xml
+  /player/login:
+    get:
+      tags:
+        - player
+      summary: Login a player
+      operationId: loginPlayer
+      parameters:
+        - name: username
+          in: query
+          description: Username of the player
+          required: true
+          type: string
+        - name: password
+          in: query
+          description: Password of the player
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Player logged in successfully
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+  /player/logout:
+    get:
+      tags:
+        - player
+      summary: Logout a player
+      operationId: logoutPlayer
+      parameters:
+        - name: Session-Id
+          in: header
+          description: Session ID of the player
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Player logged out successfully
+          schema:
+            type: string
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+        '400':
+          description: Invalid request
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+        '404':
+          description: Player not found
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+  /player/{username}/room:
+    get:
+      tags: 
+        - player
+      summary: Get the room the player is currently in
+      operationId: findRoomByUsername
+      parameters:
+        - name: username
+          in: path
+          description: Username of the player
+          required: true
+          type: string
+        - name: Session-Id
+          in: header
+          description: Session ID of the player
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Room found
+          schema:
+            $ref: '#/definitions/Room'
+        '404':
+          description: Room not found
+          schema:
+            type: string
+        '401':
+          description: Invalid request
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+definitions:
+  Dot:
+    type: object 
+    properties:
+      x: 
+        type: integer
+      y: 
+        type: integer
+      status: 
+        type: string 
+        enum: 
+          - EMPTY 
+          - OCCUPIED 
+      player:
+        $ref: '#/definitions/Player'
+  Score: 
+    type: object 
+    properties:
+      player:
+        $ref: '#/definitions/Player'
+      score: 
+        type: integer
+  Game:
+    type: object 
+    properties:
+      gameId:
+        type: string 
+      room:
+        $ref: '#/definitions/Room'
+      dots: 
+        $ref: '#/definitions/Dot'
+      scores:
+        type: array 
+        items: 
+          $ref: '#/definitions/Score'
+      status: 
+        type: string 
+        enum: 
+          - PLAYING
+          - DONE 
+          - DRAW
+      winner: 
+        $ref: '#/definitions/Player'
+  Room:
+    type: object
+    properties:
+      roomId:
+        type: string
+      roomName:
+        type: string 
+      gridSize:
+        type: integer
+      players:
+        type: array 
+        items: 
+          $ref: '#/definitions/Player'
+      creator:
+        $ref: '#/definitions/Player'
+      status:
+        type: string
+        enum:
+          - OPEN
+          - CLOSED
+          - STARTED
+  Player:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
