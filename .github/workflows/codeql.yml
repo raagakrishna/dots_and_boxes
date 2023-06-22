@@ -65,13 +65,31 @@ jobs:
 
     #   If the Autobuild fails above, remove it and uncomment the following three lines.
     #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance. 
-    - name: Build Java Code
+    - if: matrix.language == 'java'
+      name: Build Java Code
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: '11'
         cache: 'maven'
-        run: mvn clean install
+        run: mvn -B package --file pom.xml
+    - if: matrix.language == 'java'
+      name: Build Java Server
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        cache: 'maven'
+        run: mvn -B package --file ./server/pom.xml
+    - if: matrix.language == 'java'
+      name: Build Java Resource Server
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        cache: 'maven'
+        run: mvn -B package --file ./resource_server/pom.xml
+    
     # - run: |
     #     echo "Run, Build Application using script"
     #     ./location_of_script_within_repo/buildscript.sh
