@@ -73,9 +73,6 @@ jobs:
         java-version: '11'
         cache: 'maven'
     - if: matrix.language == 'java'
-      name: Build Java Code
-      run: mvn -B package --file pom.xml
-    - if: matrix.language == 'java'
       name: Build Resource Server
       run: mvn -B package --file ./server/pom.xml
     - if: matrix.language == 'java'
