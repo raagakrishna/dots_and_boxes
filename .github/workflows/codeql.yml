@@ -67,14 +67,12 @@ jobs:
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
     #   If the Autobuild fails above, remove it and uncomment the following three lines.
-    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
-    - if: matrix.language == 'java'
-      name: Setup Java
-      uses: actions/setup-java@v3
+    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance. 
     - if: matrix.language == 'java'
       name: Scan Java Code
       uses: actions/checkout@v3
       with:
+        uses: actions/setup-java@v3
         distribution: 'temurin'
         java-version: '11'
         cache: 'maven'
