@@ -1,5 +1,5 @@
 #Remote build script for push
-sudo cd /home/ubuntu/dots_and_boxes
+cd /home/ubuntu/dots_and_boxes
 sudo git pull
 sudo fuser -k 7070/tcp
 sudo fuser -k 7071/tcp
