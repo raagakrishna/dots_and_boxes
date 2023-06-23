@@ -1,17 +1,19 @@
 package za.resources.models;
 
 public class JWTResponse {
-    private String token;
+    private final String token;
+    private final String refreshToken;
 
-    public JWTResponse(String token) {
+    public JWTResponse(String token, String refreshToken) {
         this.token = token;
+        this.refreshToken = refreshToken;
     }
 
     public String getToken() {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public String getRefreshToken() {
+        return refreshToken;
     }
 }
