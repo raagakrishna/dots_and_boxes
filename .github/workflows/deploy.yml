@@ -1,0 +1,25 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Deploy to AWS EC2
+
+after:
+  push:
+    branches: [ "main" , "Trigger_Remote_Deploy" ]
+  pull_request:
+    branches: [ "main" , "Trigger_Remote_Deploy" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+    - name: Build Resource Server with Maven
+      run: echo $TOP_SECRET | ssh -i /dev/stdin ubuntu@$HOST sudo nohup sh /home/ubuntu/dots_and_boxes/build_script.sh &
