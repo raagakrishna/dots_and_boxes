@@ -16,7 +16,7 @@ public class DatabaseAccess {
 
     private static final String connectionURl =
             "jdbc:sqlserver://;serverName=" + EnvironmentVariables.dbUrl + ";databaseName=" + EnvironmentVariables.dbName
-                    + "OAuth;username=" + EnvironmentVariables.dbUsername + ";password=" + EnvironmentVariables.dbPassword
+                    + ";username=" + EnvironmentVariables.dbUsername + ";password=" + EnvironmentVariables.dbPassword
                     + ";encrypt=true;trustServerCertificate=true;";
 
 
@@ -57,7 +57,8 @@ public class DatabaseAccess {
             return false;
         }
         final String finalSalt = salt;
-        return hashedPassword.map(hp -> hp.equals(PasswordManager.hashPassword(password, finalSalt))).orElse(false);
+        return hashedPassword.map(hp -> hp.equals(PasswordManager.hashPassword(password, finalSalt)))
+                .orElse(false);
     }
 
 }

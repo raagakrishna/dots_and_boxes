@@ -2,12 +2,11 @@ package za.resources.util.jwt;
 
 import com.auth0.jwt.algorithms.Algorithm;
 
-public class Algo {
-    public static Algorithm getAlgorithm() {
-        return getAlgorithm("Hold");
-    }
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
-    public static Algorithm getAlgorithm(String key) {
-        return Algorithm.HMAC256(key);
+public class Algo {
+    public static Algorithm getAlgorithm(RSAPublicKey publicKey, RSAPrivateKey privateKey) {
+        return Algorithm.RSA512(publicKey, privateKey);
     }
 }

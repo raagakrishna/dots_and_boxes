@@ -11,6 +11,8 @@ import za.resources.exception.InvalidTokenException;
 import za.resources.models.JWTResponse;
 import za.resources.models.User;
 
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 
 public class JwtUtils {
@@ -21,21 +23,23 @@ public class JwtUtils {
     private final Algorithm refreshTokenAlgorithm;
 
 
-    public JwtUtils() {
-        tokenAlgorithm = Algo.getAlgorithm();
-        refreshTokenAlgorithm = Algo.getAlgorithm();
+    public JwtUtils(RSAPublicKey publicKey, RSAPrivateKey privateKey) {
+        tokenAlgorithm = Algo.getAlgorithm(publicKey, privateKey);
+        refreshTokenAlgorithm = Algo.getAlgorithm(publicKey, privateKey);
         tokenVerifier = JWT.require(tokenAlgorithm)
-                .withIssuer("us")
+                .withIssuer(EnvironmentVariables.issuer)
+                .withAudience(EnvironmentVariables.audience)
                 .build();
         refreshTokenVerifier = JWT.require(refreshTokenAlgorithm)
-                .withIssuer("us")
+                .withIssuer(EnvironmentVariables.issuer)
+                .withAudience(EnvironmentVariables.issuer)
                 .build();
     }
 
     public JWTResponse generateToken(User user) {
 
         return new JWTResponse(generateToken(user.userName(), tokenAlgorithm, 300),
-                generateToken(user.userName(), tokenAlgorithm, 30000));
+                generateToken(user.userName(), refreshTokenAlgorithm, 86400));
     }
 
     public JWTResponse generateToken(String username) {
@@ -56,7 +60,6 @@ public class JwtUtils {
         try {
             decodedRefreshJWT = refreshTokenVerifier.verify(refreshToken);
         } catch (JWTVerificationException verificationException) {
-            System.out.println("HERE");
             throw new InvalidTokenException();
         }
         String username = decodedRefreshJWT.getClaim("username").asString();

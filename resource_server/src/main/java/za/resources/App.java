@@ -2,26 +2,31 @@ package za.resources;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import za.resources.cryptography.RSAKeys;
 import za.resources.database.DatabaseAccess;
+import za.resources.environment.EnvironmentVariables;
 import za.resources.exception.InvalidTokenException;
 import za.resources.exception.OAuthExceptions;
-import za.resources.models.JWTResponse;
 import za.resources.models.RefreshInput;
 import za.resources.models.Result;
 import za.resources.util.jwt.JwtUtils;
 import za.resources.validation.Validation;
 
-import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Random;
 
 public class App {
 
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
+        RSAPrivateKey privateKey = RSAKeys.getRSAPrivateKey(EnvironmentVariables.privateKeyLocation);
+        RSAPublicKey publicKey = RSAKeys.getRSAPublicKey(EnvironmentVariables.publicKeyLocation);
         DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
-        JwtUtils jwtUtils = new JwtUtils();
+        JwtUtils jwtUtils = new JwtUtils(publicKey, privateKey);
         Javalin app = Javalin.create().start(8080);
 
         app.before("/login", Validation::usernameValidation);
@@ -31,7 +36,6 @@ public class App {
 
         app.post("/register", context -> register(context, jwtUtils));
         app.post("/login", context -> login(context, jwtUtils));
-//        app.before("/refresh", context -> Validation.validateRefresh(context, jwtUtils));
         app.post("/refresh", context -> refresh(context, jwtUtils));
         app.exception(OAuthExceptions.class, (e, ctx) -> ctx.status(e.getStatus()).json(e.getReason()));
     }
