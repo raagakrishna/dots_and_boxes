@@ -11,8 +11,6 @@ name: Deploy to AWS EC2
 on:
   push:
     branches: [ "main" , "Trigger_Remote_Deploy" ]
-  pull_request:
-    branches: [ "main" , "Trigger_Remote_Deploy" ]
 
 jobs:
   build:
