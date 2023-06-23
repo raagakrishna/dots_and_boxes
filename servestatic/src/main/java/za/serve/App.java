@@ -1,7 +1,7 @@
-package za.dots;
+package za.serve;
 
 import io.javalin.*;
-import za.dots.util.FileUtil;
+import za.serve.util.FileUtil;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

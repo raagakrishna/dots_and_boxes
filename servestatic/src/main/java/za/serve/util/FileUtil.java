@@ -1,4 +1,4 @@
-package za.dots.util;
+package za.serve.util;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
