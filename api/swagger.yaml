@@ -2,6 +2,7 @@ swagger: '2.0'
 info:
   title: Dots and Boxes API
   version: 1.0.0
+host: 'localhost'
 tags:
   - name: player
     description: Player of the Game
