@@ -1,13 +1,15 @@
 package za.dots.models;
 
 public class Score {
-    private Player player;
+    private Player player = null;
 
-    private Integer score;
+    private Integer score = null;
 
-    public Score player(Player player) {
+    public Score() { }
+
+    public Score(Player player) {
         this.player = player;
-        return this;
+        this.score = 0;
     }
 
     public Player getPlayer() {
@@ -16,11 +18,6 @@ public class Score {
 
     public void setPlayer(Player player) {
         this.player = player;
-    }
-
-    public Score score(Integer score) {
-        this.score = score;
-        return this;
     }
 
     public Integer getScore() {

@@ -2,17 +2,65 @@ swagger: '2.0'
 info:
   title: Dots and Boxes API
   version: 1.0.0
+host: 'localhost'
 tags:
   - name: player
     description: Player of the Game
   - name: room
     description: The Game Room 
-  - name: game
-    description: The Game itself
 schemes:
   - https
   - http
 paths:
+  /room/{roomId}/sendPlayerLine/{username}:
+    post:
+      tags:
+        - room
+      summary: Send the game state
+      operationId: sendGameState
+      parameters:
+        - name: roomId
+          in: path
+          description: ID of the room to delete
+          required: true
+          type: string
+        - name: username
+          in: path
+          description: Username of the player playing the game
+          required: true
+          type: string
+        - name: Session-Id
+          in: header
+          description: Session ID of the player
+          required: true
+          type: string
+        - name: playerLine
+          in: body
+          description: The line the player has played
+          required: true
+          schema:
+            $ref: '#/definitions/PlayerLine'
+      responses:
+        '200':
+          description: Game state successfully received
+          schema: 
+            type: string
+        '400':
+          description: Invalid request 
+          schema:
+            type: string
+        '500':
+          description: Internal server error
+          schema:
+            type: string
+        '404':
+          description: Player or room not found
+          schema:
+            type: string
+      produces:
+        - application/json
+        - application/xml
+    
   /room:
     get:
       tags:
@@ -249,7 +297,7 @@ paths:
         - application/json
         - application/xml
   /room/{roomId}/start/{username}:
-    post:
+    get:
       tags:
         - room
       summary: Start a room
@@ -267,9 +315,18 @@ paths:
           type: string
         - name: Session-Id
           in: header
-          description: Session ID of the client
+          description: Session ID of the player
           required: true
           type: string
+        - name: gridSize
+          in: query
+          description: Size of the grid
+          required: true
+          type: integer
+          enum:
+            - 3
+            - 5
+            - 9
       responses:
         '200':
           description: Room started successfully
@@ -330,7 +387,7 @@ paths:
             $ref: '#/definitions/Player'
       responses:
         '200':
-          description: Client created successfully
+          description: Player created successfully
           schema:
             type: string
         '400':
@@ -391,7 +448,7 @@ paths:
       parameters:
         - name: username
           in: path
-          description: username of the client to update
+          description: username of the player to update
           required: true
           type: string
         - name: player
@@ -529,19 +586,54 @@ paths:
       produces:
         - application/json
         - application/xml
+
 definitions:
+  CoOrdinate:
+    type: object 
+    properties:
+      x:
+        type: integer
+      y:
+        type: integer
   Dot:
     type: object 
     properties:
-      x: 
-        type: integer
-      y: 
-        type: integer
+      coordinate:
+        $ref: '#/definitions/CoOrdinate'
+  Line: 
+    type: object 
+    properties:
+      coordinate:
+        $ref: '#/definitions/CoOrdinate'
+      dot1: 
+        $ref: '#/definitions/Dot'
+      dot2: 
+        $ref: '#/definitions/Dot'
       status: 
         type: string 
         enum: 
           - EMPTY 
           - OCCUPIED 
+      player:
+        $ref: '#/definitions/Player'
+  Box: 
+    type: object
+    properties:
+      coordinate:
+        $ref: '#/definitions/CoOrdinate'
+      line1: 
+        $ref: '#/definitions/Line'
+      line2: 
+        $ref: '#/definitions/Line'
+      line3: 
+        $ref: '#/definitions/Line'
+      line4: 
+        $ref: '#/definitions/Line'
+      status:
+        type: string 
+        enum: 
+          - EMPTY
+          - OCCUPIED
       player:
         $ref: '#/definitions/Player'
   Score: 
@@ -554,12 +646,24 @@ definitions:
   Game:
     type: object 
     properties:
-      gameId:
-        type: string 
-      room:
-        $ref: '#/definitions/Room'
-      dots: 
-        $ref: '#/definitions/Dot'
+      gridSize:
+        type: integer 
+        enum: 
+          - 3
+          - 5
+          - 9
+      dots:
+        type: array
+        items:
+          $ref: '#/definitions/Dot'
+      lines:
+        type: array
+        items: 
+          $ref: '#/definitions/Line'
+      boxes:
+        type: array
+        items: 
+          $ref: '#/definitions/Box'
       scores:
         type: array 
         items: 
@@ -569,7 +673,6 @@ definitions:
         enum: 
           - PLAYING
           - DONE 
-          - DRAW
       winner: 
         $ref: '#/definitions/Player'
   Room:
@@ -579,14 +682,14 @@ definitions:
         type: string
       roomName:
         type: string 
-      gridSize:
-        type: integer
       players:
         type: array 
         items: 
           $ref: '#/definitions/Player'
       creator:
         $ref: '#/definitions/Player'
+      game:
+        $ref: '#/definitions/Game'
       status:
         type: string
         enum:
@@ -600,3 +703,13 @@ definitions:
         type: string
       password:
         type: string
+  PlayerLine: 
+    type: object
+    properties:
+      username:
+        type: string
+      line_x:
+        type: integer
+      line_y:
+        type: integer
+        
