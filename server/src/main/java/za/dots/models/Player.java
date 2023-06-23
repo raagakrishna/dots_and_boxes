@@ -1,11 +1,12 @@
 package za.dots.models;
 
 public class Player {
-    private String username;
+    private String username = null;
 
-    public Player username(String username) {
+    public Player() { }
+
+    public Player(String username) {
         this.username = username;
-        return this;
     }
 
     public String getUsername() {
