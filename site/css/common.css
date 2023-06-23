@@ -1,0 +1,25 @@
+body {
+    margin: 0px;
+    font-family: Tahoma, sans-serif;
+    padding-left: 20%;
+    padding-right: 20%;
+}
+
+.purple_box {
+    background: #E5E5FF;
+    border: 1px solid #BBBBFF;
+    color: black;
+}
+.gray_box {
+    background: #EEEEEE;
+    border: 1px solid #BBBBFF;
+    color: black;
+    margin-bottom: 0.5em;
+}
+
+@media screen and (max-width: 600px) {
+    body {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
