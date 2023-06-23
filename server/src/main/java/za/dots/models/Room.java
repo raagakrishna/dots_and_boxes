@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
-    private String roomId;
-    private String roomName;
-    private Integer gridSize;
-    private List<Player> players;
-    private Player creator;
-    private StatusEnum status;
+    private String roomId = null;
 
-    /**
-     * Gets or Sets status
-     */
+    private String roomName = null;
+
+    private List<Player> players = null;
+
+    private Player creator = null;
+
+    private Game game = null;
+
+    private StatusEnum status = null;
+
     public enum StatusEnum {
         OPEN("OPEN"),
 
@@ -31,13 +33,24 @@ public class Room {
         public String toString() {
             return String.valueOf(value);
         }
+
+        public static StatusEnum fromValue(String text) {
+            for (StatusEnum b : StatusEnum.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
     }
 
+    public Room() { }
 
-
-    public Room roomId(String roomId) {
+    public Room (String roomId, String roomName, Player creator) {
         this.roomId = roomId;
-        return this;
+        this.roomName = roomName;
+        this.creator = creator;
+        addPlayersItem(creator);
     }
 
     public String getRoomId() {
@@ -48,43 +61,12 @@ public class Room {
         this.roomId = roomId;
     }
 
-    public Room roomName(String roomName) {
-        this.roomName = roomName;
-        return this;
-    }
-
     public String getRoomName() {
         return roomName;
     }
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
-    }
-
-    public Room gridSize(Integer gridSize) {
-        this.gridSize = gridSize;
-        return this;
-    }
-
-    public Integer getGridSize() {
-        return gridSize;
-    }
-
-    public void setGridSize(Integer gridSize) {
-        this.gridSize = gridSize;
-    }
-
-    public Room players(List<Player> players) {
-        this.players = players;
-        return this;
-    }
-
-    public Room addPlayersItem(Player playersItem) {
-        if (this.players == null) {
-            this.players = new ArrayList<Player>();
-        }
-        this.players.add(playersItem);
-        return this;
     }
 
     public List<Player> getPlayers() {
@@ -95,8 +77,11 @@ public class Room {
         this.players = players;
     }
 
-    public Room creator(Player creator) {
-        this.creator = creator;
+    public Room addPlayersItem(Player playersItem) {
+        if (this.players == null) {
+            this.players = new ArrayList<Player>();
+        }
+        this.players.add(playersItem);
         return this;
     }
 
@@ -108,9 +93,12 @@ public class Room {
         this.creator = creator;
     }
 
-    public Room status(StatusEnum status) {
-        this.status = status;
-        return this;
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     public StatusEnum getStatus() {
