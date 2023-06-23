@@ -4,16 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-    private String gameId;
-    private Room room;
-    private Dot dots;
-    private List<Score> scores;
+    private Integer gridSize = null;
+
+    private List<Dot> dots = null;
+
+    private List<Line> lines = null;
+
+    private List<Box> boxes = null;
+
+    private List<Score> scores = null;
+
     private StatusEnum status;
+
     private Player winner;
 
-    /**
-     * Gets or Sets status
-     */
+    public Game() { }
+
+    public Game(Integer gridSize) {
+        this.gridSize = gridSize;
+        this.status = StatusEnum.PLAYING;
+    }
+
     public enum StatusEnum {
         PLAYING("PLAYING"),
 
@@ -31,59 +42,70 @@ public class Game {
         public String toString() {
             return String.valueOf(value);
         }
+
+        public static StatusEnum fromValue(String text) {
+            for (StatusEnum b : StatusEnum.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
     }
 
-
-
-    public Game gameId(String gameId) {
-        this.gameId = gameId;
-        return this;
+    public Integer getGridSize() {
+        return gridSize;
     }
 
-    public String getGameId() {
-        return gameId;
+    public void setGridSize(Integer gridSize) {
+        this.gridSize = gridSize;
     }
 
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
-    }
-
-    public Game room(Room room) {
-        this.room = room;
-        return this;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public Game dots(Dot dots) {
-        this.dots = dots;
-        return this;
-    }
-
-    public Dot getDots() {
+    public List<Dot> getDots() {
         return dots;
     }
 
-    public void setDots(Dot dots) {
+    public void setDots(List<Dot> dots) {
         this.dots = dots;
     }
 
-    public Game scores(List<Score> scores) {
-        this.scores = scores;
+    public Game addDotsItem(Dot dotsItem) {
+        if (this.dots == null) {
+            this.dots = new ArrayList<Dot>();
+        }
+        this.dots.add(dotsItem);
         return this;
     }
 
-    public Game addScoresItem(Score scoresItem) {
-        if (this.scores == null) {
-            this.scores = new ArrayList<Score>();
+    public List<Line> getLines() {
+        return lines;
+    }
+
+    public void setLines(List<Line> lines) {
+        this.lines = lines;
+    }
+
+    public Game addLinesItem(Line linesItem) {
+        if (this.lines == null) {
+            this.lines = new ArrayList<Line>();
         }
-        this.scores.add(scoresItem);
+        this.lines.add(linesItem);
+        return this;
+    }
+
+    public List<Box> getBoxes() {
+        return boxes;
+    }
+
+    public void setBoxes(List<Box> boxes) {
+        this.boxes = boxes;
+    }
+
+    public Game addBoxesItem(Box boxesItem) {
+        if (this.boxes == null) {
+            this.boxes = new ArrayList<Box>();
+        }
+        this.boxes.add(boxesItem);
         return this;
     }
 
@@ -95,8 +117,11 @@ public class Game {
         this.scores = scores;
     }
 
-    public Game status(StatusEnum status) {
-        this.status = status;
+    public Game addScoresItem(Score scoresItem) {
+        if (this.scores == null) {
+            this.scores = new ArrayList<Score>();
+        }
+        this.scores.add(scoresItem);
         return this;
     }
 
@@ -106,11 +131,6 @@ public class Game {
 
     public void setStatus(StatusEnum status) {
         this.status = status;
-    }
-
-    public Game winner(Player winner) {
-        this.winner = winner;
-        return this;
     }
 
     public Player getWinner() {
