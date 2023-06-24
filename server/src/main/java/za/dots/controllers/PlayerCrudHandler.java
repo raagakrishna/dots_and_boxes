@@ -15,7 +15,7 @@ public class PlayerCrudHandler implements PlayerApi {
             throw new BadRequestResponse("Username was not provided.");
         }
 
-        boolean playerCreated = false;  // TODO: insert player (if username is unique)
+        boolean playerCreated = true;  // TODO: insert player (if username is unique)
         if (!playerCreated)
             throw new ConflictResponse("A player with this username exists.");
 
@@ -49,16 +49,16 @@ public class PlayerCrudHandler implements PlayerApi {
 
     @Override
     public String loginPlayer(String username, String password) {
-        throw new NotImplementedResponse("This was not impleted");
+        throw new NotImplementedResponse("This was not implemented.");
     }
 
     @Override
     public String logoutPlayer(String sessionId) {
-        throw new NotImplementedResponse("This was not impleted");
+        throw new NotImplementedResponse("This was not implemented.");
     }
 
     @Override
     public Player updatePlayer(String username, Player player) {
-        throw new NotImplementedResponse("This was not impleted");
+        throw new NotImplementedResponse("This was not implemented.");
     }
 }
