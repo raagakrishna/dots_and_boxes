@@ -49,7 +49,7 @@ public class DatabaseAccess {
             statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                hashedPassword = Optional.of(resultSet.getString("HashedPassword"));
+                hashedPassword = Optional.ofNullable(resultSet.getString("HashedPassword"));
                 salt = resultSet.getString("Salt");
             }
         } catch (SQLException sqlException) {
@@ -60,5 +60,43 @@ public class DatabaseAccess {
         return hashedPassword.map(hp -> hp.equals(PasswordManager.hashPassword(password, finalSalt)))
                 .orElse(false);
     }
+
+    public static void insertUUID(String username, String uuid) {
+        String query = "UPDATE RefreshUUIDS SET UUID = ? WHERE Username = ?";
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(2, username);
+            statement.setString(1, uuid);
+            statement.execute();
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+    }
+
+    public static boolean validateUUID(String username, String uuid) {
+        String query = "SELECT UUID FROM RefreshUUIDS WHERE Username = ?";
+        Optional<String> dbUUID = Optional.empty();
+        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                dbUUID = Optional.ofNullable(resultSet.getString("UUID"));
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            invalidateUUID(username);
+            return false;
+        }
+        boolean returnValue =
+                dbUUID.map(potentialUUID -> potentialUUID.equals(uuid)).orElse(false);
+        if (!returnValue) {
+            invalidateUUID(username);
+        }
+        return returnValue;
+    }
+
+    private static void invalidateUUID(String username) {
+        insertUUID(username, null);
+    }
+
 
 }

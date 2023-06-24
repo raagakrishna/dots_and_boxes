@@ -34,6 +34,18 @@ CREATE TABLE PasswordInformation (
 );
 GO
 
+CREATE TABLE RefreshUUIDS (
+	RefreshID [int] IDENTITY(1,1) NOT NULL,
+    Username [int] NOT NULL UNIQUE,
+    UUID [varchar] (120),
+    CONSTRAINT [PK_Refresh] PRIMARY KEY CLUSTERED
+    (
+        RefreshID ASC
+    ),
+    CONSTRAINT [FK_User_Refresh] FOREIGN KEY (Username) REFERENCES UserInformation (Username)
+);
+GO
+
 CREATE VIEW LoginInfo
 AS
 SELECT info.Username, pass.HashedPassword, pass.Salt
@@ -60,4 +72,7 @@ AS
   -- Insert the password into the Password table
   INSERT INTO PasswordInformation (UserID, HashedPassword, Salt)
   VALUES (@newUserID, @hashedPassword, @salt);
+
+  INSERT INTO RefreshUUIDS (Username)
+  Values (@username)
 GO

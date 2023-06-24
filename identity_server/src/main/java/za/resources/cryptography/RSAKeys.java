@@ -30,7 +30,7 @@ public class RSAKeys {
 
     private static byte[] getFileBytes(String fileLoc) {
         byte[] fileBytes;
-        try (FileInputStream fis = new FileInputStream(fileLoc);) {
+        try (FileInputStream fis = new FileInputStream(fileLoc)) {
             fileBytes = fis.readAllBytes();
         } catch (IOException e) {
             fileBytes = new byte[0];
