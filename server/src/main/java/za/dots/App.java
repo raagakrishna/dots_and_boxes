@@ -5,6 +5,8 @@ import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
 import za.dots.models.Player;
+import za.dots.models.PlayerLine;
+
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class App
@@ -14,55 +16,62 @@ public class App
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
         RoomCrudHandler roomCrudHandler = new RoomCrudHandler();
-        Javalin app = Javalin.create().start(7070);
+        Javalin app = Javalin.create().start(8080);
         app.routes(() -> {
-           path("room", () -> {
-               //get all rooms
+            // room
+            path("room", () -> {
+               // getRooms
                 get(ctx -> {
                     ctx.json(roomCrudHandler.getRooms());
                 });
-               //Create a room
+               // createRoom
                 post(ctx -> {
                     ctx.json(
-                            roomCrudHandler.createRoom(ctx.queryParam("creatorUsername"), ctx.header("Session-Id"))
+                            roomCrudHandler.createRoom(ctx.queryParam("creatorUsername"), ctx.queryParam("roomName"))
                     );
                 });
                 path("{roomId}", () -> {
-                    //getRoomById
+                    // deleteRoomById
+                    delete("delete/{username}", ctx -> {
+                        ctx.json(
+                                roomCrudHandler.deleteRoomById(ctx.pathParam("roomId"), ctx.pathParam("username"))
+                        );
+                    });
+                    // getRoomById
                     get(ctx -> {
                         ctx.json(
                                 roomCrudHandler.getRoomById(ctx.pathParam("roomId"))
                         );
                     });
-                    //Join a room
+                    // joinRoom
                     post("join/{username}", ctx -> {
                         ctx.json(
-                                roomCrudHandler.joinRoom(ctx.pathParam("roomId"), ctx.pathParam("username"), ctx.header("Session-Id"))
+                                roomCrudHandler.joinRoom(ctx.pathParam("roomId"), ctx.pathParam("username"))
                         );
                     });
-                    //Leave a room
+                    // leaveRoom
                     post("leave/{username}", ctx -> {
                         ctx.json(
-                                roomCrudHandler.leaveRoom(ctx.pathParam("roomId"), ctx.pathParam("username"), ctx.header("Session-Id"))
+                                roomCrudHandler.leaveRoom(ctx.pathParam("roomId"), ctx.pathParam("username"))
                         );
                     });
-                   //Delete a room
-                   delete("delete/{username}", ctx -> {
+                   // sendGameState
+                    post("sendPlayerLine/{username}", ctx -> {
                        ctx.json(
-                               roomCrudHandler.deleteRoomById(ctx.pathParam("roomId"), ctx.pathParam("username"), ctx.header("Session-Id"))
+                               roomCrudHandler.sendGameState(ctx.pathParam("roomId"), ctx.pathParam("username"), ctx.bodyAsClass(PlayerLine.class))
                        );
-                   });
-                    //start a room
-                    post("start/{username}", ctx -> {
+                    });
+                    // startRoom
+                    get("start/{username}", ctx -> {
                         ctx.json(
-                                roomCrudHandler.startRoom(ctx.pathParam("roomId"), ctx.pathParam("username"), ctx.header("Session-Id"))
+                                roomCrudHandler.startRoom(ctx.pathParam("roomId"), ctx.pathParam("username"), Integer.valueOf(ctx.queryParam("gridSize")))
                         );
                     });
                 });
            });
 
-           path("players", () -> {
-               //Get all players
+            path("players", () -> {
+               // getPlayers
               get(ctx -> {
                     ctx.json(
                             playersCrudHandler.getPlayers()
@@ -70,8 +79,9 @@ public class App
               });
            });
 
-           path("player", () -> {
-               //create player
+            // player
+            path("player", () -> {
+                // createPlayer
                 post(ctx -> {
                     ctx.result(
                             playerCrudHandler.createPlayer(ctx.bodyAsClass(Player.class))
@@ -79,32 +89,36 @@ public class App
                 });
 
                 path("{username}", () -> {
-                    //Get player by username
+                    // findRoomByUsername
+                    get("room", ctx -> {
+                        ctx.json(
+                                playerCrudHandler.findRoomByUsername(ctx.pathParam("username"))
+                        );
+                    });
+                    // getPlayerByUsername
                     get(ctx -> {
                         ctx.json(
                                 playerCrudHandler.getPlayerByUsername(ctx.pathParam("username"))
                         );
                     });
-                    //Update a player
+                    // updatePlayer
                     put(ctx -> {
                         ctx.json(
                                 playerCrudHandler.updatePlayer(ctx.pathParam("username"), ctx.bodyAsClass(Player.class))
                         );
                     });
-                    //Get the room the player is currently in
-                    get("room", ctx -> {
-                        playerCrudHandler.findRoomByUsername(ctx.pathParam("username"), ctx.header("Session-Id"));
-                    });
                 });
-                //Login a player
+                // loginPlayer
                 get("login", ctx -> {
                     ctx.result(
                             playerCrudHandler.loginPlayer(ctx.queryParam("username"), ctx.queryParam("password"))
                     );
                 });
-                //Logout a player
+                // logoutPlayer
                 get("logout", ctx -> {
-                    playerCrudHandler.logoutPlayer(ctx.header("Session-Id"));
+                    ctx.result(
+                            playerCrudHandler.logoutPlayer(ctx.pathParam("username"))
+                    );
                });
             });
         });

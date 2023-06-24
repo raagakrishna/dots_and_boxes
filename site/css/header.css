@@ -1,0 +1,108 @@
+header {
+    padding-left: 1%;
+    padding-bottom: 2%;
+    padding-top: 2%;
+    padding-right: 1%;
+
+    margin-bottom: 0.5em;
+}
+
+header h1 {
+    margin: 0px;
+    display: inline;
+}
+
+header h1::before {
+    content: "";
+    display: inline-block;
+    width: 0.8em;
+    height: 0.8em;
+    margin-right: 0.2em;
+    background-color: #8e8efa;
+    border-radius: 20px;
+}
+
+header h1::after {
+    content: "";
+    display: inline-block;
+    width: 0.8em;
+    height: 0.8em;
+    margin-left: 0.2em;
+    background-color: #7a7afa;
+}
+
+header .dropdown {
+    position: relative;
+    float: right;
+    padding: 0px;
+    width: 20%;
+    right: 0px;
+    line-height: 30px;
+}
+
+header .dropdown #username {
+    float: right;
+    color: #6969fa;
+}
+header .dropdown #username::after {
+    content: '';
+    border: 4px solid transparent;
+    border-top: 4px solid #6969fa;
+    display: inline-block;
+}
+
+header .dropdown #username:hover {
+    cursor: pointer;
+}
+
+header .dropdown .dropdown-content {
+    display: none;
+    position: absolute;
+    width: 100%;
+    overflow: auto;
+    top: 30px;
+
+    /* removes ul styling */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content a {
+    display: block;
+    color: #000000;
+    text-decoration: none;
+}
+
+.dropdown-content li {
+    color: black;
+    background-color: #EEEEEE;
+    padding: 5px;
+    border-bottom: 1px solid #d1cfcf;
+}
+
+.dropdown-content li:hover {
+    color: black;
+    background-color: #bdbbbb;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+    header .dropdown {
+        margin-top: 10px;
+        width: 98%;
+        padding-right: 2%;
+        height: 30px;
+        background-color: #EEEEEE;
+        border: 1px solid #BBBBFF;
+        text-align: right;
+        float: none;
+    }
+    header .dropdown #username {
+        float: right;
+    }
+}

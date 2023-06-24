@@ -11,7 +11,7 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public Room findRoomByUsername(String username, String sessionId) {
+    public Room findRoomByUsername(String username) {
         return null;
     }
 

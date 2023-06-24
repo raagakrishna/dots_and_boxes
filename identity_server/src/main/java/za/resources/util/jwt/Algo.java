@@ -6,7 +6,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
 public class Algo {
-//    public static Algorithm getAlgorithm(RSAPrivateKey rsaPrivateKey, RSAPublicKey rsaPublicKey) {
-//        return Algorithm.RSA512(rsaPublicKey, rsaPrivateKey);
-//    }
+    public static Algorithm getAlgorithm(RSAPublicKey publicKey, RSAPrivateKey privateKey) {
+        return Algorithm.RSA512(publicKey, privateKey);
+    }
 }
