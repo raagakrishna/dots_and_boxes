@@ -17,19 +17,18 @@ public class RoomCrudHandler implements RoomApi {
         Player creator = new Player(creatorUsername);
 
         // TODO: check if username is in an active game room (status will be OPEN)
-        boolean isCreatorInRoom = true;
+        boolean isCreatorInRoom = false;
         if (isCreatorInRoom) {
             throw new ConflictResponse("Player is already in an active game.");
         }
 
         // TODO: check if roomName exists in an active game room
-        boolean isRoomNameExists = true;
+        boolean isRoomNameExists = false;
         if (isRoomNameExists) {
             throw new ConflictResponse("Room name already exists.");
         }
 
-        // TODO: create Room, create ClientRoom (with creator = 1)
-        Room room = new Room();
+        Room room = null; // TODO: create Room, create ClientRoom (with creator = 1)
         if (room != null) {
             room.setCreator(creator);
 
@@ -60,7 +59,7 @@ public class RoomCrudHandler implements RoomApi {
 
     @Override
     public Room getRoomById(String roomId) {
-        Room room = null; // TODO: GET room from database
+        Room room = null; // TODO: GET room from database where roomid = roomId
 
         if (room != null)
             return room;
@@ -82,7 +81,7 @@ public class RoomCrudHandler implements RoomApi {
         // assuming the player already exists
         Player player = new Player(username);
 
-        boolean isPlayerInRoom = true; // TODO: check if Player is in an active game
+        boolean isPlayerInRoom = false; // TODO: check if Player is in an active game
 
         if (isPlayerInRoom) {
             throw new ConflictResponse("The player is already in an active game.");
@@ -138,8 +137,7 @@ public class RoomCrudHandler implements RoomApi {
             throw new NotFoundResponse("The player is not in this room.");
         }
 
-        // TODO: DELETE client from ClientRoom
-        boolean isDeleted = false;
+        boolean isDeleted = false;  // TODO: DELETE client from ClientRoom
 
         if (!isDeleted)
             throw new InternalServerErrorResponse("The player could not leave the room.");
