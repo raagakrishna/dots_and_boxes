@@ -20,8 +20,8 @@ CREATE TABLE [Room] (
 );
 
 
--- Create the ClientRoom table
-CREATE TABLE [ClientRoom] (
+-- Create the PlayerRoom table
+CREATE TABLE [PlayerRoom] (
   [id]			INT				NOT NULL IDENTITY(1,1) PRIMARY KEY,
   [roomid]		VARCHAR(255)	NOT NULL,
   [username]	VARCHAR(255)	NOT NULL,
