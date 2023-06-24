@@ -29,11 +29,6 @@ paths:
           description: Username of the player playing the game
           required: true
           type: string
-        - name: Session-Id
-          in: header
-          description: Session ID of the player
-          required: true
-          type: string
         - name: playerLine
           in: body
           description: The line the player has played
@@ -92,9 +87,9 @@ paths:
           description: Username of the creator
           required: true
           type: string
-        - name: Session-Id
-          in: header
-          description: Session ID of the player
+        - name: roomName
+          in: query
+          description: Game room name
           required: true
           type: string
       responses:
@@ -169,11 +164,6 @@ paths:
           description: Username of the player deleting the room
           required: true
           type: string
-        - name: Session-Id
-          in: header
-          description: Session ID of the player
-          required: true
-          type: string
       responses:
         '200':
           description: Room deleted successfully
@@ -212,11 +202,6 @@ paths:
         - name: username
           in: path
           description: Username of the player joining the room
-          required: true
-          type: string
-        - name: Session-Id
-          in: header
-          description: Session ID of the player
           required: true
           type: string
       responses:
@@ -263,11 +248,6 @@ paths:
           description: Username of the player leaving the room
           required: true
           type: string
-        - name: Session-Id
-          in: header
-          description: Session ID of the player
-          required: true
-          type: string
       responses:
         '200':
           description: Successfully left the room
@@ -311,11 +291,6 @@ paths:
         - name: username
           in: path
           description: Username of the player starting the room
-          required: true
-          type: string
-        - name: Session-Id
-          in: header
-          description: Session ID of the player
           required: true
           type: string
         - name: gridSize
@@ -520,9 +495,9 @@ paths:
       summary: Logout a player
       operationId: logoutPlayer
       parameters:
-        - name: Session-Id
-          in: header
-          description: Session ID of the player
+        - name: username
+          in: query
+          description: Username of the player to logout
           required: true
           type: string
       responses:
@@ -559,11 +534,6 @@ paths:
         - name: username
           in: path
           description: Username of the player
-          required: true
-          type: string
-        - name: Session-Id
-          in: header
-          description: Session ID of the player
           required: true
           type: string
       responses:
