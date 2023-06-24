@@ -9,6 +9,7 @@ import za.dots.models.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RoomCrudHandler implements RoomApi {
     @Override
@@ -309,8 +310,9 @@ public class RoomCrudHandler implements RoomApi {
         game.setGridSize(gridSize);
 
         // add dots, line, and boxes
-        for (int i = 0 ; i < Tn(game.getGridSize()) ; i++) {
-            for (int j = 0 ; j < Tn(game.getGridSize()) ; j++) {
+        int totalSize = Tn(gridSize);
+        for (int i = 0 ; i < totalSize ; i++) {
+            for (int j = 0 ; j < totalSize ; j++) {
                 // set coordiante
                 CoOrdinate coordinate = new CoOrdinate(j, i);
 
@@ -338,38 +340,38 @@ public class RoomCrudHandler implements RoomApi {
         }
 
         // add dots to lines
-        for (int i = 0 ; i < game.getLines().size() ; i++) {
-            int x = game.getLines().get(i).getCoordinate().getX();
-            int y = game.getLines().get(i).getCoordinate().getY();
+        for (Line line : game.getLines()) {
+            int x = line.getCoordinate().getX();
+            int y = line.getCoordinate().getY();
             if (y % 2 == 0) { // even (horizontal line)
                 // left Dot
                 CoOrdinate coordinateLeft = new CoOrdinate(x - 1, y);
                 Dot leftDot = findDotBasedOnCoordinate(game.getDots(), coordinateLeft);
-                game.getLines().get(i).setDot1(leftDot);
+                line.setDot1(leftDot);
 
                 // right Dot
                 CoOrdinate coordinateRight = new CoOrdinate(x + 1, y);
                 Dot rightDot = findDotBasedOnCoordinate(game.getDots(), coordinateRight);
-                game.getLines().get(i).setDot2(rightDot);
+                line.setDot2(rightDot);
             }
             else { // odd (vertical line)
                 // above Dot
                 CoOrdinate coordinateAbove = new CoOrdinate(x, y - 1);
                 Dot aboveDot = findDotBasedOnCoordinate(game.getDots(), coordinateAbove);
-                game.getLines().get(i).setDot1(aboveDot);
+                line.setDot1(aboveDot);
 
                 // below Dot
                 CoOrdinate coordinateBelow = new CoOrdinate(x, y + 1);
                 Dot belowDot = findDotBasedOnCoordinate(game.getDots(), coordinateBelow);
-                game.getLines().get(i).setDot2(belowDot);
+                line.setDot2(belowDot);
             }
 
         }
 
         // add lines to boxes
-        for (int i = 0 ; i < game.getBoxes().size() ; i++) {
-            int x = game.getBoxes().get(i).getCoordinate().getX();
-            int y = game.getBoxes().get(i).getCoordinate().getY();
+        for (Box box : game.getBoxes()) {
+            int x = box.getCoordinate().getX();
+            int y = box.getCoordinate().getY();
 
             // left line
             CoOrdinate coordinateLeft = new CoOrdinate(x - 1, y);
@@ -388,10 +390,10 @@ public class RoomCrudHandler implements RoomApi {
             Line belowLine = findLineBasedOnCoordinate(game.getLines(), coordinateBelow);
 
             // add lines
-            game.getBoxes().get(i).setLine1(leftLine);
-            game.getBoxes().get(i).setLine2(rightLine);
-            game.getBoxes().get(i).setLine3(aboveLine);
-            game.getBoxes().get(i).setLine4(belowLine);
+            box.setLine1(leftLine);
+            box.setLine2(rightLine);
+            box.setLine3(aboveLine);
+            box.setLine4(belowLine);
         }
 
         // add score for players
@@ -422,47 +424,45 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     private Line findLineBasedOnCoordinate(List<Line> lines, CoOrdinate coordinate) {
-        for (int i = 0 ; i < lines.size() ; i++) {
-            if (lines.get(i).getCoordinate().getX() == coordinate.getX() && lines.get(i).getCoordinate().getY() == coordinate.getY()) {
-                return lines.get(i);
+        for (Line line : lines) {
+            if (line.getCoordinate().getX() == coordinate.getX() && line.getCoordinate().getY() == coordinate.getY()) {
+                return line;
             }
         }
         return null;
     }
 
     private List<Box> checkIfBoxCompleted(List<Box> boxes, Line line) {
-        List<Box> completedBoxes = new ArrayList<>();
-        for (int i = 0 ; i < boxes.size() ; i++) {
-            // Find the correct box
-            if ((boxes.get(i).getLine1().getCoordinate().getX() == line.getCoordinate().getX() && boxes.get(i).getLine1().getCoordinate().getY() == line.getCoordinate().getY()) ||
-                    (boxes.get(i).getLine2().getCoordinate().getX() == line.getCoordinate().getX() && boxes.get(i).getLine2().getCoordinate().getY() == line.getCoordinate().getY()) ||
-                    (boxes.get(i).getLine3().getCoordinate().getX() == line.getCoordinate().getX() && boxes.get(i).getLine3().getCoordinate().getY() == line.getCoordinate().getY()) ||
-                    (boxes.get(i).getLine4().getCoordinate().getX() == line.getCoordinate().getX() && boxes.get(i).getLine4().getCoordinate().getY() == line.getCoordinate().getY())) {
-                // Check if boxes
-                if (boxes.get(i).getLine1().getStatus().equals(Line.StatusEnum.OCCUPIED) &&
-                        boxes.get(i).getLine2().getStatus().equals(Line.StatusEnum.OCCUPIED) &&
-                        boxes.get(i).getLine3().getStatus().equals(Line.StatusEnum.OCCUPIED) &&
-                        boxes.get(i).getLine4().getStatus().equals(Line.StatusEnum.OCCUPIED)) {
-                    // return boxes[i];
-                    completedBoxes.add(boxes.get(i));
-                }
-            }
-        }
-        return completedBoxes;
+        return boxes.stream()
+                .filter(box -> isLineInBox(box, line))
+                .filter(this::isBoxCompleted)
+                .collect(Collectors.toList());
+    }
+
+    private boolean isLineInBox(Box box, Line line) {
+        return box.getLine1().equals(line) || box.getLine2().equals(line) ||
+                box.getLine3().equals(line) || box.getLine4().equals(line);
+    }
+
+    private boolean isBoxCompleted(Box box) {
+        return box.getLine1().getStatus() == Line.StatusEnum.OCCUPIED &&
+                box.getLine2().getStatus() == Line.StatusEnum.OCCUPIED &&
+                box.getLine3().getStatus() == Line.StatusEnum.OCCUPIED &&
+                box.getLine4().getStatus() == Line.StatusEnum.OCCUPIED;
     }
 
     private Score findScoreOfPlayer(List<Score> scores, Player client) {
-        for (int i = 0 ; i < scores.size() ; i++) {
-            if (scores.get(i).getPlayer().getUsername().equals(client.getUsername())) {
-                return scores.get(i);
+        for (Score score : scores) {
+            if (score.getPlayer().getUsername().equals(client.getUsername())) {
+                return score;
             }
         }
         return null;
     }
 
     private boolean checkAllBoxesCompleted(List<Box> boxes) {
-        for (int i = 0 ; i < boxes.size() ; i++) {
-            if (boxes.get(i).getStatus().equals(Box.StatusEnum.EMPTY)) {
+        for (Box box : boxes) {
+            if (box.getStatus().equals(Box.StatusEnum.EMPTY)) {
                 return false;
             }
         }
@@ -474,11 +474,9 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     public Dot findDotBasedOnCoordinate(List<Dot> dots, CoOrdinate coordinate) {
-        for (int i = 0 ; i < dots.size() ; i++) {
-            if (dots.get(i).getCoordinate().getX() == coordinate.getX() &&
-                    dots.get(i).getCoordinate().getY() == coordinate.getY()) {
-                return dots.get(i);
-            }
+        for (Dot dot : dots) {
+            if (dot.getCoordinate().getX() == coordinate.getX() && dot.getCoordinate().getY() == coordinate.getY())
+                return dot;
         }
         return null;
     }
