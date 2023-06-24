@@ -643,6 +643,8 @@ definitions:
         enum: 
           - PLAYING
           - DONE 
+      currentPlayer:
+        $ref: '#/definitions/Player'
       winner: 
         $ref: '#/definitions/Player'
   Room:

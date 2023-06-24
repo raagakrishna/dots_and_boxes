@@ -16,6 +16,8 @@ public class Game {
 
     private StatusEnum status;
 
+    private Player currentPlayer = null;
+
     private Player winner;
 
     public Game() { }
@@ -131,6 +133,14 @@ public class Game {
 
     public void setStatus(StatusEnum status) {
         this.status = status;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 
     public Player getWinner() {
