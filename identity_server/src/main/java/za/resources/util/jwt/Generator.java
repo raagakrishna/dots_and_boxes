@@ -11,7 +11,7 @@ public class Generator {
     public static JWTGenerator<User> getGenerator() {
         return (user, alg) -> {
             JWTCreator.Builder token = JWT.create()
-                    .withClaim("name", user.userName())
+                    .withClaim("name", user.getUsername())
                     .withExpiresAt(Instant.now().plusSeconds(300));
             return token.sign(alg);
         };
@@ -20,7 +20,7 @@ public class Generator {
     public static JWTGenerator<User> getRefreshTokenGenerator() {
         return (user, alg) -> {
             JWTCreator.Builder token = JWT.create()
-                    .withClaim("name", user.userName())
+                    .withClaim("name", user.getUsername())
                     .withExpiresAt(Instant.now().plusSeconds(30000));
             return token.sign(alg);
         };

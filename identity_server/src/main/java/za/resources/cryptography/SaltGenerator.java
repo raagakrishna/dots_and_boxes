@@ -2,6 +2,7 @@ package za.resources.cryptography;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class SaltGenerator {
@@ -10,9 +11,9 @@ public class SaltGenerator {
 
     static {
         characters = new ArrayList<>();
-        characters.addAll(IntStream.range('0', '9').mapToObj(String::valueOf).toList());
-        characters.addAll(IntStream.range('a', 'z').mapToObj(String::valueOf).toList());
-        characters.addAll(IntStream.range('A', 'Z').mapToObj(String::valueOf).toList());
+        characters.addAll(IntStream.range('0', '9').mapToObj(String::valueOf).collect(Collectors.toList()));
+        characters.addAll(IntStream.range('a', 'z').mapToObj(String::valueOf).collect(Collectors.toList()));
+        characters.addAll(IntStream.range('A', 'Z').mapToObj(String::valueOf).collect(Collectors.toList()));
     }
 
     public static String generateSalt() {

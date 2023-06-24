@@ -38,8 +38,8 @@ public class JwtUtils {
 
     public JWTResponse generateToken(User user) {
 
-        return new JWTResponse(generateToken(user.userName(), tokenAlgorithm, 300),
-                generateToken(user.userName(), refreshTokenAlgorithm, 86400));
+        return new JWTResponse(generateToken(user.getUsername(), tokenAlgorithm, 300),
+                generateToken(user.getUsername(), refreshTokenAlgorithm, 86400));
     }
 
     public JWTResponse generateToken(String username) {
