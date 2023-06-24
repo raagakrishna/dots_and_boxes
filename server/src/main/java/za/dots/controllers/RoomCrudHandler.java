@@ -1,6 +1,7 @@
 package za.dots.controllers;
 
 import za.dots.controllers.interfaces.RoomApi;
+import za.dots.models.PlayerLine;
 import za.dots.models.Room;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public Room deleteRoomById(String roomId, String username, String sessionId) {
+    public Room deleteRoomById(String roomId, String username) {
         return null;
     }
 
@@ -27,17 +28,22 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public Room joinRoom(String roomId, String username, String sessionId) {
+    public Room joinRoom(String roomId, String username) {
         return null;
     }
 
     @Override
-    public Room leaveRoom(String roomId, String username, String sessionId) {
+    public Room leaveRoom(String roomId, String username) {
         return null;
     }
 
     @Override
-    public Void startRoom(String roomId, String username, String sessionId) {
+    public String sendGameState(String roomId, String username, PlayerLine playerLine) {
+        return null;
+    }
+
+    @Override
+    public Room startRoom(String roomId, String username, Integer gridSize) {
         return null;
     }
 }
