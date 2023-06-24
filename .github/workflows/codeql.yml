@@ -80,7 +80,7 @@ jobs:
       run: mvn -B package --file ./server/pom.xml
     - if: matrix.language == 'java'
       name: Build Server
-      run: mvn -B package --file ./resource_server/pom.xml
+      run: mvn -B package --file ./identity_server/pom.xml
     
     # - run: |
     #     echo "Run, Build Application using script"

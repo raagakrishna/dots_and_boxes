@@ -5,7 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 
 public class Verifier {
-//    public static JWTVerifier getVerifier(Algorithm algorithm) {
-//        return JWT.require(algorithm).build();
-//    }
+    public static JWTVerifier getVerifier(Algorithm algorithm) {
+        return JWT.require(algorithm).build();
+    }
 }
