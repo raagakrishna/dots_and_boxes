@@ -21,3 +21,23 @@ function openTab(evt, tabName) {
     // Add the active class to the clicked tab button
     evt.currentTarget.className += " active";
 }
+
+// Get the error box element
+var errorBox = document.getElementById('failure');
+
+// Create the close button element
+var closeButton = document.createElement('span');
+closeButton.textContent = 'X';
+closeButton.style.cursor = 'pointer';
+closeButton.style.color = 'red';
+closeButton.style.marginLeft = '5px';
+closeButton.style.float = 'right';
+
+// Add a click event listener to the close button
+closeButton.addEventListener('click', function() {
+  // Hide the error box by setting its display property to "none"
+  errorBox.style.display = 'none';
+});
+
+// Append the close button to the error box
+errorBox.appendChild(closeButton);
