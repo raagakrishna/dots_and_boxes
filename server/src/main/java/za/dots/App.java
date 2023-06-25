@@ -1,6 +1,7 @@
 package za.dots;
 
 import io.javalin.Javalin;
+import io.javalin.community.ssl.SSLPlugin;
 import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
@@ -13,15 +14,19 @@ public class App
 {
     public static void main( String[] args )
     {
+        SSLPlugin sslPlugin = new SSLPlugin(conf -> {
+            conf.pemFromPath(System.getenv("SSL_CERT"), System.getenv("SSL_CERT_KEY"));
+        });
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
         RoomCrudHandler roomCrudHandler = new RoomCrudHandler();
-        Javalin app = Javalin.create(config ->
-                config.plugins.enableCors(cors -> {
-                    cors.add(it -> {
-                        it.anyHost();
-                    });
-                })
+        Javalin app = Javalin.create(config -> {
+            config.plugins.register(sslPlugin);
+            config.plugins.enableCors(cors -> {
+                cors.add(it -> {
+                    it.anyHost();
+                });
+            });}
         ).start(8080);
 
         app.routes(() -> {
