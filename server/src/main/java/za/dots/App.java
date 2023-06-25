@@ -20,7 +20,7 @@ public class App
             conf.pemFromPath(
                     System.getenv("CERT_PATH"),
                     System.getenv("CERT_PATH_KEY"),
-                    System.getenv("CERT_PASS");
+                    System.getenv("CERT_PASS"));
         });
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
