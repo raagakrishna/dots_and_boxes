@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import za.resources.database.DatabaseAccess;
 import za.resources.environment.EnvironmentVariables;
@@ -15,11 +14,9 @@ import za.resources.models.User;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
-import java.util.List;
 
 public class JwtUtils {
 
-    private final JWTVerifier tokenVerifier;
     private final JWTVerifier refreshTokenVerifier;
     private final Algorithm tokenAlgorithm;
     private final Algorithm refreshTokenAlgorithm;
@@ -28,10 +25,6 @@ public class JwtUtils {
     public JwtUtils(RSAPublicKey publicKey, RSAPrivateKey privateKey) {
         tokenAlgorithm = Algo.getAlgorithm(publicKey, privateKey);
         refreshTokenAlgorithm = Algo.getAlgorithm(publicKey, privateKey);
-        tokenVerifier = JWT.require(tokenAlgorithm)
-                .withIssuer(EnvironmentVariables.issuer)
-                .withAudience(EnvironmentVariables.audience)
-                .build();
         refreshTokenVerifier = JWT.require(refreshTokenAlgorithm)
                 .withIssuer(EnvironmentVariables.issuer)
                 .withAudience(EnvironmentVariables.issuer)
@@ -74,7 +67,7 @@ public class JwtUtils {
         final DecodedJWT decodedJWT;
         try {
             decodedRefreshJWT = refreshTokenVerifier.verify(refreshToken);
-            decodedJWT = tokenVerifier.verify(token);
+            decodedJWT = JWT.decode(token);
 
         } catch (JWTVerificationException verificationException) {
             throw new InvalidTokenException();
@@ -86,13 +79,10 @@ public class JwtUtils {
         String tokenUsername = token.getClaim("username").asString();
         String tokenIssuer = token.getIssuer();
         String refreshUsername = refresh.getClaim("username").asString();
-        String refreshIssuer = refresh.getIssuer();
         String uuid = refresh.getClaim("UUID").asString();
-        List<String> audience = refresh.getAudience();
         boolean validUsername = tokenUsername != null && tokenUsername.equals(refreshUsername);
-        boolean validIssuer = EnvironmentVariables.issuer.equals(tokenIssuer) && EnvironmentVariables.issuer.equals(refreshIssuer);
-        boolean validAudience = audience.contains(EnvironmentVariables.issuer);
-        if (validUsername && validIssuer && validAudience && DatabaseAccess.validateUUID(tokenUsername, uuid)) {
+        boolean validIssuer = EnvironmentVariables.issuer.equals(tokenIssuer);
+        if (validUsername && validIssuer && DatabaseAccess.validateUUID(tokenUsername, uuid)) {
             return generateToken(tokenUsername);
         } else {
             throw new InvalidTokenException();
