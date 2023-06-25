@@ -1,28 +1,38 @@
 package za.dots;
 
 import io.javalin.Javalin;
+import io.javalin.community.ssl.SSLPlugin;
 import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
 import za.dots.models.CoOrdinate;
 import za.dots.models.Player;
+import io.javalin.http.staticfiles.Location;
+
 
 import java.sql.SQLException;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
-public class App
-{
+public class App {
     public static void main( String[] args ) {
+        SSLPlugin sslPlugin = new SSLPlugin(conf -> {
+            conf.pemFromPath(
+                    System.getenv("CERT_PATH"),
+                    System.getenv("CERT_PATH_KEY"),
+                    System.getenv("CERT_PASS"));
+        });
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
         RoomCrudHandler roomCrudHandler = new RoomCrudHandler();
-        Javalin app = Javalin.create(config ->
-                config.plugins.enableCors(cors -> {
-                    cors.add(it -> {
-                        it.anyHost();
-                    });
-                })
+        Javalin app = Javalin.create(config -> {
+            config.plugins.register(sslPlugin);
+            config.plugins.enableCors(cors -> {
+                cors.add(it -> {
+                    it.anyHost();
+                });
+            config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
+            });}
         ).start(8080);
 
         app.routes(() -> {

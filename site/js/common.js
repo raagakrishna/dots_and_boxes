@@ -1,4 +1,4 @@
-var backendUrl = 'http://localhost:8080';
+var backendUrl = 'https://georgepauer.com';
 
 function addHeader() {
     localStorage.setItem("username", "peter");
