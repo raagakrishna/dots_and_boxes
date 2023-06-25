@@ -57,7 +57,7 @@ input[type=submit] {
 }
 
 
-.display-result {
+#display-result {
     text-align: center;
     vertical-align: middle;
     padding: 10px;
@@ -68,9 +68,14 @@ input[type=submit] {
     display: none;
 }
 
-#failure {
+.failure {
     background-color: #FFAAAA;
     border: 1px solid #FF0000;   
+}
+
+.success {
+    background-color: #aaffaa;
+    border: 1px solid #00ff00;   
 }
 
 @media screen and (max-width: 600px) {

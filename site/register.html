@@ -7,24 +7,27 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/login_register.css">
 
-    <script src="js/common.js"></script>  
+    <script src="js/common.js"></script> 
     <script src="js/login_register.js"></script> 
 </head>
 
 <body>
     <section class="tab-form loginForm">
-        <h3>Login</h3>
+        <h3>Register</h3>
         <p id="display-result"></p>
-        <form onsubmit="loginFormBtn(event)" method="post">
+        <form onsubmit="registerFormBtn(event)" method="post" id="registerForm">
             <label>Username: </label>
             <input type="text" name="usernameInput" id="usernameInput" required="true" maxlength="20" />
             <br/><br/>
             <label>Password: </label>
             <input type="password" name="passwordInput" id="passwordInput" required="true" />
             <br/><br/>
-            <input type="submit" value="Login" />
+            <label>Confirm password: </label>
+            <input type="password" name="confirmPasswordInput" id="confirmPasswordInput" required="true" />
+            <br/><br/>
+            <input type="submit" value="Register" />
         </form>
-        <p class="not-registered">Not registered? <a href="register.html">Register</a></p>
+        <p class="not-registered">Already registered? <a href="login.html">Login</a></p>
     </section>
 </body>
 </html>

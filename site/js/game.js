@@ -27469,32 +27469,15 @@ function handleLineClick(event) {
         sendPlayerMove(roomId, username, thisRoom.game.currentPlayer, coordinate.x, coordinate.y);
     }
     else {
-        // Get the error box element
-        var errorBox = document.getElementById('failure');
-        errorBox.style.display = 'block';
-        errorBox.innerHTML = "It is not your turn!";
-
-        // Create the close button element
-        var closeButton = document.createElement('span');
-        closeButton.textContent = 'X';
-        closeButton.style.cursor = 'pointer';
-        closeButton.style.color = 'red';
-        closeButton.style.marginLeft = '5px';
-        closeButton.style.float = 'right';
-
-        // Add a click event listener to the close button
-        closeButton.addEventListener('click', function() {
-            errorBox.style.display = 'none';
-        });
-
-        // Append the close button to the error box
-        errorBox.appendChild(closeButton);
+        updateDisplayResult('failure', "It is not your turn!");
     }
 }
 
 function sendPlayerMove(roomId, username, x, y){
     console.log(roomId, username, x, y);
     // TODO: send player move
+
+    updateDisplayResult('success', "Successfully played move!");
 }
 
 function Tn(n) {
