@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dots and Boxes</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login_register.css">
+
+    <script src="js/common.js"></script> 
+    <script src="js/login_register.js"></script> 
+</head>
+
+<body>
+    <section class="tab-form loginForm">
+        <h3>Register</h3>
+        <p id="display-result"></p>
+        <form onsubmit="registerFormBtn(event)" method="post" id="registerForm">
+            <label>Username: </label>
+            <input type="text" name="usernameInput" id="usernameInput" required="true" maxlength="20" />
+            <br/><br/>
+            <label>Password: </label>
+            <input type="password" name="passwordInput" id="passwordInput" required="true" />
+            <br/><br/>
+            <label>Confirm password: </label>
+            <input type="password" name="confirmPasswordInput" id="confirmPasswordInput" required="true" />
+            <br/><br/>
+            <input type="submit" value="Register" />
+        </form>
+        <p class="not-registered">Already registered? <a href="login.html">Login</a></p>
+    </section>
+</body>
+</html>

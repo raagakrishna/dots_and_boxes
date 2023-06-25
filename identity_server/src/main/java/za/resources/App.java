@@ -27,7 +27,7 @@ public class App {
         RSAPublicKey publicKey = RSAKeys.getRSAPublicKey(EnvironmentVariables.publicKeyLocation);
         DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
         JwtUtils jwtUtils = new JwtUtils(publicKey, privateKey);
-        Javalin app = Javalin.create().start(8080);
+        Javalin app = Javalin.create().start(7071);
 
         app.before("/login", Validation::usernameValidation);
         app.before("/register", Validation::usernameValidation);

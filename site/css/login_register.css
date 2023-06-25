@@ -1,0 +1,28 @@
+section.tab-form {
+    margin: auto;
+    width: 70%;
+}
+
+section.tab-form form {
+    position: initial;
+}
+label {
+    position: initial;
+}
+input {
+    float: left;
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.not-registered {
+    padding-left: 20px;
+}
+
+.not-registered a {
+    color: #6e6eff;
+}
+.not-registered a:hover {
+    color: #9999FF;
+}

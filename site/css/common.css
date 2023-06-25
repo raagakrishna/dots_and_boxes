@@ -1,0 +1,102 @@
+body {
+    margin: 0px;
+    font-family: Tahoma, sans-serif;
+    padding-left: 20%;
+    padding-right: 20%;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+.purple_box {
+    background: #E5E5FF;
+    border: 1px solid #BBBBFF;
+    color: black;
+}
+.gray_box {
+    background: #EEEEEE;
+    border: 1px solid #BBBBFF;
+    color: black;
+    margin-bottom: 0.5em;
+}
+
+section.tab-form {
+    background-color: #DDDDFF;
+    border: 1px solid #9999FF;
+    margin: 3%;
+}
+
+section.tab-form h3 {
+    margin: 0px;
+    padding: 15px;
+    background-color: #BBBBFF;
+    text-align: center;
+}
+
+section.tab-form form {
+    padding: 30px 60px 60px 60px;
+    position: relative;
+}
+
+label {
+    font-weight: bold;
+    position: absolute;
+}
+
+input {
+    border: 1px solid black;
+    width: 300px;
+    float: right;
+}
+
+input[type=submit] {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+#display-result,
+#display-result-create,
+#display-result-join {
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+    font-weight: bold;
+    margin-left: 10%;
+    margin-right: 10%;
+
+    margin-bottom: 0px;
+    display: none;
+}
+
+.failure {
+    background-color: #FFAAAA;
+    border: 1px solid #FF0000;   
+}
+
+.success {
+    background-color: #aaffaa;
+    border: 1px solid #00ff00;   
+}
+
+@media screen and (max-width: 600px) {
+    body {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    section.tab-form form {
+        position: initial;
+    }
+    label {
+        position: initial;
+    }
+    input {
+        float: left;
+        width: 100%;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+}
