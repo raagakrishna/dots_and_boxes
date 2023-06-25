@@ -30,7 +30,7 @@ public class App
                 cors.add(it -> {
                     it.anyHost();
                 });
-            config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
+            config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", "/");
             });}
         ).start(8080);
 
