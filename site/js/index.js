@@ -21,3 +21,38 @@ function openTab(evt, tabName) {
     // Add the active class to the clicked tab button
     evt.currentTarget.className += " active";
 }
+
+function createRoomFormBtn(event) {
+  event.preventDefault();
+
+  var gameNameCreate = document.getElementById("gameNameCreate");
+
+  if (gameNameCreate.value === "") {
+    updateDisplayResult('failure', 'Game name cannot be empty!', 'create');
+    return;
+  }
+
+  createGameRoom(gameNameCreate.value);
+}
+
+function createGameRoom(roomName) {
+  // TODO: send response to backend 
+}
+
+function joinRoomFormBtn(event) {
+  event.preventDefault();
+
+  var gameID = document.getElementById("gameID");
+
+  if (gameID.value === "") {
+    updateDisplayResult('failure', 'Please enter a game ID.', 'join');
+    return;
+  }
+
+  joinGameRoom(gameID.value);
+}
+
+function joinGameRoom(gameID) {
+  // TODO: send response to backend
+}
+

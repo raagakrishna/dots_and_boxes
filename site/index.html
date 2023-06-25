@@ -26,10 +26,10 @@
             
             <section id="tab1" class="tab-content tab-content-display tab-form">
                 <h3>Create a New Game</h3>
-                <p id="display-result"></p>
+                <p id="display-result-create"></p>
                 <form onsubmit="createRoomFormBtn(event)">
                     <label>Game Name: </label>
-                    <input type="text" name="gameNameCreate" required="true" maxlength="20" />
+                    <input type="text" name="gameNameCreate" id="gameNameCreate" maxlength="20" required="true" />
                     <br/><br/>
                     <input type="submit" value="Create Game" />
                 </form>
@@ -37,10 +37,10 @@
             
             <section id="tab2" class="tab-content tab-form">
                 <h3>Join a Game</h3>
-                <p id="display-result"></p>
+                <p id="display-result-join"></p>
                 <form onsubmit="joinRoomFormBtn(event)">
                     <label>Game Room ID: </label>
-                    <input type="text" id="gameID" required="true" maxlength="50">
+                    <input type="text" name="gameID" id="gameID" maxlength="50" required="true" />
                     <br/><br/>
                     <input type="submit" value="Join Game" />
                 </form>

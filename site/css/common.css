@@ -57,7 +57,9 @@ input[type=submit] {
 }
 
 
-#display-result {
+#display-result,
+#display-result-create,
+#display-result-join {
     text-align: center;
     vertical-align: middle;
     padding: 10px;

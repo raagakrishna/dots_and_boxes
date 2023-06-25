@@ -52,9 +52,18 @@ function addFooter() {
     myFooter.textContent = "\u00A9 2023 Dots and Boxes";
 }
 
-function updateDisplayResult(displayType, message) {
+function updateDisplayResult(displayType, message, special) {
     // Get the error box element
-    var displayResult = document.getElementById('display-result');
+    if (special == 'join') {
+        var displayResult = document.getElementById('display-result-join');
+    }
+    else if (special == 'create') {
+        var displayResult = document.getElementById('display-result-create');
+    }
+    else {
+        var displayResult = document.getElementById('display-result');
+    }
+
     displayResult.style.display = 'block';
     displayResult.innerHTML = message;
 
