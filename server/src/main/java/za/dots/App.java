@@ -11,6 +11,7 @@ import za.dots.models.Player;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -33,26 +34,20 @@ public class App
                 cors.add(it -> {
                     it.anyHost();
                 });
+            config.staticFiles.add(staticFiles -> {
+                staticFiles.hostedPath = "/";                   // change to host files on a subpath, like '/assets'
+                staticFiles.directory = "/home/ubuntu/dots_and_boxes/site/";              // the directory where your files are located
+//                staticFiles.location = Location.CLASSPATH;      // Location.CLASSPATH (jar) or Location.EXTERNAL (file system)
+                staticFiles.precompress = true;                // if the files should be pre-compressed and cached in memory (optimization)
+//                staticFiles.aliasCheck = null;                  // you can configure this to enable symlinks (= ContextHandler.ApproveAliases())
+//                staticFiles.headers = Map.of(...);              // headers that will be set for the files
+//                staticFiles.skipFileFunction = req -> false;    // you can use this to skip certain files in the dir, based on the HttpServletRequest
+//                staticFiles.mimeTypes.add(mimeType, ext);       // you can add custom mimetypes for extensions
+            });
             });}
         ).start(8080);
 
         app.routes(() -> {
-            get("/", ctx -> {
-                ctx.html(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/index.html")));
-            });
-
-            get("/{file}.html", ctx -> {
-                ctx.html(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/" + ctx.pathParam("file") + ".html")));
-            });
-
-            get("/css/{file}.css", (ctx) -> {
-                ctx.result(Files.readAllBytes(Path.of("/home/ubuntu/dots_and_boxes/site/css/" + ctx.pathParam("file") + ".css")));
-            });
-
-            get("/js/{file}.js", (ctx) -> {
-                ctx.result(Files.readAllBytes(Path.of("/home/ubuntu/dots_and_boxes/site/js/" + ctx.pathParam("file") + ".js")));
-            });
-
             // room
             path("room", () -> {
                // getRooms
