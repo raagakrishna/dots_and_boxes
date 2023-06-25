@@ -404,6 +404,36 @@ public class RoomDao {
         }
     }
 
+    public Room findRoomByUsername(String usernmae) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            // get RoomId
+            String roomId = "";
+            String query = "SELECT R.roomid, R.status FROM PlayerRoom as PR " +
+                    "JOIN [Room] AS R ON PR.roomid = R.roomid " +
+                    "WHERE username = '" + usernmae + "'";
+
+            try (ResultSet resultSet = datasourceConnection.executeStatement(query)){
+                while (resultSet.next()) {
+                    String roomStatus = resultSet.getString("status");
+                    if (!roomStatus.equals(Room.StatusEnum.CLOSED.toString()))
+                        roomId = resultSet.getString("roomid");
+                }
+            }
+
+            datasourceConnection.closeConnection();
+
+            // no room found
+            if (roomId.equals(""))
+                return null;
+
+            return getRoomById(roomId);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
     private String generateRoomNumber() {
         // Generate a unique room number logic goes here
         return "ROOM" + System.currentTimeMillis();

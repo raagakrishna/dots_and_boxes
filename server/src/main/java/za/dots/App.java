@@ -14,10 +14,8 @@ import java.sql.SQLException;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
-public class App
-{
-    public static void main( String[] args )
-    {
+public class App {
+    public static void main( String[] args ) {
         SSLPlugin sslPlugin = new SSLPlugin(conf -> {
             conf.pemFromPath(
                     System.getenv("CERT_PATH"),
