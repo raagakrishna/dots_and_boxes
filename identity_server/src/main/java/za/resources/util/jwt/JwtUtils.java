@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import za.resources.database.DatabaseAccess;
 import za.resources.environment.EnvironmentVariables;
 import za.resources.exception.InvalidTokenException;
 import za.resources.models.JWTResponse;
@@ -14,6 +15,7 @@ import za.resources.models.User;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
+import java.util.List;
 
 public class JwtUtils {
 
@@ -38,48 +40,63 @@ public class JwtUtils {
 
     public JWTResponse generateToken(User user) {
 
-        return new JWTResponse(generateToken(user.getUsername(), tokenAlgorithm, 300),
-                generateToken(user.getUsername(), refreshTokenAlgorithm, 86400));
+        return new JWTResponse(generateToken(user.getUsername(), 300),
+                generateRefreshToken(user.getUsername(), 86400));
     }
 
     public JWTResponse generateToken(String username) {
         return generateToken(new User(username));
     }
 
-    private String generateToken(String username, Algorithm algorithm, long expireTime) {
+    private String generateToken(String username, long expireTime) {
         return JWT.create()
                 .withExpiresAt(Instant.now().plusSeconds(expireTime))
                 .withClaim("username", username)
                 .withIssuer(EnvironmentVariables.issuer)
                 .withAudience(EnvironmentVariables.audience)
-                .sign(algorithm);
+                .sign(tokenAlgorithm);
+    }
+
+    private String generateRefreshToken(String username, long expireTime) {
+        String uuid = UUIDGenerator.generateUUID();
+        DatabaseAccess.insertUUID(username, uuid);
+        return JWT.create()
+                .withExpiresAt(Instant.now().plusSeconds(expireTime))
+                .withClaim("username", username)
+                .withIssuer(EnvironmentVariables.issuer)
+                .withAudience(EnvironmentVariables.issuer)
+                .withClaim("UUID", uuid)
+                .sign(refreshTokenAlgorithm);
     }
 
     public JWTResponse generateRefreshedToken(String token, String refreshToken) throws InvalidTokenException {
         final DecodedJWT decodedRefreshJWT;
-        try {
-            decodedRefreshJWT = refreshTokenVerifier.verify(refreshToken);
-        } catch (JWTVerificationException verificationException) {
-            throw new InvalidTokenException();
-        }
-        String username = decodedRefreshJWT.getClaim("username").asString();
-        String issuer = decodedRefreshJWT.getIssuer();
-        String tokenUsername = getUsernameFromToken(token);
-        if (tokenUsername != null && tokenUsername.equals(username) && "us".equals(issuer)) {
-            return generateToken(username);
-        }
-        throw new InvalidTokenException();
-    }
-
-    public String getUsernameFromToken(String token) throws InvalidTokenException {
         final DecodedJWT decodedJWT;
         try {
+            decodedRefreshJWT = refreshTokenVerifier.verify(refreshToken);
             decodedJWT = tokenVerifier.verify(token);
+
         } catch (JWTVerificationException verificationException) {
             throw new InvalidTokenException();
         }
-        Claim username = decodedJWT.getClaim("username");
-        return username.asString();
+        return validTokens(decodedJWT, decodedRefreshJWT);
+    }
+
+    private JWTResponse validTokens(DecodedJWT token, DecodedJWT refresh) throws InvalidTokenException {
+        String tokenUsername = token.getClaim("username").asString();
+        String tokenIssuer = token.getIssuer();
+        String refreshUsername = refresh.getClaim("username").asString();
+        String refreshIssuer = refresh.getIssuer();
+        String uuid = refresh.getClaim("UUID").asString();
+        List<String> audience = refresh.getAudience();
+        boolean validUsername = tokenUsername != null && tokenUsername.equals(refreshUsername);
+        boolean validIssuer = EnvironmentVariables.issuer.equals(tokenIssuer) && EnvironmentVariables.issuer.equals(refreshIssuer);
+        boolean validAudience = audience.contains(EnvironmentVariables.issuer);
+        if (validUsername && validIssuer && validAudience && DatabaseAccess.validateUUID(tokenUsername, uuid)) {
+            return generateToken(tokenUsername);
+        } else {
+            throw new InvalidTokenException();
+        }
     }
 
 
