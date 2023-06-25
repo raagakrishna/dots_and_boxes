@@ -11,5 +11,5 @@ function loginFormBtn(event) {
 
 function loginPlayer(username, password) {
     // TODO: send request to backend 
-    console.log(username, password);
+    // console.log(username, password);
 }
