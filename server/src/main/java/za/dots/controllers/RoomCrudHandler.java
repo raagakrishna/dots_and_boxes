@@ -412,11 +412,10 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public Room startRoom(String roomId, String username, Integer gridSize) {
+    public Room startRoom(String roomId, String username) throws SQLException {
         // assuming the player is valid and logged in
-        Player player = new Player(username);
 
-        Room room = null; // TODO: get Room based on roomID
+        Room room = this.roomDao.getRoomById(roomId); // get Room based on roomID
 
         if (room == null) {
             throw new NotFoundResponse("The room could not be found.");
@@ -429,8 +428,8 @@ public class RoomCrudHandler implements RoomApi {
         if (room.getStatus().equals(Room.StatusEnum.CLOSED))
             throw new BadRequestResponse("You cannot start a game which has already closed.");
 
-        boolean isPlayerInRoom = room.getPlayers().contains(player);
-        if (!isPlayerInRoom) {
+        Player player = isPlayerInRoom(room.getPlayers(), username);
+        if (player == null) {
             throw new NotFoundResponse("The player is not in this room.");
         }
 
@@ -443,11 +442,12 @@ public class RoomCrudHandler implements RoomApi {
             throw new BadRequestResponse("The game needs to have atleast 2 players to start the game.");
         }
 
-        // set status to playing
-        boolean isGameStatusUpdated = false;  // TODO: update status of Game to PLAYING
+        // update status of Game to PLAYING and Room to STARTED
+        boolean isGameStatusUpdated = this.roomDao.updateGameStatus(roomId, Room.StatusEnum.STARTED, Game.StatusEnum.PLAYING);
 
         if (isGameStatusUpdated) {
             room.getGame().setStatus(Game.StatusEnum.PLAYING);
+            room.setStatus(Room.StatusEnum.STARTED);
 
             return room;
         }

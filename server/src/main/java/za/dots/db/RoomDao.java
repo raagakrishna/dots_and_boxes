@@ -330,6 +330,27 @@ public class RoomDao {
         }
     }
 
+    public boolean updateGameStatus(String roomId, Room.StatusEnum roomStatus, Game.StatusEnum gameStatus) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query1 = "UPDATE [Room] SET status = '" + roomStatus + "' WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(query1) <= 0)
+                return false;
+
+            String query2 = "UPDATE [Game] SET status = '" + gameStatus + "' WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(query2) <= 0)
+                return false;
+
+            datasourceConnection.closeConnection();
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
     private String generateRoomNumber() {
         // Generate a unique room number logic goes here
         return "ROOM" + System.currentTimeMillis();

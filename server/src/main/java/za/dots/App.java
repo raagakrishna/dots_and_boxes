@@ -65,7 +65,7 @@ public class App
                     // startRoom
                     get("start/{username}", ctx -> {
                         ctx.json(
-                                roomCrudHandler.startRoom(ctx.pathParam("roomId"), ctx.pathParam("username"), Integer.valueOf(ctx.queryParam("gridSize")))
+                                roomCrudHandler.startRoom(ctx.pathParam("roomId"), ctx.pathParam("username"))
                         );
                     });
                 });

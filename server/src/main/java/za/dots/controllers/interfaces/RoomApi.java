@@ -96,7 +96,6 @@ public interface RoomApi {
     // request mapping: /room/{roomId}/start/{username}
     // path: roomId (String: ID of the room to start)
     // path: username (String: username of the player starting the game)
-    // query: gridSize (Integer: Size of the grid)
     // GET request
-    Room startRoom(String roomId, String username, Integer gridSize);
+    Room startRoom(String roomId, String username) throws SQLException;
 }
