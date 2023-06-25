@@ -6,10 +6,6 @@ public class DatasourceConnection {
 
     Connection connection;
 
-    private String cleanInputValue(String string) {
-        return string.replaceAll("[^a-zA-Z\\d]", "");
-    }
-
     public DatasourceConnection() throws SQLException {
         this.connection = DriverManager.getConnection("jdbc:sqlserver://"
                 + System.getenv("DB_HOST")//127.0.0.1:1433 for local
@@ -17,5 +13,21 @@ public class DatasourceConnection {
                 + System.getenv("DB_NAME") + ";",
                 System.getenv("DB_USER"),
                 System.getenv("DB_PASS"));
+    }
+
+    public void closeConnection() throws SQLException {
+        this.connection.close();
+    }
+
+    public String cleanSQL(String sql) {
+        //some logic to remove / escape all T-SQL special chars to prevent SQL injection
+//        String result = sql.replaceAll("SOME REGEX FOR T-SQL SPECIAL CHARS", "\\");
+        return sql;
+    }
+
+    public ResultSet executeStatement(String sql) throws SQLException {
+        return this.connection.createStatement().executeQuery(
+                cleanSQL(sql)
+        );
     }
 }
