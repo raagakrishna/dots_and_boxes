@@ -32,20 +32,6 @@ input[type=submit] {
     cursor: pointer;
 }
 
-.display-result {
-    text-align: center;
-    vertical-align: middle;
-    padding: 10px;
-    font-weight: bold;
-    margin-left: 10%;
-    margin-right: 10%;
-}
-
-#failure {
-    background-color: #FFAAAA;
-    border: 1px solid #FF0000;   
-}
-
 
 .information {
     padding: 3%;

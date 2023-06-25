@@ -27141,7 +27141,7 @@ var openGame = {
 }
 
 function loadGamePage() {
-    thisRoom = openGame;
+    thisRoom = startedGame;
     console.log(thisRoom);
 
     updateGame();
@@ -27287,6 +27287,7 @@ function populateGameInfo(roomName, roomStatus, roomId, roomCreator, roomCurrent
 function populatePlayerScores(scores, status) {
     var gameScores = document.getElementById("gameScores");
     if (status == 'STARTED') {
+        gameScores.classList.remove("hidden");
         scores.forEach((score, index) => {
             const li = document.createElement("li");
 
@@ -27366,6 +27367,17 @@ function findCoordinate(dots, lines, boxes, coordinate){
     return [dot, "Dot"];
 }
 
+function getCoordiante(line) {
+    // Get the parent cell of the line
+    const cell = line.parentNode;
+
+    // Get the index of the line within its parent cell
+    let xIndex = Array.from(cell.children).indexOf(line);
+    let yIndex = Array.from(cell.parentNode.children).indexOf(cell);
+
+    return new CoOrdinate(xIndex, yIndex);
+}
+
 function populateGrid(game, players) {
     var gridSize = game.gridSize;
     var dots = game.dots;
@@ -27425,6 +27437,64 @@ function populateGrid(game, players) {
         table.appendChild(row);
     }
     
+    if (game.status == 'PLAYING') {
+        // Get all the line elements
+        const lines = document.querySelectorAll('.line');
+
+        // Add click event listener to each line
+        lines.forEach(line => {
+            line.addEventListener('click', handleLineClick);
+        });
+    }
+}
+
+function handleLineClick(event) {
+    console.log("line clicked");
+    const clickedLine = event.target;
+
+    // valid turn
+    if (thisRoom.game.currentPlayer == localStorage.getItem("username")) { 
+        // Find Line 
+        var coordinate = getCoordiante(clickedLine);
+        var line = findLineBasedOnCoordinate(thisRoom.game.lines, coordinate);
+        
+        // Check if Line is already selected
+        if (line.status != 'EMPTY') {
+            return;
+        }
+        
+        // send 
+        var roomId = thisRoom.roomName;
+        var username = localStorage.getItem("username");
+        sendPlayerMove(roomId, username, thisRoom.game.currentPlayer, coordinate.x, coordinate.y);
+    }
+    else {
+        // Get the error box element
+        var errorBox = document.getElementById('failure');
+        errorBox.style.display = 'block';
+        errorBox.innerHTML = "It is not your turn!";
+
+        // Create the close button element
+        var closeButton = document.createElement('span');
+        closeButton.textContent = 'X';
+        closeButton.style.cursor = 'pointer';
+        closeButton.style.color = 'red';
+        closeButton.style.marginLeft = '5px';
+        closeButton.style.float = 'right';
+
+        // Add a click event listener to the close button
+        closeButton.addEventListener('click', function() {
+            errorBox.style.display = 'none';
+        });
+
+        // Append the close button to the error box
+        errorBox.appendChild(closeButton);
+    }
+}
+
+function sendPlayerMove(roomId, username, x, y){
+    console.log(roomId, username, x, y);
+    // TODO: s
 }
 
 function Tn(n) {
