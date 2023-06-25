@@ -27327,45 +27327,35 @@ function toggleContent() {
 }
 
 function findDotBasedOnCoordinate(dots, coordinate) {
-    for (let i = 0 ; i < dots.length ; i++) {
-        if (dots[i].coordinate.x == coordinate.x && dots[i].coordinate.y == coordinate.y) {
-            return dots[i];
-        }
-    }
-    return null;
+    return dots.find(dot => dot.coordinate.x === coordinate.x && dot.coordinate.y === coordinate.y) || null;
 }
 
 function findLineBasedOnCoordinate(lines, coordinate) {
-    for (let i = 0 ; i < lines.length ; i++) {
-        if (lines[i].coordinate.x == coordinate.x && lines[i].coordinate.y == coordinate.y) {
-            return lines[i];
-        }
-    }
-    return null;
+    return lines.find(line => line.coordinate.x === coordinate.x && line.coordinate.y === coordinate.y) || null;
 }
 
 function findBoxBasedOnCoordinate(boxes, coordinate) {
-    for (let i = 0 ; i < boxes.length ; i++) {
-        if (boxes[i].coordinate.x == coordinate.x && boxes[i].coordinate.y == coordinate.y) {
-            return boxes[i];
-        }
-    }
-    return null;
+    return boxes.find(box => box.coordinate.x === coordinate.x && box.coordinate.y === coordinate.y) || null;
 }
 
-function findCoordinate(dots, lines, boxes, coordinate){
-    var dot = findDotBasedOnCoordinate(dots, coordinate);
-
-    if (dot == null) {
-        var line = findLineBasedOnCoordinate(lines, coordinate);
-
-        if (line == null) {
-            return [findBoxBasedOnCoordinate(boxes, coordinate), "Box"];
-        }
-        return [line, "Line"];
+function findCoordinate(dots, lines, boxes, coordinate) {
+    const dot = findDotBasedOnCoordinate(dots, coordinate);
+    if (dot) {
+      return [dot, "Dot"];
     }
-    return [dot, "Dot"];
-}
+  
+    const line = findLineBasedOnCoordinate(lines, coordinate);
+    if (line) {
+      return [line, "Line"];
+    }
+  
+    const box = findBoxBasedOnCoordinate(boxes, coordinate);
+    if (box) {
+      return [box, "Box"];
+    }
+  
+    return [null, null];
+  }
 
 function getCoordiante(line) {
     // Get the parent cell of the line

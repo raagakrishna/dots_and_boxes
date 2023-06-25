@@ -36,7 +36,7 @@ function createRoomFormBtn(event) {
 }
 
 function createGameRoom(roomName) {
-  // TODO: send response to backend 
+  // TODO: send response to backend (create game)
 }
 
 function joinRoomFormBtn(event) {
@@ -53,6 +53,6 @@ function joinRoomFormBtn(event) {
 }
 
 function joinGameRoom(gameID) {
-  // TODO: send response to backend
+  // TODO: send response to backend (join game)
 }
 
