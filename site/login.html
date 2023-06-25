@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dots and Boxes</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login_register.css">
+
+    <script src="js/login_register.js"></script> 
+</head>
+
+<body>
+    <section class="tab-form loginForm">
+        <h3>Login</h3>
+        <p class="display-result" id="failure">This is an error message.</p>
+        <form onsubmit="loginFormBtn(event)">
+            <label>Username: </label>
+            <input type="text" name="usernameInput" required="true" maxlength="20" />
+            <br/><br/>
+            <label>Password: </label>
+            <input type="password" name="passwordInput" required="true" />
+            <br/><br/>
+            <input type="submit" value="Login" />
+        </form>
+        <p class="not-registered">Not registered? <a href="register.html">Register</a></p>
+    </section>
+</body>
+</html>

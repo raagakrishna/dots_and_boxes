@@ -22,6 +22,41 @@ body {
     margin-bottom: 0.5em;
 }
 
+section.tab-form {
+    background-color: #DDDDFF;
+    border: 1px solid #9999FF;
+    margin: 3%;
+}
+
+section.tab-form h3 {
+    margin: 0px;
+    padding: 15px;
+    background-color: #BBBBFF;
+    text-align: center;
+}
+
+section.tab-form form {
+    padding: 30px 60px 60px 60px;
+    position: relative;
+}
+
+label {
+    font-weight: bold;
+    position: absolute;
+}
+
+input {
+    border: 1px solid black;
+    width: 300px;
+    float: right;
+}
+
+input[type=submit] {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
 .display-result {
     text-align: center;
     vertical-align: middle;
@@ -42,5 +77,18 @@ body {
     body {
         padding-left: 0;
         padding-right: 0;
+    }
+
+    section.tab-form form {
+        position: initial;
+    }
+    label {
+        position: initial;
+    }
+    input {
+        float: left;
+        width: 100%;
+        margin-top: 5px;
+        margin-bottom: 5px;
     }
 }
