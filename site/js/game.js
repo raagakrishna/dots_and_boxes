@@ -27439,7 +27439,6 @@ function populateGrid(game, players) {
 }
 
 function handleLineClick(event) {
-    console.log("line clicked");
     const clickedLine = event.target;
 
     // valid turn
@@ -27454,20 +27453,38 @@ function handleLineClick(event) {
         }
         
         // send 
-        var roomId = thisRoom.roomName;
+        var roomId = thisRoom.roomId;
         var username = localStorage.getItem("username");
-        sendPlayerMove(roomId, username, thisRoom.game.currentPlayer, coordinate.x, coordinate.y);
+        sendPlayerMove(roomId, username, coordinate.x, coordinate.y);
     }
     else {
         updateDisplayResult('failure', "It is not your turn!");
     }
 }
 
-function sendPlayerMove(roomId, username, x, y){
-    console.log(roomId, username, x, y);
-    // TODO: send player move
-
-    updateDisplayResult('success', "Successfully played move!");
+function sendPlayerMove(roomID, username, x, y){
+    fetch(`${backendUrl}/room/${encodeURIComponent(roomID)}/sendPlayerMove/${encodeURIComponent(username)}`, {
+        method: 'POST',
+        headers: setHeaders(),
+        body: JSON.stringify({"x": x, "y": y})
+    })
+    .then(function (response) {
+        if (response.ok) {
+            return response.text();
+        } 
+        else {
+            return response.json().then(function (errorMessage) {
+                throw new Error(errorMessage.title);
+            });
+        }
+    })
+    .then(function (message) {
+        // TODO: handle the success response (player move)
+        updateDisplayResult('success', message);
+    })
+    .catch(function (error) {
+        updateDisplayResult('failure', error);
+    });
 }
 
 function Tn(n) {
@@ -27475,25 +27492,96 @@ function Tn(n) {
 }
 
 function startBtnClicked() {
-    startGame();
+    var roomID = thisRoom.roomId;
+    var username = localStorage.getItem("username");
+    startGame(username, roomID);
 }
 
 function leaveBtnClicked() {
-    leaveGame();
+    var roomID = thisRoom.roomId;
+    var username = localStorage.getItem("username");
+    leaveGame(username, roomID);
 }
 
 function deleteBtnClicked() {
-    deleteGame();
+    var roomID = thisRoom.roomId;
+    var username = localStorage.getItem("username");
+    deleteGame(username, roomID);
 }
 
-function startGame() {
-    // TODO: send response to backend (start game)
+function startGame(username, roomID) {
+    fetch(`${backendUrl}/room/${encodeURIComponent(roomID)}/start/${encodeURIComponent(username)}`, {
+        method: 'GET',
+        headers: setHeaders(),
+    })
+    .then(function (response) {
+        if (response.ok) {
+            return response.json();
+        } 
+        else {
+            return response.json().then(function (errorMessage) {
+                throw new Error(errorMessage.title);
+            });
+        }
+    })
+    .then(function (data) {
+        console.log(data);
+        // TODO: handle the success response (start room)
+        updateDisplayResult('success', 'Room started successfully!');
+        thisRoom = data;
+        updateGame();
+    })
+    .catch(function (error) {
+        updateDisplayResult('failure', error);
+    });
 }
 
-function leaveGame() {
-    // TODO: send response to backend (leave game)
+function leaveGame(username, roomID) {
+    fetch(`${backendUrl}/room/${encodeURIComponent(roomID)}/leave/${encodeURIComponent(username)}`, {
+        method: 'POST',
+        headers: setHeaders(),
+    })
+    .then(function (response) {
+        if (response.ok) {
+            return response.json();
+        } 
+        else {
+            return response.json().then(function (errorMessage) {
+                throw new Error(errorMessage.title);
+            });
+        }
+    })
+    .then(function (data) {
+        console.log(data);
+        // TODO: handle the success response (leave room)
+        window.location.href = 'index.html';
+    })
+    .catch(function (error) {
+        updateDisplayResult('failure', error);
+    });
 }
 
-function deleteGame() {
-    // TODO: send response to backend (delte game)
+function deleteGame(username, roomID) {
+    fetch(`${backendUrl}/room/${encodeURIComponent(roomID)}/delete/${encodeURIComponent(username)}`, {
+        method: 'DELETE',
+        headers: setHeaders(),
+    })
+    .then(function (response) {
+        if (response.ok) {
+            return response.json();
+        } 
+        else {
+            return response.json().then(function (errorMessage) {
+                throw new Error(errorMessage.title);
+            });
+        }
+    })
+    .then(function (data) {
+        console.log(data);
+        // TODO: handle the success response (delete room)
+        window.location.href = 'index.html';
+    })
+    .catch(function (error) {
+        updateDisplayResult('failure', error);
+    });
 }

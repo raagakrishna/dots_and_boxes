@@ -98,4 +98,5 @@ public interface RoomApi {
     // path: username (String: username of the player starting the game)
     // GET request
     Room startRoom(String roomId, String username) throws SQLException;
+
 }

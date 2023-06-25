@@ -1,3 +1,5 @@
+var backendUrl = 'http://localhost:8080';
+
 function addHeader() {
     localStorage.setItem("username", "peter");
 
@@ -32,7 +34,7 @@ function addHeader() {
     a2 = document.createElement("a");
     a2.textContent = "Logout";
     a2.onclick = function() {
-        logoutPlayer();
+        logoutPlayer(localStorage.getItem("username"));
     }
     li2.appendChild(a2);
     ul.appendChild(li2);
@@ -41,9 +43,28 @@ function addHeader() {
     myHeader.appendChild(dropdown);
 }
 
-function logoutPlayer() {
-    // TODO: send response to logout user
-    window.location.href = 'login.html';
+function logoutPlayer(username) {
+    fetch(`${backendUrl}/player/${username}/logout`, {
+        method: 'GET',
+        headers: setHeaders()
+    })
+    .then(function (response) {
+        if (response.ok) {
+            return response.text();
+        } 
+        else {
+            return response.json().then(function (errorMessage) {
+                throw new Error(errorMessage.title);
+            });
+        }
+    })
+    .then(function (message) {
+        // TODO: handle the success response (logout)
+        window.location.href = 'login.html';
+    })
+    .catch(function (error) {
+        updateDisplayResult('failure', error);
+    });
 }
 
 function addFooter() {
@@ -92,3 +113,18 @@ function updateDisplayResult(displayType, message, special) {
     // Append the close button to the error box
     displayResult.appendChild(closeButton);
 }
+
+function setHeaders() {
+    let headers = new Headers();
+  
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    headers.append('Accept-Encoding', 'gzip, deflate, br');
+    headers.append('Connection', 'keep-alive');
+    headers.append('Access-Control-Allow-Origin', backendUrl);
+    
+    // headers.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
+    // headers.append('Session-Id', localStorage.getItem('sessionId')); // Include session ID in the headers
+  
+    return headers;
+  }

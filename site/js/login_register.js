@@ -1,18 +1,40 @@
 function loginFormBtn(event) {
     event.preventDefault();
 
-    var usernameInput = document.getElementById("usernameInput").value;
-    var passwordInput = document.getElementById("passwordInput").value;
+    var usernameInput = document.getElementById("usernameInput");
+    var passwordInput = document.getElementById("passwordInput");
 
-    // form validations 
+    if (usernameInput.value == "" || passwordInput.value == "") {
+        updateDisplayResult('failure', "Username and password cannot be empty.");
+        return;
+    }
 
     loginPlayer(usernameInput, passwordInput);
 }
 
 function loginPlayer(username, password) {
-    // TODO: send request to backend (login)
-    // console.log(username, password);
-    updateDisplayResult('success', "Successfully logged in!");
+    fetch(`${backendUrl}/player/login?username${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
+        method: 'POST',
+        headers: setHeaders()
+    })
+    .then(function (response) {
+        if (response.ok) {
+            return response.text();
+        } 
+        else {
+            return response.json().then(function (errorMessage) {
+                throw new Error(errorMessage.title);
+            });
+        }
+    })
+    .then(function (message) {
+        // TODO: handle the success response (login)
+        updateDisplayResult('success', message);
+        window.location.href = 'index.html';
+    })
+    .catch(function (error) {
+        updateDisplayResult('failure', error);
+    });
 }
 
 function registerFormBtn(event) {
@@ -32,10 +54,33 @@ function registerFormBtn(event) {
     } 
     
     registerPlayer(usernameInput.value, passwordInput.value);
+    passwordInput.value = "";
+    confirmPasswordInput.value = "";
+    usernameInput.value = "";
 }
 
 function registerPlayer(username, password) {
-    // TODO: send request to backend (logout)
-    // console.log(username, password);
-    updateDisplayResult('success', "Successfully registered!");
+    fetch(`${backendUrl}/player`, {
+        method: 'POST',
+        headers: setHeaders(),
+        body: JSON.stringify({"username": username, "password": password})
+    })
+    .then(function (response) {
+        if (response.ok) {
+            return response.text();
+        } 
+        else {
+            return response.json().then(function (errorMessage) {
+                throw new Error(errorMessage.title);
+            });
+        }
+    })
+    .then(function (message) {
+        // TODO: handle the success response (register)
+        updateDisplayResult('success', message);
+        // window.location.href = 'login.html';
+    })
+    .catch(function (error) {
+        updateDisplayResult('failure', error);
+    });
 }

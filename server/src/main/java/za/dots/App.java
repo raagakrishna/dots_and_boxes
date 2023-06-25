@@ -17,7 +17,14 @@ public class App
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
         RoomCrudHandler roomCrudHandler = new RoomCrudHandler();
-        Javalin app = Javalin.create().start(8080);
+        Javalin app = Javalin.create(config ->
+                config.plugins.enableCors(cors -> {
+                    cors.add(it -> {
+                        it.anyHost();
+                    });
+                })
+        ).start(8080);
+
         app.routes(() -> {
             // room
             path("room", () -> {
@@ -72,13 +79,13 @@ public class App
            });
 
             path("players", () -> {
-               // getPlayers
-              get(ctx -> {
+                // getPlayers
+                get(ctx -> {
                     ctx.json(
                             playersCrudHandler.getPlayers()
                     );
-              });
-           });
+                });
+            });
 
             // player
             path("player", () -> {
@@ -88,7 +95,6 @@ public class App
                             playerCrudHandler.createPlayer(ctx.bodyAsClass(Player.class))
                     );
                 });
-
                 path("{username}", () -> {
                     // findRoomByUsername
                     get("room", ctx -> {
@@ -108,20 +114,21 @@ public class App
                                 playerCrudHandler.updatePlayer(ctx.pathParam("username"), ctx.bodyAsClass(Player.class))
                         );
                     });
+                    get("logout", ctx -> {
+                        ctx.result(
+                                playerCrudHandler.logoutPlayer(ctx.pathParam("username"))
+                        );
+                    });
                 });
                 // loginPlayer
-                get("login", ctx -> {
+                post("login", ctx -> {
                     ctx.result(
                             playerCrudHandler.loginPlayer(ctx.queryParam("username"), ctx.queryParam("password"))
                     );
                 });
                 // logoutPlayer
-                get("logout", ctx -> {
-                    ctx.result(
-                            playerCrudHandler.logoutPlayer(ctx.pathParam("username"))
-                    );
-               });
             });
+
         });
     }
 }
