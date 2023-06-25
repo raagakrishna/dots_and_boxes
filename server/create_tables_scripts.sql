@@ -14,7 +14,7 @@ GO
 CREATE TABLE [Room] (
   [id]			INT				NOT NULL IDENTITY(1,1) PRIMARY KEY,
   [roomid]		VARCHAR(255)	NOT NULL, 
-  [roomName]	VARCHAR(255)	NOT NULL,
+  [roomname]	VARCHAR(255)	NOT NULL,
   [status]		VARCHAR(255)	NOT NULL,
   [datecreated]	DATETIME		DEFAULT CURRENT_TIMESTAMP
 );
