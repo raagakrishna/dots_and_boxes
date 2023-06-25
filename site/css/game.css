@@ -93,9 +93,15 @@ aside section button {
 
 #gameInfo {
     display: block;
-}
-  
+} 
 #gameInfo.hidden {
+    display: none;
+}
+
+#gameScores {
+    display: block;
+}
+#gameScores.hidden {
     display: none;
 }
 
@@ -104,10 +110,10 @@ button.hidden {
 }
 
 @media screen and (max-width: 600px) {
-
     .game-details {
         display: unset;
     }
+    
     aside {
         width: auto;
         margin-right: 0px;

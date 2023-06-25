@@ -27214,20 +27214,25 @@ function displayGameButtons(gameCreator, status){
     const isCreator = gameCreator.username === localStorage.getItem("username");
 
     // display start button if creator and if game room is OPEN
-    if (isCreator && status == 'OPEN') {
+    if (isCreator && status == 'OPEN' && !startButton.classList.contains('hidden')) {
         startButton.style.display = "block";
     } 
     else {
         startButton.style.display = "none";
     }
 
-    if (isCreator) {
+    if (isCreator && !deleteButton.classList.contains('hidden')) {
         deleteButton.style.display = 'block';
-        leaveButton.style.display = 'none';
     }
     else {
         deleteButton.style.display = 'none';
+    }
+
+    if (!isCreator && !leaveButton.classList.contains('hidden')) {
         leaveButton.style.display = 'block';
+    }
+    else {
+        leaveButton.style.display = 'none';
     }
 }
 
@@ -27273,8 +27278,8 @@ function populateGameInfo(roomName, roomStatus, roomId, roomCreator, roomCurrent
 }
 
 function populatePlayerScores(scores, status) {
+    var gameScores = document.getElementById("gameScores");
     if (status == 'STARTED') {
-        var gameScores = document.getElementById("gameScores");
         scores.forEach((score, index) => {
             const li = document.createElement("li");
 
@@ -27289,17 +27294,28 @@ function populatePlayerScores(scores, status) {
             gameScores.appendChild(li);
         });
     }
+    else {
+        gameScores.classList.add("hidden");
+    }
 }
 
 function toggleContent() {
     var gameInfo = document.getElementById("gameInfo");
-    var buttons = document.getElementsByTagName("button");
-
     gameInfo.classList.toggle("hidden");
 
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].classList.toggle("hidden");
+    if (thisRoom.status != 'OPEN') {
+        var gameScores = document.getElementById("gameScores");
+        gameScores.classList.toggle("hidden");
     }
+
+    const startButton = document.getElementById("startButton");
+    const leaveButton = document.getElementById("leaveButton");
+    const deleteButton = document.getElementById("deleteButton");
+    startButton.classList.toggle("hidden");
+    leaveButton.classList.toggle("hidden");
+    deleteButton.classList.toggle("hidden");
+
+    displayGameButtons(thisRoom.creator, thisRoom.status);
 }
 
 function findDotBasedOnCoordinate(dots, coordinate) {
