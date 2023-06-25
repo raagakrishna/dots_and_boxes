@@ -380,7 +380,7 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public Room startRoom(String roomId, String username, Integer gridSize) {
+    public Room startRoom(String roomId, String username) {
         // assuming the player is valid and logged in
         Player player = new Player(username);
 

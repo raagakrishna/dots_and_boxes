@@ -443,7 +443,7 @@ paths:
         - application/json
         - application/xml
   /player/login:
-    get:
+    post:
       tags:
         - player
       summary: Login a player
@@ -479,7 +479,7 @@ paths:
       produces:
         - application/json
         - application/xml
-  /player/logout:
+  /player/{username}/logout:
     get:
       tags:
         - player
@@ -487,7 +487,7 @@ paths:
       operationId: logoutPlayer
       parameters:
         - name: username
-          in: query
+          in: path
           description: Username of the player to logout
           required: true
           type: string

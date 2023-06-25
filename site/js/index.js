@@ -32,11 +32,33 @@ function createRoomFormBtn(event) {
     return;
   }
 
-  createGameRoom(gameNameCreate.value);
+  var username = localStorage.getItem("username");
+
+  createGameRoom(username, gameNameCreate.value);
 }
 
-function createGameRoom(roomName) {
-  // TODO: send response to backend (create game)
+function createGameRoom(username, roomName) {
+  fetch(`${backendUrl}/room?creatorUsername=${encodeURIComponent(username)}&roomName=${encodeURIComponent(roomName)}`, {
+    method: 'POST',
+    headers: setHeaders(),
+  })
+  .then(function (response) {
+    if (response.ok) {
+      return response.json();
+    } 
+    else {
+      return response.json().then(function (errorMessage) {
+          throw new Error(errorMessage.title);
+      });
+    }
+  })
+  .then(function (data) {
+    console.log(data);
+    // TODO: handle the success response (create game)
+  })
+  .catch(function (error) {
+    updateDisplayResult('failure', error, 'create');
+  });
 }
 
 function joinRoomFormBtn(event) {
@@ -49,10 +71,32 @@ function joinRoomFormBtn(event) {
     return;
   }
 
-  joinGameRoom(gameID.value);
+  var username = localStorage.getItem("username");
+
+  joinGameRoom(username, gameID.value);
 }
 
-function joinGameRoom(gameID) {
-  // TODO: send response to backend (join game)
+function joinGameRoom(username, gameID) {
+  fetch(`${backendUrl}/room/${encodeURIComponent(gameID)}/join/${encodeURIComponent(username)}`, {
+    method: 'POST',
+    headers: setHeaders(),
+  })
+  .then(function (response) {
+    if (response.ok) {
+      return response.json();
+    } 
+    else {
+      return response.json().then(function (errorMessage) {
+          throw new Error(errorMessage.title);
+      });
+    }
+  })
+  .then(function (data) {
+    console.log(data);
+    // TODO: handle the success response (join room)
+  })
+  .catch(function (error) {
+    updateDisplayResult('failure', error, 'join');
+  });
 }
 
