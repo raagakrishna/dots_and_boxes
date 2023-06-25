@@ -17,7 +17,8 @@ public class App
         SSLPlugin sslPlugin = new SSLPlugin(conf -> {
             conf.pemFromPath(
                     "/home/ubuntu/dots_and_boxes/cert.pem",
-                    "/home/ubuntu/dots_and_boxes/key.pem");
+                    "/home/ubuntu/dots_and_boxes/key.pem",
+                    System.getenv("KEY_PASSWORD"));
         });
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
