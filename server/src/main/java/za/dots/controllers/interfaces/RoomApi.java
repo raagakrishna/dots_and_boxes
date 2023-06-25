@@ -85,7 +85,7 @@ public interface RoomApi {
     // path: username (String: username of the player playing the game)
     // body: coordinate (CoOrdinate: the line the player has played)
     // POST request
-    String sendGameState(String roomId, String username, CoOrdinate coordinate);
+    String sendGameState(String roomId, String username, CoOrdinate coordinate) throws SQLException;
 
     // start a room
     // response 200: Room started successfully (Room)

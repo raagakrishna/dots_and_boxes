@@ -52,7 +52,7 @@ public class RoomDao {
             Room room = new Room();
             Game game = new Game();
 
-            String query = "SELECT R.roomid,R.roomName,R.status AS 'roomStatus',PR.username,PR.creator," +
+            String query = "SELECT R.roomid,R.roomname,R.status AS 'roomStatus',PR.username,PR.creator," +
                     "G.gridSize,G.status AS 'gameStatus',G.currentPlayer,G.winner " +
                     "FROM Room AS R JOIN PlayerRoom AS PR ON R.roomid = PR.roomid JOIN Game AS G ON R.roomid = G.roomid " +
                     "WHERE R.roomid = '" + roomId + "'";
@@ -60,7 +60,7 @@ public class RoomDao {
                 while (resultSet.next()) {
                     room.setRoomId(resultSet.getString("roomid"));
                     room.setStatus(Room.StatusEnum.fromValue(resultSet.getString("roomStatus")));
-                    room.setRoomName(resultSet.getString("roomName"));
+                    room.setRoomName(resultSet.getString("roomname"));
 
                     // add creator
                     String username = resultSet.getString("username");
@@ -179,14 +179,14 @@ public class RoomDao {
 
             /*
             else {
-                String query = "SELECT R.roomid,R.roomName,R.status AS 'roomStatus',PR.username,PR.creator " +
+                String query = "SELECT R.roomid,R.roomname,R.status AS 'roomStatus',PR.username,PR.creator " +
                         "FROM Room AS R JOIN PlayerRoom AS PR ON R.roomid = PR.roomid " +
                         "WHERE R.roomid = '" + roomId + "'";
                 try (ResultSet resultSet = datasourceConnection.executeStatement(query)) {
                     while (resultSet.next()) {
                         room.setRoomId(resultSet.getString("roomid"));
                         room.setStatus(Room.StatusEnum.fromValue(resultSet.getString("roomStatus")));
-                        room.setRoomName(resultSet.getString("roomName"));
+                        room.setRoomName(resultSet.getString("roomname"));
 
                         String username = resultSet.getString("username");
                         Player creator = new Player(username);
@@ -245,7 +245,7 @@ public class RoomDao {
         try {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
 
-            String queryRoom = "SELECT 1 FROM Room WHERE roomName = '" + roomName + "'";
+            String queryRoom = "SELECT 1 FROM Room WHERE roomname = '" + roomName + "'";
             ResultSet resultSet = datasourceConnection.executeStatement(queryRoom);
             return resultSet.next(); // Return true if no row is returned, indicating roomName is available
         }
@@ -261,7 +261,7 @@ public class RoomDao {
             // get room id
             String roomId = generateRoomNumber();
 
-            String query = "INSERT INTO [Room] (roomid,roomName,status) VALUES " +
+            String query = "INSERT INTO [Room] (roomid,roomname,status) VALUES " +
                     "('" + roomId + "','" + roomName + "','" + Room.StatusEnum.OPEN.toString() + "')";
             if (datasourceConnection.executeUpdate(query) <= 0)
                 return null;
@@ -376,6 +376,23 @@ public class RoomDao {
             // Delete records from Room table
             String deleteRoomQuery = "DELETE FROM [Room] WHERE roomid = '" + roomId + "'";
             if (datasourceConnection.executeUpdate(deleteRoomQuery) <= 0)
+                return false;
+
+            datasourceConnection.closeConnection();
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public boolean updateRoomStatus(String roomId, Room.StatusEnum roomStatus) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query1 = "UPDATE [Room] SET status = '" + roomStatus + "' WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(query1) <= 0)
                 return false;
 
             datasourceConnection.closeConnection();

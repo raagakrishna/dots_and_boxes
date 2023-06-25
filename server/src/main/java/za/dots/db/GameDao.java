@@ -209,5 +209,90 @@ public class GameDao {
         }
     }
 
+    public boolean updateLine(String roomId, String username, int x, int y) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query = "UPDATE [Line] SET status = '" + Line.StatusEnum.OCCUPIED + "', username = '" +
+                    username+ "' WHERE x = " + x + " AND y = " + y + " AND roomid = " + roomId;
+            if (datasourceConnection.executeUpdate(query) <= 0)
+                return false;
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public boolean updateBoxCompleted(String roomId, String username, int x, int y) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query = "UPDATE [Box] SET status = '" + Line.StatusEnum.OCCUPIED + "', username = '" +
+                    username+ "' WHERE x = " + x + " AND y = " + y + " AND roomid = " + roomId;
+            if (datasourceConnection.executeUpdate(query) <= 0)
+                return false;
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public boolean updatePlayerScore(String roomId, String username, int score) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query = "UPDATE [Score] SET score = " + score + " WHERE username = '" +
+                    username + "' AND roomid = " + roomId;
+            if (datasourceConnection.executeUpdate(query) <= 0)
+                return false;
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public boolean updateWinner(String roomId, String winnerName, Game.StatusEnum gameStatus) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query = "";
+            // no winner
+            if (winnerName.equals("")) {
+                query = "UPDATE [Game] SET status = '" + gameStatus + "' WHERE roomid = '" + roomId + "'";
+            }
+            else {
+                query = "UPDATE [Game] SET staus = '" + gameStatus + "', winner = '" + winnerName  + "' WHERE roomid = ''";
+            }
+
+            if (datasourceConnection.executeUpdate(query) <= 0)
+                return false;
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public boolean updateCurrentPlayer (String roomId, String currentPlayer) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query = "UPDATE [Game] SET currentplayer = '" + currentPlayer + "' WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(query) <= 0)
+                return false;
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
 
 }

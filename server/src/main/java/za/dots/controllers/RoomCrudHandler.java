@@ -292,11 +292,10 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public String sendGameState(String roomId, String username, CoOrdinate coordinate) {
+    public String sendGameState(String roomId, String username, CoOrdinate coordinate) throws SQLException {
         // assuming the player is valid and logged in
-        Player player = new Player(username);
 
-        Room room = null; // TODO: get Room based on roomID
+        Room room = this.roomDao.getRoomById(roomId); // get Room based on roomID
 
         if (room == null) {
             throw new NotFoundResponse("The room could not be found.");
@@ -307,10 +306,13 @@ public class RoomCrudHandler implements RoomApi {
         if (room.getStatus().equals(Room.StatusEnum.CLOSED))
             throw new BadRequestResponse("The room does not exist anymore.");
 
-        boolean isPlayerInRoom = room.getPlayers().contains(player);
-
-        if (!isPlayerInRoom) {
+        Player player = isPlayerInRoom(room.getPlayers(), username);
+        if (player == null) {
             throw new NotFoundResponse("The player is not in this room.");
+        }
+
+        if (!room.getGame().getCurrentPlayer().getUsername().equals(username)){
+            throw new BadRequestResponse("It is not your turn!");
         }
 
         Line selectedLine = this.sharedFunctions.findLineBasedOnCoordinate(room.getGame().getLines(), coordinate);
@@ -318,8 +320,8 @@ public class RoomCrudHandler implements RoomApi {
         if (selectedLine == null)
             throw new BadRequestResponse("Invalid line played.");
 
-        // TODO: update line status and username in Line
-        boolean updatedLine = false;
+        // update line status and username in Line
+        boolean updatedLine = this.gameDao.updateLine(roomId, username, coordinate.getX(), coordinate.getY());
 
         if (!updatedLine)
             throw new InternalServerErrorResponse("The move could not be played.");
@@ -332,19 +334,21 @@ public class RoomCrudHandler implements RoomApi {
         List<Box> completedBox = checkIfBoxCompleted(room.getGame().getBoxes(), selectedLine);
         if (completedBox.size() > 0) {
             // set box as completed
-            for (int i = 0; i < completedBox.size() ; i++) {
-                boolean updateBox = false; // TODO: update box on Box table
+            for (Box box : completedBox) {
+                int x = box.getCoordinate().getX();
+                int y = box.getCoordinate().getY();
+                boolean updateBox = this.gameDao.updateBoxCompleted(roomId, username, x, y); // TODO: update box on Box table
                 if (!updateBox)
                     throw new InternalServerErrorResponse("The move could not be played.");
 
-                completedBox.get(i).setStatus(Box.StatusEnum.OCCUPIED);
-                completedBox.get(i).setPlayer(player);
+                box.setStatus(Box.StatusEnum.OCCUPIED);
+                box.setPlayer(player);
             }
 
             // update player score
             Score playerScore = findScoreOfPlayer(room.getGame().getScores(), room.getGame().getCurrentPlayer());
-            Integer newScore = playerScore.getScore() + completedBox.size();
-            boolean updatedScore = false; // TODO: update player score
+            int newScore = playerScore.getScore() + completedBox.size();
+            boolean updatedScore = this.gameDao.updatePlayerScore(roomId, username, newScore); // TODO: update player score
             if (!updatedScore)
                 throw new InternalServerErrorResponse("The move could not be played.");
             playerScore.setScore(newScore);
@@ -368,7 +372,8 @@ public class RoomCrudHandler implements RoomApi {
                 // set winner
                 boolean updatedWinner = false;
                 if (playerWinner != null) {
-                    updatedWinner = false;  // TODO: update winner to playerWinner.getName and status to DONE
+                    // TODO: update winner to playerWinner.getName and status to DONE
+                    updatedWinner = this.gameDao.updateWinner(roomId, playerWinner.getUsername(), Game.StatusEnum.DONE);
 
                     if (!updatedWinner)
                         throw new InternalServerErrorResponse("The move could not be played.");
@@ -377,7 +382,8 @@ public class RoomCrudHandler implements RoomApi {
                     room.getGame().setWinner(playerWinner);
                 }
                 else {
-                    updatedWinner = false; // TODO: update winner to "" and status to DRAW
+                    // TODO: update winner to "" and status to DRAW
+                    updatedWinner = this.gameDao.updateWinner(roomId, "", Game.StatusEnum.DRAW);
 
                     if (!updatedWinner)
                         throw new InternalServerErrorResponse("The move could not be played.");
@@ -386,7 +392,7 @@ public class RoomCrudHandler implements RoomApi {
                 }
 
                 // update game room to closed
-                boolean updateRoomStatus = false; // TODO: update room status to CLOSED
+                boolean updateRoomStatus = this.roomDao.updateRoomStatus(roomId, Room.StatusEnum.CLOSED); // TODO: update room status to CLOSED
                 if (!updateRoomStatus)
                     throw new InternalServerErrorResponse("The move could not be played.");
 
@@ -404,9 +410,11 @@ public class RoomCrudHandler implements RoomApi {
                 nextPlayerIndex = 0;
 
             // set currentPlayer to next player
-            boolean updatedCurrentPlayer = false; // TODO: update the currentplayer to nextPlayer.name
+            // update the currentplayer to nextPlayer.name
+            boolean updatedCurrentPlayer = this.gameDao.updateCurrentPlayer(roomId, room.getPlayers().get(nextPlayerIndex).getUsername());
             if (!updatedCurrentPlayer)
                 throw new InternalServerErrorResponse("The move could not be played.");
+
             room.getGame().setCurrentPlayer(room.getPlayers().get(nextPlayerIndex));
         }
 
