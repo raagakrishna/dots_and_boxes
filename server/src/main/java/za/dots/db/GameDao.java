@@ -116,6 +116,21 @@ public class GameDao {
         }
     }
 
+    public boolean deletePlayerScore(String roomId, String username) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query1 = "DELETE FROM [Score] WHERE roomid = '" + roomId + "' AND username = '" + username + "'";
+            if (datasourceConnection.executeUpdate(query1) <= 0)
+                return false;
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
     private int getDot(CoOrdinate coordinate) throws SQLException {
         try {
             DatasourceConnection datasourceConnection = new DatasourceConnection();

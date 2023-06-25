@@ -28,7 +28,7 @@ public interface RoomApi {
     // path: roomId (String: ID of the room to delete)
     // path: username (String: username of the player deleting the room)
     // DELETE request
-    Room deleteRoomById(String roomId, String username);
+    Room deleteRoomById(String roomId, String username) throws SQLException;
 
     // Get room by ID
     // response 200: Successfully retrieved the room (Room)

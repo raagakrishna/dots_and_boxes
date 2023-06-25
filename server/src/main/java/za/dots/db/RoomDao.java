@@ -85,6 +85,9 @@ public class RoomDao {
                 }
             }
 
+            if (room.getRoomId() == null)
+                return null;
+
             // adding dots
             game.setDots(new ArrayList<>());
             String queryDots = "SELECT R.roomid,D.x,D.y " +
@@ -315,21 +318,6 @@ public class RoomDao {
         }
     }
 
-    public boolean deletePlayerScore(String roomId, String username) throws SQLException {
-        try {
-            DatasourceConnection datasourceConnection = new DatasourceConnection();
-
-            String query1 = "DELETE FROM [Score] WHERE roomid = '" + roomId + "' AND username = '" + username + "'";
-            if (datasourceConnection.executeUpdate(query1) <= 0)
-                return false;
-
-            return true;
-        }
-        catch (Exception e) {
-            throw e;
-        }
-    }
-
     public boolean updateGameStatus(String roomId, Room.StatusEnum roomStatus, Game.StatusEnum gameStatus) throws SQLException {
         try {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
@@ -340,6 +328,54 @@ public class RoomDao {
 
             String query2 = "UPDATE [Game] SET status = '" + gameStatus + "' WHERE roomid = '" + roomId + "'";
             if (datasourceConnection.executeUpdate(query2) <= 0)
+                return false;
+
+            datasourceConnection.closeConnection();
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public boolean deleteGame(String roomId) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            // Delete records from Score table
+            String deleteScoreQuery = "DELETE FROM [Score] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteScoreQuery) <= 0)
+                return false;
+
+            // Delete records from Dot table
+            String deleteDotQuery = "DELETE FROM [Dot] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteDotQuery) <= 0)
+                return false;
+
+            // Delete records from Line table
+            String deleteLineQuery = "DELETE FROM [Line] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteLineQuery) <= 0)
+                return false;
+
+            // Delete records from Box table
+            String deleteBoxQuery = "DELETE FROM [Box] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteBoxQuery) <= 0)
+                return false;
+
+            // Delete records from Game table
+            String deleteGameQuery = "DELETE FROM [Game] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteGameQuery) <= 0)
+                return false;
+
+            // Delete records from PlayerRoom table
+            String deletePlayerRoomQuery = "DELETE FROM [PlayerRoom] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deletePlayerRoomQuery) <= 0)
+                return false;
+
+            // Delete records from Room table
+            String deleteRoomQuery = "DELETE FROM [Room] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteRoomQuery) <= 0)
                 return false;
 
             datasourceConnection.closeConnection();

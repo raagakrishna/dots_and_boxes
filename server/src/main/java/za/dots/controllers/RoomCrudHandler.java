@@ -168,17 +168,19 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public Room deleteRoomById(String roomId, String username) {
+    public Room deleteRoomById(String roomId, String username) throws SQLException {
         // assuming the username exists in the identity server
-
-        Room room = null; // TODO: GET room from database WHERE roomid = roomId
+        Room room = this.roomDao.getRoomById(roomId); // GET room from database WHERE roomid = roomId
 
         if (room == null) {
             throw new BadRequestResponse("Room does not exist.");
         }
 
-        // TODO: delete Room from database, also delete PlayerRoom, Dot, Line, Game, Score, Box
-        boolean isDeleted = false;
+        if (!room.getCreator().getUsername().equals(username))
+            throw new BadRequestResponse("Only the creator can delete the game room.");
+
+        // delete Room from database, also delete PlayerRoom, Dot, Line, Game, Score, Box
+        boolean isDeleted = this.roomDao.deleteGame(roomId);
 
         if (isDeleted)
             return room;
@@ -271,7 +273,7 @@ public class RoomCrudHandler implements RoomApi {
         }
 
         boolean isPlayerDeleted = this.roomDao.deletePlayer(roomId, username);  // DELETE player from PlayerRoom
-        boolean isScoreDeleted = this.roomDao.deletePlayerScore(roomId, username);  // DELETE score from Score
+        boolean isScoreDeleted = this.gameDao.deletePlayerScore(roomId, username);  // DELETE score from Score
 
         if (isPlayerDeleted && isScoreDeleted) {
             room.getPlayers().remove(player);
