@@ -41,12 +41,16 @@ public class App
                 ctx.html(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/index.html")));
             });
 
-            get("/css/{frontend}.css", (ctx) -> {
-                ctx.html(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/css/" + ctx.pathParam("frontend") + ".css")));
+            get("/{file}.html", ctx -> {
+                ctx.html(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/" + ctx.pathParam("file") + ".html")));
             });
 
-            get("/js/{frontend}.js", (ctx) -> {
-                ctx.html(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/js/" + ctx.pathParam("frontend") + ".js")));
+            get("/css/{file}.css", (ctx) -> {
+                ctx.result(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/css/" + ctx.pathParam("file") + ".css")));
+            });
+
+            get("/js/{file}.js", (ctx) -> {
+                ctx.result(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/js/" + ctx.pathParam("file") + ".js")));
             });
 
             // room
