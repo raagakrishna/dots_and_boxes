@@ -37,7 +37,7 @@ public class App
 
         app.routes(() -> {
             get("/", ctx -> {
-                ctx.html(Files.readAllBytes(Path.of("/home/ubuntu/dots_and_boxes/site/index.html")));
+                ctx.html(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/index.html")));
             });
             // room
             path("room", () -> {
