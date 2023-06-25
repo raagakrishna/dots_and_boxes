@@ -300,6 +300,36 @@ public class RoomDao {
         }
     }
 
+    public boolean deletePlayer(String roomId, String username) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query1 = "DELETE FROM [PlayerRoom] WHERE roomid = '" + roomId + "' AND username = '" + username + "'";
+            if (datasourceConnection.executeUpdate(query1) <= 0)
+                return false;
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public boolean deletePlayerScore(String roomId, String username) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query1 = "DELETE FROM [Score] WHERE roomid = '" + roomId + "' AND username = '" + username + "'";
+            if (datasourceConnection.executeUpdate(query1) <= 0)
+                return false;
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
     private String generateRoomNumber() {
         // Generate a unique room number logic goes here
         return "ROOM" + System.currentTimeMillis();

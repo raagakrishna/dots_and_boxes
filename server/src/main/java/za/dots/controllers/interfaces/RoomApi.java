@@ -72,7 +72,7 @@ public interface RoomApi {
     // path: roomId (String: ID of the room to leave)
     // path: username (String: username of the player leaving the room)
     // POST request
-    Room leaveRoom(String roomId, String username);
+    Room leaveRoom(String roomId, String username) throws SQLException;
 
     // send the game state
     // response 200: Game state successfully received (String)

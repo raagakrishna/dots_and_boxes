@@ -237,7 +237,7 @@ public class RoomCrudHandler implements RoomApi {
         }
 
         boolean isPlayerInGame = this.roomDao.joinRoom(roomId, username); // join player to game (insert record into PlayerRoom table)
-        boolean isPlayerScoredAdded = this.gameDao.addScores(roomId, username); // update the scores also 
+        boolean isPlayerScoredAdded = this.gameDao.addScores(roomId, username); // update the scores also
 
         if (isPlayerInGame && isPlayerScoredAdded) {
             room.addPlayersItem(player);
@@ -250,11 +250,9 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public Room leaveRoom(String roomId, String username) {
+    public Room leaveRoom(String roomId, String username) throws SQLException {
         // assuming the player is valid and logged in
-        Player player = new Player(username);
-
-        Room room = null; // TODO: get Room based on roomID
+        Room room = this.roomDao.getRoomById(roomId); // get Room based on roomID
 
         if (room == null) {
             throw new NotFoundResponse("The room could not be found.");
@@ -267,20 +265,28 @@ public class RoomCrudHandler implements RoomApi {
         if (room.getStatus().equals(Room.StatusEnum.CLOSED))
             throw new BadRequestResponse("You cannot leave a game which has ended.");
 
-        boolean isPlayerInRoom = room.getPlayers().contains(player);
-
-        if (!isPlayerInRoom) {
+        Player player = isPlayerInRoom(room.getPlayers(), username);
+        if (player == null) {
             throw new NotFoundResponse("The player is not in this room.");
         }
 
-        boolean isDeleted = false;  // TODO: DELETE player from PlayerRoom
+        boolean isPlayerDeleted = this.roomDao.deletePlayer(roomId, username);  // DELETE player from PlayerRoom
+        boolean isScoreDeleted = this.roomDao.deletePlayerScore(roomId, username);  // DELETE score from Score
 
-        if (!isDeleted)
-            throw new InternalServerErrorResponse("The player could not leave the room.");
+        if (isPlayerDeleted && isScoreDeleted) {
+            room.getPlayers().remove(player);
 
-        room.getPlayers().remove(player);
+            for (Score score : room.getGame().getScores()){
+                if (score.getPlayer().getUsername().equals(username)){
+                    room.getGame().getScores().remove(score);
+                    break;
+                }
+            }
 
-        return room;
+            return room;
+        }
+
+        throw new InternalServerErrorResponse("The player could not leave the room.");
     }
 
     @Override
@@ -484,6 +490,15 @@ public class RoomCrudHandler implements RoomApi {
             }
         }
         return true;
+    }
+
+    private Player isPlayerInRoom(List<Player> players, String username) {
+        for (Player player : players) {
+            if (player.getUsername().equals(username)) {
+                return player;
+            }
+        }
+        return null;
     }
 
     private int Tn(int n) {
