@@ -31,7 +31,6 @@ public class RSAKeys {
 
     private static byte[] getFileBytes(String fileLoc, String key) {
         byte[] fileBytes;
-        System.out.println(fileLoc);
         try (FileInputStream fis = new FileInputStream(fileLoc)) {
             fileBytes = Base64.getDecoder().decode(new String(fis.readAllBytes())
                     .replaceAll("\\n", "")
