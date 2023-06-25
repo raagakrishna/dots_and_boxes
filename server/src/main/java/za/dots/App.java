@@ -7,12 +7,13 @@ import za.dots.controllers.RoomCrudHandler;
 import za.dots.models.CoOrdinate;
 import za.dots.models.Player;
 
+import java.sql.SQLException;
+
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class App
 {
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) throws SQLException {
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
         RoomCrudHandler roomCrudHandler = new RoomCrudHandler();

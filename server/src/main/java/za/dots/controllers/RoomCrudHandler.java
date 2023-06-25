@@ -5,145 +5,157 @@ import io.javalin.http.ConflictResponse;
 import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.http.NotFoundResponse;
 import za.dots.controllers.interfaces.RoomApi;
+import za.dots.db.RoomDao;
 import za.dots.models.*;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class RoomCrudHandler implements RoomApi {
+    private final RoomDao roomDao = new RoomDao();
+
     @Override
-    public Room createRoom(String creatorUsername, String roomName) {
+    public Room createRoom(String creatorUsername, String roomName) throws SQLException {
         // assuming the creator exists in identity server
         Player creator = new Player(creatorUsername);
 
-        // TODO: check if username is in an active game room (status will be OPEN)
-        boolean isCreatorInRoom = false;
+        // check if username is in an active game room (status will be OPEN)
+        boolean isCreatorInRoom = roomDao.isCreatorInActiveRoom(creatorUsername);
         if (isCreatorInRoom) {
             throw new ConflictResponse("Player is already in an active game.");
         }
 
-        // TODO: check if roomName exists in an active game room
-        boolean isRoomNameExists = false;
+        // check if roomName exists in an active game room
+        boolean isRoomNameExists = roomDao.isRoomNameExists(roomName);
         if (isRoomNameExists) {
             throw new ConflictResponse("Room name already exists.");
         }
 
-        Room room = null; // TODO: create Room, create ClientRoom (with creator = 1)
+        Room room = roomDao.createRoom(roomName, creatorUsername); // create Room, create ClientRoom (with creator = 1)
         if (room != null) {
-            room.setCreator(creator);
-            room.addPlayersItem(creator);
+            Game game = roomDao.createGame(room.getRoomId(), creatorUsername); // insert into Game table
+            if (game == null)
+                throw new InternalServerErrorResponse("The room could not be created.");
 
-            boolean isGameAdded = true; // TODO: insert into Game table, and set room status to STARTED
-            boolean isDotsAdded = true; // TODO: insert into Dot table
-            boolean isLinesAdded = true; // TODO: insert into Line table
-            boolean isBoxAdded = true; // TODO: insert into Box table
-            boolean isScoreAdded = true; // TODO: insert into Score table
+            // add dots, lines, boxes
+            List<Dot> dots = new ArrayList<>();
+            List<Line> lines = new ArrayList<>();
+            List<Box> boxes = new ArrayList<>();
+            for (int i = 0 ; i < Tn(game.getGridSize()) ; i++) {
+                for (int j = 0 ; j < Tn(game.getGridSize()) ; j++) {
+                    // set coordiante
+                    CoOrdinate coordinate = new CoOrdinate(j, i);
 
-            if (isGameAdded && isDotsAdded && isDotsAdded && isLinesAdded && isBoxAdded && isScoreAdded) {
-                // create game
-                Game game = new Game();
-
-                // add dots, line, and boxes
-                int totalSize = Tn(game.getGridSize());
-                for (int i = 0 ; i < totalSize ; i++) {
-                    for (int j = 0 ; j < totalSize ; j++) {
-                        // set coordiante
-                        CoOrdinate coordinate = new CoOrdinate(j, i);
-
-                        if (i % 2 == 0) { // even: dot, line, dot
-                            if (j % 2 == 0) {
-                                Dot dot = new Dot(coordinate);
-                                game.addDotsItem(dot);
-                            }
-                            else {
-                                Line line = new Line(coordinate);
-                                game.addLinesItem(line);
-                            }
+                    if (i % 2 == 0) { // even: dot, line, dot
+                        if (j % 2 == 0) {
+                            Dot dot = new Dot(coordinate);
+                            dots.add(dot);
                         }
-                        else { // odd: line, box, line
-                            if (j % 2 == 0) {
-                                Line line = new Line(coordinate);
-                                game.addLinesItem(line);
-                            }
-                            else {
-                                Box box = new Box(coordinate);
-                                game.addBoxesItem(box);
-                            }
+                        else {
+                            Line line = new Line(coordinate);
+                            lines.add(line);
+                        }
+                    }
+                    else { // odd: line, box, line
+                        if (j % 2 == 0) {
+                            Line line = new Line(coordinate);
+                            lines.add(line);
+                        }
+                        else {
+                            Box box = new Box(coordinate);
+                            boxes.add(box);
                         }
                     }
                 }
-
-                // add dots to lines
-                for (Line line : game.getLines()) {
-                    int x = line.getCoordinate().getX();
-                    int y = line.getCoordinate().getY();
-                    if (y % 2 == 0) { // even (horizontal line)
-                        // left Dot
-                        CoOrdinate coordinateLeft = new CoOrdinate(x - 1, y);
-                        Dot leftDot = findDotBasedOnCoordinate(game.getDots(), coordinateLeft);
-                        line.setDot1(leftDot);
-
-                        // right Dot
-                        CoOrdinate coordinateRight = new CoOrdinate(x + 1, y);
-                        Dot rightDot = findDotBasedOnCoordinate(game.getDots(), coordinateRight);
-                        line.setDot2(rightDot);
-                    }
-                    else { // odd (vertical line)
-                        // above Dot
-                        CoOrdinate coordinateAbove = new CoOrdinate(x, y - 1);
-                        Dot aboveDot = findDotBasedOnCoordinate(game.getDots(), coordinateAbove);
-                        line.setDot1(aboveDot);
-
-                        // below Dot
-                        CoOrdinate coordinateBelow = new CoOrdinate(x, y + 1);
-                        Dot belowDot = findDotBasedOnCoordinate(game.getDots(), coordinateBelow);
-                        line.setDot2(belowDot);
-                    }
-
-                }
-
-                // add lines to boxes
-                for (Box box : game.getBoxes()) {
-                    int x = box.getCoordinate().getX();
-                    int y = box.getCoordinate().getY();
-
-                    // left line
-                    CoOrdinate coordinateLeft = new CoOrdinate(x - 1, y);
-                    Line leftLine = findLineBasedOnCoordinate(game.getLines(), coordinateLeft);
-
-                    // right line
-                    CoOrdinate coordinateRight = new CoOrdinate(x + 1, y);
-                    Line rightLine = findLineBasedOnCoordinate(game.getLines(), coordinateRight);
-
-                    // above line
-                    CoOrdinate coordinateAbove = new CoOrdinate(x, y - 1);
-                    Line aboveLine = findLineBasedOnCoordinate(game.getLines(), coordinateAbove);
-
-                    // below line
-                    CoOrdinate coordinateBelow = new CoOrdinate(x, y + 1);
-                    Line belowLine = findLineBasedOnCoordinate(game.getLines(), coordinateBelow);
-
-                    // add lines
-                    box.setLine1(leftLine);
-                    box.setLine2(rightLine);
-                    box.setLine3(aboveLine);
-                    box.setLine4(belowLine);
-                }
-
-                // add score for players
-                for (int i = 0 ; i < room.getPlayers().size() ; i++){
-                    Score clientScore = new Score(room.getPlayers().get(i));
-                    game.addScoresItem(clientScore);
-                }
-
-                // set winner to null
-                game.setWinner(null);
-
-                room.setGame(game);
-
-                return room;
             }
-            throw new InternalServerErrorResponse("The room could not be created.");
+
+            boolean isDotsAdded = roomDao.addDots(room.getRoomId(), dots); // insert into Dot table
+            if (!isDotsAdded)
+                throw new InternalServerErrorResponse("The room could not be created.");
+
+            // add dots to lines
+            for (int i = 0 ; i < lines.size() ; i++) {
+                int x = lines.get(i).getCoordinate().getX();
+                int y = lines.get(i).getCoordinate().getY();
+                if (y % 2 == 0) { // even (horizontal line)
+                    // left Dot
+                    CoOrdinate coordinateLeft = new CoOrdinate(x - 1, y);
+                    Dot leftDot = findDotBasedOnCoordinate(dots, coordinateLeft);
+                    lines.get(i).setDot1(leftDot);
+
+                    // right Dot
+                    CoOrdinate coordinateRight = new CoOrdinate(x + 1, y);
+                    Dot rightDot = findDotBasedOnCoordinate(dots, coordinateRight);
+                    lines.get(i).setDot2(rightDot);
+                }
+                else { // odd (vertical line)
+                    // above Dot
+                    CoOrdinate coordinateAbove = new CoOrdinate(x, y - 1);
+                    Dot aboveDot = findDotBasedOnCoordinate(dots, coordinateAbove);
+                    lines.get(i).setDot1(aboveDot);
+
+                    // below Dot
+                    CoOrdinate coordinateBelow = new CoOrdinate(x, y + 1);
+                    Dot belowDot = findDotBasedOnCoordinate(dots, coordinateBelow);
+                    lines.get(i).setDot2(belowDot);
+                }
+            }
+
+            boolean isLinesAdded = roomDao.addLines(room.getRoomId(), lines); // insert into Line table
+            if (!isLinesAdded)
+                throw new InternalServerErrorResponse("The room could not be created.");
+
+            // add lines to boxes
+            for (int i = 0 ; i < boxes.size() ; i++) {
+                int x = boxes.get(i).getCoordinate().getX();
+                int y = boxes.get(i).getCoordinate().getY();
+
+                // left line
+                CoOrdinate coordinateLeft = new CoOrdinate(x - 1, y);
+                Line leftLine = findLineBasedOnCoordinate(lines, coordinateLeft);
+
+                // right line
+                CoOrdinate coordinateRight = new CoOrdinate(x + 1, y);
+                Line rightLine = findLineBasedOnCoordinate(lines, coordinateRight);
+
+                // above line
+                CoOrdinate coordinateAbove = new CoOrdinate(x, y - 1);
+                Line aboveLine = findLineBasedOnCoordinate(lines, coordinateAbove);
+
+                // below line
+                CoOrdinate coordinateBelow = new CoOrdinate(x, y + 1);
+                Line belowLine = findLineBasedOnCoordinate(lines, coordinateBelow);
+
+                // add lines
+                boxes.get(i).setLine1(leftLine);
+                boxes.get(i).setLine2(rightLine);
+                boxes.get(i).setLine3(aboveLine);
+                boxes.get(i).setLine4(belowLine);
+            }
+
+            boolean isBoxAdded = roomDao.addBoxes(room.getRoomId(), boxes); // insert into Box table
+            if (!isBoxAdded)
+                throw new InternalServerErrorResponse("The room could not be created.");
+
+            // add scores
+            boolean isScoreAdded = roomDao.addScores(room.getRoomId(), creatorUsername); // insert into Score table
+            if (!isScoreAdded)
+                throw new InternalServerErrorResponse("The room could not be created.");
+
+            game.setDots(dots);
+            game.setLines(lines);
+            game.setBoxes(boxes);
+
+            game.addScoresItem(new Score(creator));
+
+            // set winner to null
+            game.setWinner(null);
+
+            room.setGame(game);
+
+            return room;
         }
 
         throw new BadRequestResponse("The room could not be created.");
@@ -178,12 +190,17 @@ public class RoomCrudHandler implements RoomApi {
 
     @Override
     public List<Room> getRooms() {
-        List<Room> rooms = null; // TODO: fetch rooms from database
+        try {
+            List<Room> rooms = roomDao.getRooms(); // TODO: fetch rooms from database
 
-        if (rooms == null) {
-            throw new NotFoundResponse("No rooms found.");
+            if (rooms == null) {
+                throw new NotFoundResponse("No rooms found.");
+            }
+            return rooms;
         }
-        return rooms;
+        catch (Exception e) {
+            throw new InternalServerErrorResponse("The database could not be connected.");
+        }
     }
 
     @Override

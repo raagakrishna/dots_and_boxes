@@ -3,6 +3,7 @@ package za.dots.controllers.interfaces;
 import za.dots.models.CoOrdinate;
 import za.dots.models.Room;
 
+import java.sql.SQLException;
 import java.util.List;
 public interface RoomApi {
     // create a room
@@ -15,7 +16,7 @@ public interface RoomApi {
     // query: creatorUsername (String: Username of the creator)
     // query: roomName (String: Game room name)
     // POST request
-    Room createRoom(String creatorUsername, String roomName);
+    Room createRoom(String creatorUsername, String roomName) throws SQLException;
 
     // delete a room
     // response 200: Room deleted successfully (Room)
