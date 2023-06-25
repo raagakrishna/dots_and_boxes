@@ -398,12 +398,12 @@ public class RoomCrudHandler implements RoomApi {
         if (room.getStatus().equals(Room.StatusEnum.CLOSED))
             throw new BadRequestResponse("You cannot start a game which has already closed.");
 
-        boolean isPlayerInRoom = true; // room.getPlayers().contains(player);
+        boolean isPlayerInRoom = room.getPlayers().contains(player);
         if (!isPlayerInRoom) {
             throw new NotFoundResponse("The player is not in this room.");
         }
 
-        boolean isPlayerCreator = true; // room.getCreator().getUsername().equals(username);
+        boolean isPlayerCreator = room.getCreator().getUsername().equals(username);
         if (!isPlayerCreator) {
             throw new BadRequestResponse("The game can only be started by the creator.");
         }
