@@ -46,11 +46,11 @@ public class App
             });
 
             get("/css/{file}.css", (ctx) -> {
-                ctx.result(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/css/" + ctx.pathParam("file") + ".css")));
+                ctx.result(Files.readAllBytes(Path.of("/home/ubuntu/dots_and_boxes/site/css/" + ctx.pathParam("file") + ".css")));
             });
 
             get("/js/{file}.js", (ctx) -> {
-                ctx.result(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/js/" + ctx.pathParam("file") + ".js")));
+                ctx.result(Files.readAllBytes(Path.of("/home/ubuntu/dots_and_boxes/site/js/" + ctx.pathParam("file") + ".js")));
             });
 
             // room
