@@ -20,8 +20,9 @@ public class App
     {
         SSLPlugin sslPlugin = new SSLPlugin(conf -> {
             conf.pemFromPath(
-                    "/home/ubuntu/dots_and_boxes/cert.pem",
-                    "/home/ubuntu/dots_and_boxes/key.pem");
+                    "/etc/letsencrypt/live/georgepauer.com/fullchain.pem",
+                    "/etc/letsencrypt/live/georgepauer.com/privkey.pem",
+                    "Password@2023");
         });
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
