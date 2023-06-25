@@ -1,6 +1,7 @@
 #Remote build script for push
 git pull
-#fuser -k 8080/tcp
+fuser -k 80/tcp
+fuser -k 443/tcp
 fuser -k 7071/tcp
 mvn clean package --file ./server/pom.xml
 mvn clean package --file ./identity_server/pom.xml
