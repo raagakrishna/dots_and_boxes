@@ -10,6 +10,8 @@ import za.dots.models.Player;
 import io.javalin.http.staticfiles.Location;
 
 
+import java.sql.SQLException;
+
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class App

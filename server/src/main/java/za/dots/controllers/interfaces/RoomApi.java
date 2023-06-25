@@ -3,6 +3,7 @@ package za.dots.controllers.interfaces;
 import za.dots.models.CoOrdinate;
 import za.dots.models.Room;
 
+import java.sql.SQLException;
 import java.util.List;
 public interface RoomApi {
     // create a room
@@ -15,7 +16,7 @@ public interface RoomApi {
     // query: creatorUsername (String: Username of the creator)
     // query: roomName (String: Game room name)
     // POST request
-    Room createRoom(String creatorUsername, String roomName);
+    Room createRoom(String creatorUsername, String roomName) throws SQLException;
 
     // delete a room
     // response 200: Room deleted successfully (Room)
@@ -27,7 +28,7 @@ public interface RoomApi {
     // path: roomId (String: ID of the room to delete)
     // path: username (String: username of the player deleting the room)
     // DELETE request
-    Room deleteRoomById(String roomId, String username);
+    Room deleteRoomById(String roomId, String username) throws SQLException;
 
     // Get room by ID
     // response 200: Successfully retrieved the room (Room)
@@ -37,7 +38,7 @@ public interface RoomApi {
     // request mapping: /room/{roomId}
     // path: roomId (String: ID of the room)
     // GET request
-    Room getRoomById(String roomId);
+    Room getRoomById(String roomId) throws SQLException;
 
     // get all rooms
     // response 200: Successfully retrieved all rooms (List<Room>)
@@ -58,7 +59,7 @@ public interface RoomApi {
     // path: roomId (String: ID of the room to join)
     // path: username (String: username of the player joining the room)
     // POST request
-    Room joinRoom(String roomId, String username);
+    Room joinRoom(String roomId, String username) throws SQLException;
 
     // leave a room
     // response 200: Successfully left the room (Room)
@@ -71,7 +72,7 @@ public interface RoomApi {
     // path: roomId (String: ID of the room to leave)
     // path: username (String: username of the player leaving the room)
     // POST request
-    Room leaveRoom(String roomId, String username);
+    Room leaveRoom(String roomId, String username) throws SQLException;
 
     // send the game state
     // response 200: Game state successfully received (String)
@@ -84,7 +85,7 @@ public interface RoomApi {
     // path: username (String: username of the player playing the game)
     // body: coordinate (CoOrdinate: the line the player has played)
     // POST request
-    String sendGameState(String roomId, String username, CoOrdinate coordinate);
+    String sendGameState(String roomId, String username, CoOrdinate coordinate) throws SQLException;
 
     // start a room
     // response 200: Room started successfully (Room)
@@ -96,5 +97,6 @@ public interface RoomApi {
     // path: roomId (String: ID of the room to start)
     // path: username (String: username of the player starting the game)
     // GET request
-    Room startRoom(String roomId, String username);
+    Room startRoom(String roomId, String username) throws SQLException;
+
 }

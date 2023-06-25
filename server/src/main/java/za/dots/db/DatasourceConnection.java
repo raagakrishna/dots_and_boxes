@@ -30,4 +30,10 @@ public class DatasourceConnection {
                 cleanSQL(sql)
         );
     }
+
+    public int executeUpdate(String sql) throws SQLException {
+        return this.connection.prepareStatement(
+                cleanSQL(sql)
+        ).executeUpdate();
+    }
 }
