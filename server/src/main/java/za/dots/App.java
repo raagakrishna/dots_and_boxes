@@ -15,7 +15,9 @@ public class App
     public static void main( String[] args )
     {
         SSLPlugin sslPlugin = new SSLPlugin(conf -> {
-            conf.pemFromPath(System.getenv("SSL_CERT"), System.getenv("SSL_CERT_KEY"));
+            conf.pemFromPath(
+                    "/etc/letsencrypt/live/georgepauer.com/fullchain.pem",
+                    "/etc/letsencrypt/live/georgepauer.com/privkey.pem");
         });
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
