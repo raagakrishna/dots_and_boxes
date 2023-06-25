@@ -7,6 +7,7 @@ import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
 import za.dots.models.CoOrdinate;
 import za.dots.models.Player;
+import io.javalin.http.staticfiles.Location;
 
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -30,7 +31,7 @@ public class App
                 cors.add(it -> {
                     it.anyHost();
                 });
-            config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", "/");
+            config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
             });}
         ).start(8080);
 
