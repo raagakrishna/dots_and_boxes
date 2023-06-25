@@ -8,7 +8,6 @@ import za.dots.controllers.RoomCrudHandler;
 import za.dots.models.CoOrdinate;
 import za.dots.models.Player;
 
-import javax.xml.stream.Location;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
