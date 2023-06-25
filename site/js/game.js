@@ -27494,7 +27494,7 @@ function handleLineClick(event) {
 
 function sendPlayerMove(roomId, username, x, y){
     console.log(roomId, username, x, y);
-    // TODO: s
+    // TODO: send player move
 }
 
 function Tn(n) {
