@@ -1,11 +1,11 @@
 package za.dots;
 
-import io.javalin.*;
+import io.javalin.Javalin;
 import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
+import za.dots.models.CoOrdinate;
 import za.dots.models.Player;
-import za.dots.models.PlayerLine;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -56,9 +56,9 @@ public class App
                         );
                     });
                    // sendGameState
-                    post("sendPlayerLine/{username}", ctx -> {
+                    post("sendPlayerMove/{username}", ctx -> {
                        ctx.json(
-                               roomCrudHandler.sendGameState(ctx.pathParam("roomId"), ctx.pathParam("username"), ctx.bodyAsClass(PlayerLine.class))
+                               roomCrudHandler.sendGameState(ctx.pathParam("roomId"), ctx.pathParam("username"), ctx.bodyAsClass(CoOrdinate.class))
                        );
                     });
                     // startRoom

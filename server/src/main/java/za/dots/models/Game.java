@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-    private Integer gridSize = null;
+    private Integer gridSize = 9;
 
     private List<Dot> dots = null;
 
@@ -20,7 +20,9 @@ public class Game {
 
     private Player winner;
 
-    public Game() { }
+    public Game() {
+        this.status = StatusEnum.WAITING;
+    }
 
     public Game(Integer gridSize) {
         this.gridSize = gridSize;
@@ -28,6 +30,8 @@ public class Game {
     }
 
     public enum StatusEnum {
+        WAITING("WAITING"),
+
         PLAYING("PLAYING"),
 
         DONE("DONE"),

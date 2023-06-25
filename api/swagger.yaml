@@ -12,7 +12,7 @@ schemes:
   - https
   - http
 paths:
-  /room/{roomId}/sendPlayerLine/{username}:
+  /room/{roomId}/sendPlayerMove/{username}:
     post:
       tags:
         - room
@@ -29,12 +29,12 @@ paths:
           description: Username of the player playing the game
           required: true
           type: string
-        - name: playerLine
+        - name: coordinate
           in: body
           description: The line the player has played
           required: true
           schema:
-            $ref: '#/definitions/PlayerLine'
+            $ref: '#/definitions/CoOrdinate'
       responses:
         '200':
           description: Game state successfully received
@@ -293,15 +293,6 @@ paths:
           description: Username of the player starting the room
           required: true
           type: string
-        - name: gridSize
-          in: query
-          description: Size of the grid
-          required: true
-          type: integer
-          enum:
-            - 3
-            - 5
-            - 9
       responses:
         '200':
           description: Room started successfully
@@ -618,10 +609,6 @@ definitions:
     properties:
       gridSize:
         type: integer 
-        enum: 
-          - 3
-          - 5
-          - 9
       dots:
         type: array
         items:
@@ -675,13 +662,4 @@ definitions:
         type: string
       password:
         type: string
-  PlayerLine: 
-    type: object
-    properties:
-      username:
-        type: string
-      line_x:
-        type: integer
-      line_y:
-        type: integer
-        
+  

@@ -1,6 +1,6 @@
 package za.dots.controllers.interfaces;
 
-import za.dots.models.PlayerLine;
+import za.dots.models.CoOrdinate;
 import za.dots.models.Room;
 
 import java.util.List;
@@ -79,12 +79,12 @@ public interface RoomApi {
     // response 401: Unauthorized
     // response 500: Internal server error
     // response 404: Player or room not found
-    // request mapping: /room/{roomId}/sendPlayerLine/{username}
+    // request mapping: /room/{roomId}/sendPlayerMove/{username}
     // path: roomId (String: ID of the room)
     // path: username (String: username of the player playing the game)
-    // body: playerLine (PlayerLine: the line the player has played)
+    // body: coordinate (CoOrdinate: the line the player has played)
     // POST request
-    String sendGameState(String roomId, String username, PlayerLine playerLine);
+    String sendGameState(String roomId, String username, CoOrdinate coordinate);
 
     // start a room
     // response 200: Room started successfully (Room)
