@@ -14,12 +14,12 @@
     <section class="tab-form loginForm">
         <h3>Login</h3>
         <p class="display-result" id="failure">This is an error message.</p>
-        <form onsubmit="loginFormBtn(event)">
+        <form onsubmit="loginFormBtn(event)" method="post">
             <label>Username: </label>
-            <input type="text" name="usernameInput" required="true" maxlength="20" />
+            <input type="text" name="usernameInput" id="usernameInput" required="true" maxlength="20" />
             <br/><br/>
             <label>Password: </label>
-            <input type="password" name="passwordInput" required="true" />
+            <input type="password" name="passwordInput" id="passwordInput" required="true" />
             <br/><br/>
             <input type="submit" value="Login" />
         </form>
