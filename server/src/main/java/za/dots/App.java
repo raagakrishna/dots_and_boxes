@@ -18,7 +18,7 @@ public class App
             conf.pemFromPath(
                     "/home/ubuntu/dots_and_boxes/cert.pem",
                     "/home/ubuntu/dots_and_boxes/key.pem",
-                    System.getenv("KEY_PASSWORD"));
+                    "Password@2023");
         });
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
