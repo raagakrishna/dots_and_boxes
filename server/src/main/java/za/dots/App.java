@@ -8,6 +8,10 @@ import za.dots.controllers.RoomCrudHandler;
 import za.dots.models.CoOrdinate;
 import za.dots.models.Player;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class App
@@ -17,8 +21,7 @@ public class App
         SSLPlugin sslPlugin = new SSLPlugin(conf -> {
             conf.pemFromPath(
                     "/home/ubuntu/dots_and_boxes/cert.pem",
-                    "/home/ubuntu/dots_and_boxes/key.pem",
-                    "Password@2023");
+                    "/home/ubuntu/dots_and_boxes/key.pem");
         });
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
@@ -33,6 +36,9 @@ public class App
         ).start(8080);
 
         app.routes(() -> {
+            get("/", ctx -> {
+                ctx.html(Files.readAllBytes(Path.of("/home/ubuntu/dots_and_boxes/site/index.html")));
+            });
             // room
             path("room", () -> {
                // getRooms
