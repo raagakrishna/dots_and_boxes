@@ -40,6 +40,15 @@ public class App
             get("/", ctx -> {
                 ctx.html(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/index.html")));
             });
+
+            get("/css/{frontend}.css", (ctx) -> {
+                ctx.html(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/css/" + ctx.pathParam("frontend") + ".css")));
+            });
+
+            get("/js/{frontend}.js", (ctx) -> {
+                ctx.html(Files.readString(Path.of("/home/ubuntu/dots_and_boxes/site/js/" + ctx.pathParam("frontend") + ".js")));
+            });
+
             // room
             path("room", () -> {
                // getRooms
