@@ -1,4 +1,6 @@
 function addHeader() {
+    localStorage.setItem("username", "peter");
+
     var myHeader = document.getElementById("header");
     myHeader.classList.add("purple_box");
 
@@ -14,7 +16,7 @@ function addHeader() {
     // adding username
     var username = document.createElement("a");
     username.setAttribute("id", "username");
-    username.innerHTML = "Raaga Krishna  ";
+    username.innerHTML = localStorage.getItem("username") + "  ";
     dropdown.appendChild(username);
 
     // adding dropdown content 
