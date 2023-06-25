@@ -214,7 +214,7 @@ public class GameDao {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
 
             String query = "UPDATE [Line] SET status = '" + Line.StatusEnum.OCCUPIED + "', username = '" +
-                    username+ "' WHERE x = " + x + " AND y = " + y + " AND roomid = " + roomId;
+                    username+ "' WHERE x = " + x + " AND y = " + y + " AND roomid = '" + roomId + "'";
             if (datasourceConnection.executeUpdate(query) <= 0)
                 return false;
 
@@ -230,7 +230,7 @@ public class GameDao {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
 
             String query = "UPDATE [Box] SET status = '" + Line.StatusEnum.OCCUPIED + "', username = '" +
-                    username+ "' WHERE x = " + x + " AND y = " + y + " AND roomid = " + roomId;
+                    username+ "' WHERE x = " + x + " AND y = " + y + " AND roomid = '" + roomId + "'";
             if (datasourceConnection.executeUpdate(query) <= 0)
                 return false;
 
@@ -246,7 +246,7 @@ public class GameDao {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
 
             String query = "UPDATE [Score] SET score = " + score + " WHERE username = '" +
-                    username + "' AND roomid = " + roomId;
+                    username + "' AND roomid = '" + roomId + "'";
             if (datasourceConnection.executeUpdate(query) <= 0)
                 return false;
 
