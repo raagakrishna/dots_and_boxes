@@ -258,7 +258,7 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public String sendGameState(String roomId, String username, PlayerLine playerLine) {
+    public String sendGameState(String roomId, String username, CoOrdinate coordinate) {
         // assuming the player is valid and logged in
         Player player = new Player(username);
 
@@ -279,8 +279,7 @@ public class RoomCrudHandler implements RoomApi {
             throw new NotFoundResponse("The player is not in this room.");
         }
 
-        CoOrdinate lineCoordinate = new CoOrdinate(playerLine.getLineX(), playerLine.getLineY());
-        Line selectedLine = findLineBasedOnCoordinate(room.getGame().getLines(), lineCoordinate);
+        Line selectedLine = findLineBasedOnCoordinate(room.getGame().getLines(), coordinate);
 
         if (selectedLine == null)
             throw new BadRequestResponse("Invalid line played.");
