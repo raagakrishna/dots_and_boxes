@@ -29,11 +29,21 @@ function addHeader() {
     ul.appendChild(li1);
 
     var li2 = document.createElement("li");
-    li2.textContent = "Logout";
+    a2 = document.createElement("a");
+    a2.textContent = "Logout";
+    a2.onclick = function() {
+        logoutPlayer();
+    }
+    li2.appendChild(a2);
     ul.appendChild(li2);
 
     dropdown.appendChild(ul);
     myHeader.appendChild(dropdown);
+}
+
+function logoutPlayer() {
+    // TODO: send response to logout user
+    window.location.href = 'login.html';
 }
 
 function addFooter() {
