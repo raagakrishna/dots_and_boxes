@@ -1,14 +1,17 @@
 package za.dots.controllers;
 
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.ConflictResponse;
-import io.javalin.http.NotFoundResponse;
-import io.javalin.http.NotImplementedResponse;
+import io.javalin.http.*;
 import za.dots.controllers.interfaces.PlayerApi;
+import za.dots.db.RoomDao;
 import za.dots.models.Player;
 import za.dots.models.Room;
 
+import java.sql.SQLException;
+
 public class PlayerCrudHandler implements PlayerApi {
+
+    private final RoomDao roomDao = new RoomDao();
+
     @Override
     public String createPlayer(Player player) {
         if (player.getUsername().equals("")) {
@@ -24,14 +27,19 @@ public class PlayerCrudHandler implements PlayerApi {
 
     @Override
     public Room findRoomByUsername(String username) {
-        // assuming the jwt token is valid and logged in
+        try {
+            // assuming the jwt token is valid and logged in
 
-        Room room = null; // TODO: SELECT Room FROM PlayerRoom where username matches and room is open or started
-        if (room == null) {
-            throw new NotFoundResponse("A room was not found.");
+            Room room = this.roomDao.findRoomByUsername(username); // TODO: SELECT Room FROM PlayerRoom where username matches and room is open or started
+            if (room == null) {
+                throw new NotFoundResponse("A room was not found.");
+            }
+
+            return room;
         }
-
-        return room;
+        catch (SQLException e) {
+            throw new InternalServerErrorResponse("The database could not be connected.");
+        }
     }
 
     @Override

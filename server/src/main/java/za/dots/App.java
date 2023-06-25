@@ -13,7 +13,7 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class App
 {
-    public static void main( String[] args ) throws SQLException {
+    public static void main( String[] args ) {
         PlayerCrudHandler playerCrudHandler = new PlayerCrudHandler();
         PlayersCrudHandler playersCrudHandler = new PlayersCrudHandler();
         RoomCrudHandler roomCrudHandler = new RoomCrudHandler();
