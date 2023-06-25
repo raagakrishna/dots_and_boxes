@@ -38,7 +38,7 @@ public interface RoomApi {
     // request mapping: /room/{roomId}
     // path: roomId (String: ID of the room)
     // GET request
-    Room getRoomById(String roomId);
+    Room getRoomById(String roomId) throws SQLException;
 
     // get all rooms
     // response 200: Successfully retrieved all rooms (List<Room>)

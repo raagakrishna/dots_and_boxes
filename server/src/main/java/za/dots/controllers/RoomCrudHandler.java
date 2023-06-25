@@ -187,8 +187,8 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public Room getRoomById(String roomId) {
-        Room room = null; // TODO: GET room from database where roomid = roomId
+    public Room getRoomById(String roomId) throws SQLException {
+        Room room = this.roomDao.getRoomById(roomId); // GET room from database where roomid = roomId
         if (room != null)
             return room;
         throw new NotFoundResponse("Room could not be found.");
@@ -197,7 +197,7 @@ public class RoomCrudHandler implements RoomApi {
     @Override
     public List<Room> getRooms() {
         try {
-            List<Room> rooms = roomDao.getRooms(); // TODO: fetch rooms from database
+            List<Room> rooms = roomDao.getRooms(); // fetch rooms from database
 
             if (rooms == null) {
                 throw new NotFoundResponse("No rooms found.");

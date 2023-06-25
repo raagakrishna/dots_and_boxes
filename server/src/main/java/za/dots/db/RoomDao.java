@@ -31,7 +31,7 @@ public class RoomDao {
             List<Room> rooms = new ArrayList<>();
             roomIds.forEach(roomId -> {
                 try {
-                    rooms.add(getRoomsById(roomId));
+                    rooms.add(getRoomById(roomId));
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
@@ -45,7 +45,7 @@ public class RoomDao {
         }
     }
 
-    public Room getRoomsById(String roomId) throws SQLException {
+    public Room getRoomById(String roomId) throws SQLException {
         try {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
 
