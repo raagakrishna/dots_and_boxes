@@ -7,7 +7,6 @@ import io.javalin.http.NotFoundResponse;
 import za.dots.controllers.interfaces.RoomApi;
 import za.dots.models.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,8 +31,119 @@ public class RoomCrudHandler implements RoomApi {
         Room room = null; // TODO: create Room, create ClientRoom (with creator = 1)
         if (room != null) {
             room.setCreator(creator);
+            room.addPlayersItem(creator);
 
-            return room;
+            boolean isGameAdded = true; // TODO: insert into Game table, and set room status to STARTED
+            boolean isDotsAdded = true; // TODO: insert into Dot table
+            boolean isLinesAdded = true; // TODO: insert into Line table
+            boolean isBoxAdded = true; // TODO: insert into Box table
+            boolean isScoreAdded = true; // TODO: insert into Score table
+
+            if (isGameAdded && isDotsAdded && isDotsAdded && isLinesAdded && isBoxAdded && isScoreAdded) {
+                // create game
+                Game game = new Game();
+
+                // add dots, line, and boxes
+                int totalSize = Tn(game.getGridSize());
+                for (int i = 0 ; i < totalSize ; i++) {
+                    for (int j = 0 ; j < totalSize ; j++) {
+                        // set coordiante
+                        CoOrdinate coordinate = new CoOrdinate(j, i);
+
+                        if (i % 2 == 0) { // even: dot, line, dot
+                            if (j % 2 == 0) {
+                                Dot dot = new Dot(coordinate);
+                                game.addDotsItem(dot);
+                            }
+                            else {
+                                Line line = new Line(coordinate);
+                                game.addLinesItem(line);
+                            }
+                        }
+                        else { // odd: line, box, line
+                            if (j % 2 == 0) {
+                                Line line = new Line(coordinate);
+                                game.addLinesItem(line);
+                            }
+                            else {
+                                Box box = new Box(coordinate);
+                                game.addBoxesItem(box);
+                            }
+                        }
+                    }
+                }
+
+                // add dots to lines
+                for (Line line : game.getLines()) {
+                    int x = line.getCoordinate().getX();
+                    int y = line.getCoordinate().getY();
+                    if (y % 2 == 0) { // even (horizontal line)
+                        // left Dot
+                        CoOrdinate coordinateLeft = new CoOrdinate(x - 1, y);
+                        Dot leftDot = findDotBasedOnCoordinate(game.getDots(), coordinateLeft);
+                        line.setDot1(leftDot);
+
+                        // right Dot
+                        CoOrdinate coordinateRight = new CoOrdinate(x + 1, y);
+                        Dot rightDot = findDotBasedOnCoordinate(game.getDots(), coordinateRight);
+                        line.setDot2(rightDot);
+                    }
+                    else { // odd (vertical line)
+                        // above Dot
+                        CoOrdinate coordinateAbove = new CoOrdinate(x, y - 1);
+                        Dot aboveDot = findDotBasedOnCoordinate(game.getDots(), coordinateAbove);
+                        line.setDot1(aboveDot);
+
+                        // below Dot
+                        CoOrdinate coordinateBelow = new CoOrdinate(x, y + 1);
+                        Dot belowDot = findDotBasedOnCoordinate(game.getDots(), coordinateBelow);
+                        line.setDot2(belowDot);
+                    }
+
+                }
+
+                // add lines to boxes
+                for (Box box : game.getBoxes()) {
+                    int x = box.getCoordinate().getX();
+                    int y = box.getCoordinate().getY();
+
+                    // left line
+                    CoOrdinate coordinateLeft = new CoOrdinate(x - 1, y);
+                    Line leftLine = findLineBasedOnCoordinate(game.getLines(), coordinateLeft);
+
+                    // right line
+                    CoOrdinate coordinateRight = new CoOrdinate(x + 1, y);
+                    Line rightLine = findLineBasedOnCoordinate(game.getLines(), coordinateRight);
+
+                    // above line
+                    CoOrdinate coordinateAbove = new CoOrdinate(x, y - 1);
+                    Line aboveLine = findLineBasedOnCoordinate(game.getLines(), coordinateAbove);
+
+                    // below line
+                    CoOrdinate coordinateBelow = new CoOrdinate(x, y + 1);
+                    Line belowLine = findLineBasedOnCoordinate(game.getLines(), coordinateBelow);
+
+                    // add lines
+                    box.setLine1(leftLine);
+                    box.setLine2(rightLine);
+                    box.setLine3(aboveLine);
+                    box.setLine4(belowLine);
+                }
+
+                // add score for players
+                for (int i = 0 ; i < room.getPlayers().size() ; i++){
+                    Score clientScore = new Score(room.getPlayers().get(i));
+                    game.addScoresItem(clientScore);
+                }
+
+                // set winner to null
+                game.setWinner(null);
+
+                room.setGame(game);
+
+                return room;
+            }
+            throw new InternalServerErrorResponse("The room could not be created.");
         }
 
         throw new BadRequestResponse("The room could not be created.");
@@ -61,7 +171,6 @@ public class RoomCrudHandler implements RoomApi {
     @Override
     public Room getRoomById(String roomId) {
         Room room = null; // TODO: GET room from database where roomid = roomId
-
         if (room != null)
             return room;
         throw new NotFoundResponse("Room could not be found.");
@@ -289,12 +398,12 @@ public class RoomCrudHandler implements RoomApi {
         if (room.getStatus().equals(Room.StatusEnum.CLOSED))
             throw new BadRequestResponse("You cannot start a game which has already closed.");
 
-        boolean isPlayerInRoom = room.getPlayers().contains(player);
+        boolean isPlayerInRoom = true; // room.getPlayers().contains(player);
         if (!isPlayerInRoom) {
             throw new NotFoundResponse("The player is not in this room.");
         }
 
-        boolean isPlayerCreator = room.getCreator().getUsername().equals(username);
+        boolean isPlayerCreator = true; // room.getCreator().getUsername().equals(username);
         if (!isPlayerCreator) {
             throw new BadRequestResponse("The game can only be started by the creator.");
         }
@@ -303,119 +412,11 @@ public class RoomCrudHandler implements RoomApi {
             throw new BadRequestResponse("The game needs to have atleast 2 players to start the game.");
         }
 
-        // create game
-        Game game = new Game();
-
-        // add grid size
-        game.setGridSize(gridSize);
-
-        // add dots, line, and boxes
-        int totalSize = Tn(gridSize);
-        for (int i = 0 ; i < totalSize ; i++) {
-            for (int j = 0 ; j < totalSize ; j++) {
-                // set coordiante
-                CoOrdinate coordinate = new CoOrdinate(j, i);
-
-                if (i % 2 == 0) { // even: dot, line, dot
-                    if (j % 2 == 0) {
-                        Dot dot = new Dot(coordinate);
-                        game.addDotsItem(dot);
-                    }
-                    else {
-                        Line line = new Line(coordinate);
-                        game.addLinesItem(line);
-                    }
-                }
-                else { // odd: line, box, line
-                    if (j % 2 == 0) {
-                        Line line = new Line(coordinate);
-                        game.addLinesItem(line);
-                    }
-                    else {
-                        Box box = new Box(coordinate);
-                        game.addBoxesItem(box);
-                    }
-                }
-            }
-        }
-
-        // add dots to lines
-        for (Line line : game.getLines()) {
-            int x = line.getCoordinate().getX();
-            int y = line.getCoordinate().getY();
-            if (y % 2 == 0) { // even (horizontal line)
-                // left Dot
-                CoOrdinate coordinateLeft = new CoOrdinate(x - 1, y);
-                Dot leftDot = findDotBasedOnCoordinate(game.getDots(), coordinateLeft);
-                line.setDot1(leftDot);
-
-                // right Dot
-                CoOrdinate coordinateRight = new CoOrdinate(x + 1, y);
-                Dot rightDot = findDotBasedOnCoordinate(game.getDots(), coordinateRight);
-                line.setDot2(rightDot);
-            }
-            else { // odd (vertical line)
-                // above Dot
-                CoOrdinate coordinateAbove = new CoOrdinate(x, y - 1);
-                Dot aboveDot = findDotBasedOnCoordinate(game.getDots(), coordinateAbove);
-                line.setDot1(aboveDot);
-
-                // below Dot
-                CoOrdinate coordinateBelow = new CoOrdinate(x, y + 1);
-                Dot belowDot = findDotBasedOnCoordinate(game.getDots(), coordinateBelow);
-                line.setDot2(belowDot);
-            }
-
-        }
-
-        // add lines to boxes
-        for (Box box : game.getBoxes()) {
-            int x = box.getCoordinate().getX();
-            int y = box.getCoordinate().getY();
-
-            // left line
-            CoOrdinate coordinateLeft = new CoOrdinate(x - 1, y);
-            Line leftLine = findLineBasedOnCoordinate(game.getLines(), coordinateLeft);
-
-            // right line
-            CoOrdinate coordinateRight = new CoOrdinate(x + 1, y);
-            Line rightLine = findLineBasedOnCoordinate(game.getLines(), coordinateRight);
-
-            // above line
-            CoOrdinate coordinateAbove = new CoOrdinate(x, y - 1);
-            Line aboveLine = findLineBasedOnCoordinate(game.getLines(), coordinateAbove);
-
-            // below line
-            CoOrdinate coordinateBelow = new CoOrdinate(x, y + 1);
-            Line belowLine = findLineBasedOnCoordinate(game.getLines(), coordinateBelow);
-
-            // add lines
-            box.setLine1(leftLine);
-            box.setLine2(rightLine);
-            box.setLine3(aboveLine);
-            box.setLine4(belowLine);
-        }
-
-        // add score for players
-        for (int i = 0 ; i < room.getPlayers().size() ; i++){
-            Score clientScore = new Score(room.getPlayers().get(i));
-            game.addScoresItem(clientScore);
-        }
-
         // set status to playing
-        game.setStatus(Game.StatusEnum.PLAYING);
+        boolean isGameStatusUpdated = false;  // TODO: update status of Game to PLAYING
 
-        // set winner to null
-        game.setWinner(null);
-
-        boolean isGameAdded = false; // TODO: insert into Game table, and set room status to STARTED
-        boolean isDotsAdded = false; // TODO: insert into Dot table
-        boolean isLinesAdded = false; // TODO: insert into Line table
-        boolean isBoxAdded = false; // TODO: insert into Box table
-        boolean isScoreAdded = false; // TODO: insert into Score table
-
-        if (isGameAdded && isDotsAdded && isDotsAdded && isLinesAdded && isBoxAdded && isScoreAdded) {
-            room.setGame(game);
+        if (isGameStatusUpdated) {
+            room.getGame().setStatus(Game.StatusEnum.PLAYING);
 
             return room;
         }
