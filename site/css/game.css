@@ -1,0 +1,133 @@
+.game-details {
+    display: flex;
+}
+
+aside {
+    width: 20%;
+    background-color: #f0f0f0;
+    float: left; 
+    padding: 10px;
+    display: block;
+
+    flex-grow: 1;
+    margin-bottom: 8px;
+    margin-right: 20px;
+}
+
+aside h2 {
+    border: 1px solid #BBBBFF;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+aside ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+aside li {
+    display: flex;
+    justify-content: space-between;
+}
+aside li b {
+    flex: 0 0 auto;
+    text-align: left;
+}
+aside section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+aside section button {
+    border: 1px solid black;
+    width: 80%;   
+}
+
+
+
+.main-game {
+    width: 75%;
+    float: right;
+    align-content: center;
+}
+
+.main-game .game {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}    
+.dot {
+    background-color: #000;
+    border: none;
+}
+.line {
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+.line:nth-child(odd) {
+    width: 10px;
+    height: 50px;
+}
+.line:nth-child(even) {
+    width: 50px;
+    height: 10px;
+}
+.line:hover {
+    background-color: black;
+}
+  
+.box {
+    text-align: center;
+}
+
+
+
+#gameInfo {
+    display: block;
+}
+  
+#gameInfo.hidden {
+    display: none;
+}
+
+button.hidden {
+    display: none;
+}
+
+@media screen and (max-width: 600px) {
+
+    .game-details {
+        display: unset;
+    }
+    aside {
+        width: auto;
+        margin-right: 0px;
+        margin-bottom: 2%;
+        float: none;
+        flex-shrink: unset;
+    }
+
+    .main-game {
+        width: auto;
+        float: none;
+    }
+
+    .line:nth-child(odd) {
+        width: 5px;
+        height: 28px;
+    }
+      
+    .line:nth-child(even) {
+        width: 28px;
+        height: 5px;
+    }
+}

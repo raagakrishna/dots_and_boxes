@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dots and Boxes</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/game.css">
+</head>
+
+<body onload="loadGamePage()">
+    <header id="header"></header>
+
+    <section class="game-details">
+        <aside class="purple_box">
+            <h2 onclick="toggleContent()">Game info</h2>
+            <ul id="gameInfo"></ul>
+            <ul id="gameScores"></ul>
+            <section>
+                <button id="startButton"><b>Start Game</b></button>
+                <button id="leaveButton">Leave Game</button>
+                <button id="deleteButton">Delete Game</button>
+            </section>
+        </aside>
+
+        <main class="main-game gray_box">
+            <table id="game"></table>
+        </main>
+    </section>
+    
+    <footer id="footer"></footer>
+
+    <script src="js/common.js"></script>   
+    <script src="js/game.js"></script>
+    <script>
+        // Call the functions to add the header and footer
+        addHeader();
+        addFooter();
+    </script> 
+</body>
+</html>
