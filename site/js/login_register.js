@@ -10,7 +10,7 @@ function loginFormBtn(event) {
 }
 
 function loginPlayer(username, password) {
-    // TODO: send request to backend 
+    // TODO: send request to backend (login)
     // console.log(username, password);
     updateDisplayResult('success', "Successfully logged in!");
 }
@@ -35,7 +35,7 @@ function registerFormBtn(event) {
 }
 
 function registerPlayer(username, password) {
-    // TODO: send request to backend 
+    // TODO: send request to backend (logout)
     // console.log(username, password);
     updateDisplayResult('success', "Successfully registered!");
 }

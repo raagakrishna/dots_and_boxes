@@ -27485,15 +27485,25 @@ function Tn(n) {
 }
 
 function startBtnClicked() {
-    thisRoom = startedGame;
-    updateGame();
+    startGame();
 }
 
 function leaveBtnClicked() {
-    window.location.href = 'index.html';
+    leaveGame();
 }
 
 function deleteBtnClicked() {
-    window.location.href = 'index.html';
+    deleteGame();
 }
 
+function startGame() {
+    // TODO: send response to backend (start game)
+}
+
+function leaveGame() {
+    // TODO: send response to backend (leave game)
+}
+
+function deleteGame() {
+    // TODO: send response to backend (delte game)
+}
