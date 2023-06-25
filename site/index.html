@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="css/footer.css">
     <link rel="stylesheet" href="css/tabs.css">
     <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/common.js"></script>   
+    <script src="js/index.js"></script>
 </head>
 
 <body>
@@ -21,23 +24,23 @@
                 <li><a class="tab" onclick="openTab(event, 'tab2')"><h2>Join a Game</h2></a></li>
             </ul>
             
-            <section id="tab1" class="tab-content tab-content-display tabForm">
+            <section id="tab1" class="tab-content tab-content-display tab-form">
                 <h3>Create a New Game</h3>
-                <p class="display-result" id="failure">This is an error message.</p>
+                <p id="display-result-create"></p>
                 <form onsubmit="createRoomFormBtn(event)">
                     <label>Game Name: </label>
-                    <input type="text" name="gameNameCreate" required="true" maxlength="20" />
+                    <input type="text" name="gameNameCreate" id="gameNameCreate" maxlength="20" required="true" />
                     <br/><br/>
                     <input type="submit" value="Create Game" />
                 </form>
             </section>
             
-            <section id="tab2" class="tab-content tabForm">
+            <section id="tab2" class="tab-content tab-form">
                 <h3>Join a Game</h3>
-    
+                <p id="display-result-join"></p>
                 <form onsubmit="joinRoomFormBtn(event)">
                     <label>Game Room ID: </label>
-                    <input type="text" id="gameID" required="true" maxlength="50">
+                    <input type="text" name="gameID" id="gameID" maxlength="50" required="true" />
                     <br/><br/>
                     <input type="submit" value="Join Game" />
                 </form>
@@ -63,8 +66,6 @@
     
     <footer id="footer"></footer>
 
-    <script src="js/common.js"></script>   
-    <script src="js/main.js"></script>
     <script>
         // Call the functions to add the header and footer
         addHeader();

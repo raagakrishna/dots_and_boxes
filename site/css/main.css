@@ -1,52 +1,3 @@
-section.tabForm {
-    background-color: #DDDDFF;
-    border: 1px solid #9999FF;
-    margin: 3%;
-}
-
-section.tabForm h3 {
-    margin: 0px;
-    padding: 15px;
-    background-color: #BBBBFF;
-    text-align: center;
-}
-
-section.tabForm form {
-    padding: 30px 60px 60px 60px;
-    position: relative;
-}
-
-label {
-    font-weight: bold;
-    position: absolute;
-}
-
-input {
-    border: 1px solid black;
-    width: 300px;
-    float: right;
-}
-
-input[type=submit] {
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.display-result {
-    text-align: center;
-    vertical-align: middle;
-    padding: 10px;
-    font-weight: bold;
-    margin-left: 10%;
-    margin-right: 10%;
-}
-
-#failure {
-    background-color: #FFAAAA;
-    border: 1px solid #FF0000;   
-}
-
-
 .information {
     padding: 3%;
 }
@@ -55,19 +6,4 @@ input[type=submit] {
 }
 .information p {
     font-size: 14px;
-}
-
-@media screen and (max-width: 600px) {
-    section.tabForm form {
-        position: initial;
-    }
-    label {
-        position: initial;
-    }
-    input {
-        float: left;
-        width: 100%;
-        margin-top: 5px;
-        margin-bottom: 5px;
-    }
 }

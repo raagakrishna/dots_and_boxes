@@ -22,22 +22,37 @@ function openTab(evt, tabName) {
     evt.currentTarget.className += " active";
 }
 
-// Get the error box element
-var errorBox = document.getElementById('failure');
+function createRoomFormBtn(event) {
+  event.preventDefault();
 
-// Create the close button element
-var closeButton = document.createElement('span');
-closeButton.textContent = 'X';
-closeButton.style.cursor = 'pointer';
-closeButton.style.color = 'red';
-closeButton.style.marginLeft = '5px';
-closeButton.style.float = 'right';
+  var gameNameCreate = document.getElementById("gameNameCreate");
 
-// Add a click event listener to the close button
-closeButton.addEventListener('click', function() {
-  // Hide the error box by setting its display property to "none"
-  errorBox.style.display = 'none';
-});
+  if (gameNameCreate.value === "") {
+    updateDisplayResult('failure', 'Game name cannot be empty!', 'create');
+    return;
+  }
 
-// Append the close button to the error box
-errorBox.appendChild(closeButton);
+  createGameRoom(gameNameCreate.value);
+}
+
+function createGameRoom(roomName) {
+  // TODO: send response to backend (create game)
+}
+
+function joinRoomFormBtn(event) {
+  event.preventDefault();
+
+  var gameID = document.getElementById("gameID");
+
+  if (gameID.value === "") {
+    updateDisplayResult('failure', 'Please enter a game ID.', 'join');
+    return;
+  }
+
+  joinGameRoom(gameID.value);
+}
+
+function joinGameRoom(gameID) {
+  // TODO: send response to backend (join game)
+}
+
