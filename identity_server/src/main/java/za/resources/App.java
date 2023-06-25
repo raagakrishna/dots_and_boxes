@@ -33,10 +33,13 @@ public class App {
         app.before("/register", Validation::usernameValidation);
         app.before("/register", Validation::emailValidation);
         app.before("/register", Validation::passwordValidation);
+        app.before("/update-password", Validation::emailValidation);
+        app.before("/update-password", Validation::passwordValidation);
 
         app.post("/register", context -> register(context, jwtUtils));
         app.post("/login", context -> login(context, jwtUtils));
         app.post("/refresh", context -> refresh(context, jwtUtils));
+        app.post("/update-password", App::updatePassword);
         app.exception(OAuthExceptions.class, (e, ctx) -> ctx.status(e.getStatus()).json(e.getReason()));
     }
 
@@ -64,6 +67,16 @@ public class App {
     private static void refresh(Context context, JwtUtils utils) throws InvalidTokenException {
         RefreshInput input = context.bodyAsClass(RefreshInput.class);
         context.status(200).json(utils.generateRefreshedToken(input.getToken(), input.getRefreshToken()));
+    }
+
+    private static void updatePassword(Context context) {
+        String password = context.formParam("password");
+        String email = context.formParam("email");
+        if (DatabaseAccess.UpdatePassword(email, password)) {
+            context.status(200).json(new Result("Success"));
+        } else {
+            context.status(400).json(new Result("Failure"));
+        }
     }
 
 

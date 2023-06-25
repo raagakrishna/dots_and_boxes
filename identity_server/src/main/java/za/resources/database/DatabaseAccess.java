@@ -98,5 +98,21 @@ public class DatabaseAccess {
         insertUUID(username, null);
     }
 
+    public static boolean UpdatePassword(String email, String password) {
+        final String salt = SaltGenerator.generateSalt();
+        final String hashedPassword = PasswordManager.hashPassword(password, salt);
+        final String sql = "{call UpdatePassword(?, ?, ?)}";
+        try (Connection connection = getConnection(); CallableStatement statement = connection.prepareCall(sql)) {
+            statement.setString(1, email);
+            statement.setString(2, hashedPassword);
+            statement.setString(3, salt);
+            statement.execute();
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 
 }

@@ -36,7 +36,7 @@ GO
 
 CREATE TABLE RefreshUUIDS (
 	RefreshID [int] IDENTITY(1,1) NOT NULL,
-    Username [int] NOT NULL UNIQUE,
+    Username [varchar](120) NOT NULL UNIQUE,
     UUID [varchar] (120),
     CONSTRAINT [PK_Refresh] PRIMARY KEY CLUSTERED
     (
@@ -75,4 +75,24 @@ AS
 
   INSERT INTO RefreshUUIDS (Username)
   Values (@username)
+GO
+
+CREATE PROCEDURE UpdatePassword(
+	@email VARCHAR(100),
+	@hashedPassword VARCHAR(255),
+	@salt VARCHAR(255)
+) AS
+	DECLARE @username VARCHAR(255);
+	DECLARE @userID INT
+	SELECT @username = Username, @userID =UserId
+	FROM UserInformation
+	WHERE Email = @email;
+
+	UPDATE PasswordInformation
+	SET HashedPassword = @hashedPassword, Salt = @salt
+	WHERE UserId = @userID;
+
+	UPDATE RefreshUUIDS
+	SET UUID = NULL
+	WHERE Username = @username;
 GO

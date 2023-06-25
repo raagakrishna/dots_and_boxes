@@ -100,16 +100,4 @@ public class JwtUtils {
     }
 
 
-    public String getUsernameFromToken(String token) throws InvalidTokenException {
-        final DecodedJWT decodedJWT;
-        try {
-            decodedJWT = tokenVerifier.verify(token);
-        } catch (JWTVerificationException verificationException) {
-            throw new InvalidTokenException();
-        }
-        Claim username = decodedJWT.getClaim("username");
-        return username.asString();
-    }
-
-
 }
