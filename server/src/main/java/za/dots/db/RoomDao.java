@@ -284,6 +284,22 @@ public class RoomDao {
         }
     }
 
+    public boolean joinRoom(String roomId, String username) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            String query1 = "INSERT INTO [PlayerRoom] (roomid,username,creator) VALUES " +
+                    "('" + roomId + "','" + username + "',0)";
+            if (datasourceConnection.executeUpdate(query1) <= 0)
+                return false;
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
     private String generateRoomNumber() {
         // Generate a unique room number logic goes here
         return "ROOM" + System.currentTimeMillis();

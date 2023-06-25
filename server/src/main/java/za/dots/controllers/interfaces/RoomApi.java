@@ -59,7 +59,7 @@ public interface RoomApi {
     // path: roomId (String: ID of the room to join)
     // path: username (String: username of the player joining the room)
     // POST request
-    Room joinRoom(String roomId, String username);
+    Room joinRoom(String roomId, String username) throws SQLException;
 
     // leave a room
     // response 200: Successfully left the room (Room)

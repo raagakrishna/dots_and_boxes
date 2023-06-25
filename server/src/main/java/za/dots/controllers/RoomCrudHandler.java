@@ -210,17 +210,18 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public Room joinRoom(String roomId, String username) {
+    public Room joinRoom(String roomId, String username) throws SQLException {
         // assuming the player already exists
         Player player = new Player(username);
 
-        boolean isPlayerInRoom = false; // TODO: check if Player is in an active game
+        // check if username is in an active game room (status will be OPEN)
+        boolean isPlayerInRoom = this.roomDao.isCreatorInActiveRoom(username);
 
         if (isPlayerInRoom) {
             throw new ConflictResponse("The player is already in an active game.");
         }
 
-        Room room = null; // TODO: get Room based on roomID
+        Room room = this.roomDao.getRoomById(roomId); // get Room based on roomID
 
         if (room == null) {
             throw new NotFoundResponse("The room could not be found.");
@@ -235,10 +236,12 @@ public class RoomCrudHandler implements RoomApi {
             throw new BadRequestResponse("The game room has reached the maximum number of players");
         }
 
-        boolean isPlayerInGame = false; // TODO: join player to game (insert record into PlayerRoom table)
+        boolean isPlayerInGame = this.roomDao.joinRoom(roomId, username); // join player to game (insert record into PlayerRoom table)
+        boolean isPlayerScoredAdded = this.gameDao.addScores(roomId, username); // update the scores also 
 
-        if (isPlayerInGame) {
+        if (isPlayerInGame && isPlayerScoredAdded) {
             room.addPlayersItem(player);
+            room.getGame().addScoresItem(new Score(player));
 
             return room;
         }
