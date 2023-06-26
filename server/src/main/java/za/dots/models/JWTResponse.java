@@ -5,13 +5,16 @@ public class JWTResponse {
     private String token;
     private String refreshToken;
 
+    private String message;
+
     public JWTResponse() {
         super();
     }
 
-    public JWTResponse(String token, String refreshToken) {
+    public JWTResponse(String token, String refreshToken, String message) {
         this.token = token;
         this.refreshToken = refreshToken;
+        this.message = message;
     }
 
     public void setToken(String token) {
@@ -28,5 +31,13 @@ public class JWTResponse {
 
     public String getRefreshToken() {
         return refreshToken;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
