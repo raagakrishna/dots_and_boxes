@@ -57,9 +57,10 @@ public class App {
                 path("{roomId}", () -> {
                     // deleteRoomById
                     delete("delete/{username}", ctx -> {
-                        ctx.json(
-                                roomCrudHandler.deleteRoomById(ctx.pathParam("roomId"), ctx.pathParam("username"))
-                        );
+                        String roomId = ctx.pathParam("roomId");
+                        Room room = roomCrudHandler.deleteRoomById(roomId, ctx.pathParam("username"));
+                        broadcastRoom(roomId, room);
+                        ctx.json(room);
                     });
                     // getRoomById
                     get(ctx -> {
