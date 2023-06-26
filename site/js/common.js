@@ -28,17 +28,27 @@ function addHeader() {
 
     // adding li
     var li1 = document.createElement("li");
-    li1.textContent = "Your played games";
+    a1 = document.createElement("a");
+    a1.textContent = "Your played games";
+    a1.href = 'played.html';
+    li1.appendChild(a1);
     ul.appendChild(li1);
 
     var li2 = document.createElement("li");
     a2 = document.createElement("a");
-    a2.textContent = "Logout";
-    a2.onclick = function() {
-        logoutPlayer(localStorage.getItem("username"));
-    }
+    a2.textContent = "Play a game";
+    a2.href = 'index.html';
     li2.appendChild(a2);
     ul.appendChild(li2);
+
+    var li3 = document.createElement("li");
+    a3 = document.createElement("a");
+    a3.textContent = "Logout";
+    a3.onclick = function() {
+        logoutPlayer(localStorage.getItem("username"));
+    }
+    li3.appendChild(a3);
+    ul.appendChild(li3);
 
     dropdown.appendChild(ul);
     myHeader.appendChild(dropdown);
@@ -59,7 +69,7 @@ function addLoader() {
 
 function logoutPlayer(username) {
     showLoadingScreen();
-    
+
     fetch(`${backendUrl}/player/${username}/logout`, {
         method: 'GET',
         headers: setHeaders()
