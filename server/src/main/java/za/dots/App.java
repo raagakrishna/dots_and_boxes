@@ -165,7 +165,7 @@ public class App
                 //register a player
                 post("register", ctx -> {
                     try {
-                        ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()).getToken());
+                        ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()).getRefreshToken());
                         ctx.redirect("/index.html", HttpStatus.OK);
                     } catch (IOException e) {
                         logger.error("IOException", e);
