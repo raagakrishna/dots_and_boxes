@@ -5,6 +5,8 @@ import za.dots.models.Player;
 import za.dots.models.Room;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.http.HttpResponse;
 
 public interface PlayerApi {
 
@@ -47,7 +49,7 @@ public interface PlayerApi {
     // query: username (String: Username of player)
     // query: password (String: Password of player)
     // POST
-    JWTResponse loginPlayer(String body) throws IOException;
+    HttpResponse<String> loginPlayer(String body) throws IOException, URISyntaxException, InterruptedException;
 
     // Login a player
     // response 200: Player logged in successfully
@@ -58,9 +60,9 @@ public interface PlayerApi {
     // query: username (String: Username of player)
     // query: password (String: Password of player)
     // POST
-    JWTResponse registerPlayer(String body) throws IOException;
+    HttpResponse<String> registerPlayer(String body) throws IOException, URISyntaxException, InterruptedException;
 
-    String loginPlayer(String username, String password);
+//    HttpResponse<String> loginPlayer(String username, String password);
 
     // Logout a player
     // response 400: Player logged out successfully

@@ -13,7 +13,14 @@ import za.dots.models.Room;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class PlayerCrudHandler implements PlayerApi {
     @Override
@@ -55,26 +62,26 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public JWTResponse loginPlayer(String body) throws IOException {
-        URL url = new URL("http://127.0.0.1:7071/login");
+    public HttpResponse<String> loginPlayer(String body) throws IOException, URISyntaxException, InterruptedException {
+        URI url = new URI("http://127.0.0.1:7071/login");
         return getJwtResponse(body, url);
     }
 
-    private JWTResponse getJwtResponse(String body, URL url) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("accept", "application/json");
-        connection.setRequestProperty("body", body);
-        connection.setRequestMethod("POST");
-        InputStream responseStream = connection.getInputStream();
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(responseStream, JWTResponse.class);
+    private HttpResponse<String> getJwtResponse(String body, URI uri) throws IOException, InterruptedException {
+        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .POST(HttpRequest.BodyPublishers.ofString(new String(bytes, StandardCharsets.UTF_8)))
+                .build();
+        HttpClient client = HttpClient.newHttpClient();
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    @Override
-    public String loginPlayer(String username, String password) {
-
-        throw new NotImplementedResponse("This was not implemented.");
-    }
+//    @Override
+//    public String loginPlayer(String username, String password) {
+//
+//        throw new NotImplementedResponse("This was not implemented.");
+//    }
 
     @Override
     public String logoutPlayer(String sessionId) {
@@ -87,8 +94,8 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public JWTResponse  registerPlayer(String body) throws IOException {
-        URL url = new URL("http://127.0.0.1:7071/register");
+    public HttpResponse<String> registerPlayer(String body) throws IOException, URISyntaxException, InterruptedException {
+        URI url = new URI("http://127.0.0.1:7071/register");
         return getJwtResponse(body, url);
     }
 }

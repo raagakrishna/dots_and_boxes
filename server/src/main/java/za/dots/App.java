@@ -14,6 +14,7 @@ import io.javalin.http.HttpStatus;
 
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -148,21 +149,33 @@ public class App
                 // loginPlayer
                 post("login", ctx -> {
                     try {
-                        ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()).getToken());
+                        ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()));
                         ctx.redirect("/", HttpStatus.OK);
                     } catch (IOException e) {
                         logger.error("IOException", e);
-                        ctx.redirect("/", HttpStatus.FORBIDDEN);
+                        ctx.redirect("/", HttpStatus.UNAUTHORIZED);
+                    } catch (URISyntaxException e) {
+                        logger.error("URISyntaxException", e);
+                        ctx.redirect("/", HttpStatus.BAD_REQUEST);
+                    } catch (InterruptedException e) {
+                        logger.error("InterruptedException", e);
+                        ctx.redirect("/", HttpStatus.INTERNAL_SERVER_ERROR);
                     }
                 });
                 //register a player
                 post("register", ctx -> {
                     try {
-                        ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()).getToken());
+                        ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()));
                         ctx.redirect("/", HttpStatus.OK);
                     } catch (IOException e) {
                         logger.error("IOException", e);
-                        ctx.redirect("/", HttpStatus.FORBIDDEN);
+                        ctx.redirect("/", HttpStatus.UNAUTHORIZED);
+                    } catch (URISyntaxException e) {
+                        logger.error("URISyntaxException", e);
+                        ctx.redirect("/", HttpStatus.BAD_REQUEST);
+                    } catch (InterruptedException e) {
+                        logger.error("InterruptedException", e);
+                        ctx.redirect("/", HttpStatus.INTERNAL_SERVER_ERROR);
                     }
                 });
             });
