@@ -150,7 +150,7 @@ public class App
                 post("login", ctx -> {
                     try {
                         ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()).getToken());
-                        ctx.redirect("/", HttpStatus.OK);
+                        ctx.redirect("/index.html", HttpStatus.OK);
                     } catch (IOException e) {
                         logger.error("IOException", e);
                         ctx.redirect("/", HttpStatus.UNAUTHORIZED);
@@ -166,7 +166,7 @@ public class App
                 post("register", ctx -> {
                     try {
                         ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()).getToken());
-                        ctx.redirect("/", HttpStatus.OK);
+                        ctx.redirect("/index.html", HttpStatus.OK);
                     } catch (IOException e) {
                         logger.error("IOException", e);
                         ctx.redirect("/", HttpStatus.UNAUTHORIZED);
