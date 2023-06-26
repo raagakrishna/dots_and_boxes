@@ -105,9 +105,20 @@ aside section button {
     display: none;
 }
 
+#startButton {
+    display: none;
+}
+#leaveButton {
+    display: none;
+}
+#deleteButton {
+    display: none;
+}
+
 button.hidden {
     display: none;
 }
+
 
 @media screen and (max-width: 600px) {
     .game-details {
