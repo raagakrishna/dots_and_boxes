@@ -45,7 +45,20 @@ public class PlayerCrudHandler implements PlayerApi {
 
     @Override
     public List<Room> findRoomsByUsername(String username) {
-        return null;
+        try {
+            // assuming the jwt token is valid and logged in
+
+            // SELECT Room FROM PlayerRoom where username matches and room is open or started
+            List<Room> rooms = this.roomDao.findRoomsByUsername(username);
+            if (rooms == null) {
+                throw new NotFoundResponse("Rooms was not found.");
+            }
+
+            return rooms;
+        }
+        catch (SQLException e) {
+            throw new InternalServerErrorResponse("The database could not be connected.");
+        }
     }
 
     @Override
