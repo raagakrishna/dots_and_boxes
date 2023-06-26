@@ -38,6 +38,11 @@ function getSocket() {
     });
 }
 
+function hideDisplayResult() {
+    var displayResult = document.getElementById('display-result');
+    displayResult.style.display = 'none';
+}
+
 function openSocketConnection(roomId) {
     socket = new WebSocket('ws://localhost:8080/room/' + roomId);
     socket.timeout = 2147483647; // Set a very large timeout value (approximately 24.8 days)
@@ -75,6 +80,7 @@ function getRoom(roomID) {
 }
 
 function updateGame() {
+    hideDisplayResult();
     if (thisRoom.status == 'CLOSED')
         window.location.href = 'played.html';
     populateGameInfo(thisRoom.roomName, thisRoom.status, thisRoom.roomId, thisRoom.creator.username, thisRoom.game.currentPlayer.username, thisRoom.players);
