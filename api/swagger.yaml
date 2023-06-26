@@ -552,7 +552,42 @@ paths:
       produces:
         - application/json
         - application/xml
-
+  
+  /player/{username}/rooms:
+    get:
+      tags:
+        - player
+      summary: Get the rooms the player is currently in 
+      operationId: findRoomsByUsername
+      parameters:
+        - name: username
+          in: path
+          description: Username of the player
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Rooms found 
+          schema: 
+            type: array
+            items: 
+              $ref: '#/definitions/Player'
+        '404':
+          description: Rooms not found 
+          schema: 
+            type: string 
+        '401': 
+          description: Invalid request 
+          schema: 
+            type: string 
+        '500':
+          description: Internal server error
+          schema: 
+            type: string 
+      produces: 
+        - application/json 
+        - application/xml
+  
 definitions:
   CoOrdinate:
     type: object 
