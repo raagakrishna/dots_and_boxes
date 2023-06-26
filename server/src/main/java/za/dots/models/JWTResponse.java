@@ -1,11 +1,24 @@
 package za.dots.models;
 
 public class JWTResponse {
-    private final String token;
-    private final String refreshToken;
+
+    private String token;
+    private String refreshToken;
+
+    public JWTResponse() {
+        super();
+    }
 
     public JWTResponse(String token, String refreshToken) {
         this.token = token;
+        this.refreshToken = refreshToken;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
