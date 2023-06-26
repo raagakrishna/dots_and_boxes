@@ -313,7 +313,7 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public String sendGameState(String roomId, String username, CoOrdinate coordinate) {
+    public Room sendGameState(String roomId, String username, CoOrdinate coordinate) {
         try {
             // assuming the player is valid and logged in
 
@@ -439,7 +439,8 @@ public class RoomCrudHandler implements RoomApi {
                 room.getGame().setCurrentPlayer(room.getPlayers().get(nextPlayerIndex));
             }
 
-            return "Line selected.";
+//            return "Line selected.";
+            return room;
         }
         catch (SQLException e) {
             throw new InternalServerErrorResponse("The database could not be connected.");

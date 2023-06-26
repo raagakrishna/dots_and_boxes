@@ -25,6 +25,11 @@
       <artifactId>ssl-plugin</artifactId>
       <version>5.6.0</version>
     </dependency>
+    <dependency>
+      <groupId>io.javalin</groupId>
+      <artifactId>javalin-bundle</artifactId>
+      <version>5.6.0</version>
+    </dependency>
   </dependencies>
 
   <build>
