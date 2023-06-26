@@ -43,57 +43,6 @@ function addHeader() {
     myHeader.appendChild(dropdown);
 }
 
-function loginPlayer(username, password) {
-    fetch(`${backendUrl}/player/login`, {
-        method: 'GET',
-        headers: setHeaders(),
-        body: {"username" : username, "password" : password}
-    })
-        .then(function (response) {
-            if (response.ok) {
-                localStorage.setItem("token", response.headers.get("Authorization"))
-                localStorage.setItem("username", username)
-            }
-            else {
-                return response.json().then(function (errorMessage) {
-                    throw new Error(errorMessage.title);
-                });
-            }
-        })
-        .then(function (message) {
-            window.location.href = '${backendUrl}/index.html';
-        })
-        .catch(function (error) {
-            window.location.href = '${backendUrl}/whoops.html';
-        });
-}
-
-function registerPlayer(username, password, email) {
-    let headers = setHeaders();
-    fetch(`${backendUrl}/player/register`, {
-        method: 'POST',
-        headers: headers,
-        body: {"username" : username, "password" : password, "email" : email}
-    })
-        .then(function (response) {
-            if (response.ok) {
-                localStorage.setItem("token", response.headers.get("Authorization"))
-                localStorage.setItem("username", username)
-            }
-            else {
-                return response.json().then(function (errorMessage) {
-                    throw new Error(errorMessage.title);
-                });
-            }
-        })
-        .then(function () {
-            window.location.href = '${backendUrl}/index.html';
-        })
-        .catch(function () {
-            window.location.href = '${backendUrl}/whoops.html';
-        });
-}
-
 function logoutPlayer(username) {
     fetch(`${backendUrl}/player/${username}/logout`, {
         method: 'GET',

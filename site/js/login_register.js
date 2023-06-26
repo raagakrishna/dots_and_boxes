@@ -12,31 +12,6 @@ function loginFormBtn(event) {
     loginPlayer(usernameInput, passwordInput);
 }
 
-function loginPlayer(username, password) {
-    fetch(`${backendUrl}/player/login?username${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
-        method: 'POST',
-        headers: setHeaders()
-    })
-    .then(function (response) {
-        if (response.ok) {
-            return response.text();
-        } 
-        else {
-            return response.json().then(function (errorMessage) {
-                throw new Error(errorMessage.title);
-            });
-        }
-    })
-    .then(function (message) {
-        // TODO: handle the success response (login)
-        updateDisplayResult('success', message);
-        window.location.href = 'index.html';
-    })
-    .catch(function (error) {
-        updateDisplayResult('failure', error);
-    });
-}
-
 function registerFormBtn(event) {
     event.preventDefault();
 
@@ -59,28 +34,46 @@ function registerFormBtn(event) {
     usernameInput.value = "";
 }
 
-function registerPlayer(username, password) {
-    fetch(`${backendUrl}/player`, {
-        method: 'POST',
+function loginPlayer(username, password) {
+    fetch(`${backendUrl}/player/login`, {
+        method: 'GET',
         headers: setHeaders(),
-        body: JSON.stringify({"username": username, "password": password})
+        body: {"username" : username, "password" : password}
     })
-    .then(function (response) {
-        if (response.ok) {
-            return response.text();
-        } 
-        else {
-            return response.json().then(function (errorMessage) {
-                throw new Error(errorMessage.title);
-            });
-        }
+        .then((response) => {
+            if (response.ok) {
+                localStorage.setItem("token", response.headers.get("Authorization"))
+                localStorage.setItem("username", username)
+                window.location.href = '${backendUrl}/index.html';
+            }
+            else {
+                window.location.href = '${backendUrl}/whoops.html';
+            }
+        })
+        .catch(function (error) {
+            window.location.href = '${backendUrl}/whoops.html';
+        });
+}
+
+function registerPlayer(username, password, email) {
+    let headers = setHeaders();
+    fetch(`${backendUrl}/player/register`, {
+        method: 'POST',
+        headers: headers,
+        body: {"username" : username, "password" : password, "email" : email}
     })
-    .then(function (message) {
-        // TODO: handle the success response (register)
-        updateDisplayResult('success', message);
-        // window.location.href = 'login.html';
-    })
-    .catch(function (error) {
-        updateDisplayResult('failure', error);
-    });
+        .then((response) => {
+            if (response.ok) {
+                localStorage.setItem("token", response.headers.get("Authorization"))
+                localStorage.setItem("username", username)
+                window.location.href = '${backendUrl}/index.html';
+            }
+            else {
+                window.location.url = '${backendUrl}/whoops.html';
+                console.log(response)
+            }
+        })
+        .catch(() => {
+            window.location.href = '${backendUrl}/whoops.html';
+        });
 }
