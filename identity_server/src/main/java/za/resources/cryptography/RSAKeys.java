@@ -9,12 +9,14 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.stream.Collectors;
 
 public class RSAKeys {
 
     public static RSAPrivateKey getRSAPrivateKey(String fileLoc) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        final byte[] bytes = getFileBytes(fileLoc, "PRIVATE");
+        final byte[] bytes = getFileBytes(fileLoc);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(bytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return (RSAPrivateKey) kf
@@ -22,21 +24,19 @@ public class RSAKeys {
     }
 
     public static RSAPublicKey getRSAPublicKey(String fileLoc) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        final byte[] bytes = getFileBytes(fileLoc, "PUBLIC");
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec (bytes);
+        final byte[] bytes = getFileBytes(fileLoc);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(bytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return (RSAPublicKey) kf
                 .generatePublic(keySpec);
     }
 
-    private static byte[] getFileBytes(String fileLoc, String key) {
+    private static byte[] getFileBytes(String fileLoc) {
         byte[] fileBytes;
         try (FileInputStream fis = new FileInputStream(fileLoc)) {
-            fileBytes = Base64.getDecoder().decode(new String(fis.readAllBytes())
-                    .replaceAll("\\n", "")
-                    .replaceAll("-----BEGIN " + key + " KEY-----", "")
-                    .replaceAll("-----END " + key + " KEY-----", "")
-                    .trim()
+            String key = new String(fis.readAllBytes());
+            key = Arrays.stream(key.split("(\n|\r)")).filter(str -> !str.contains("KEY")).collect(Collectors.joining());
+            fileBytes = Base64.getDecoder().decode(key
                     .getBytes());
         } catch (IOException e) {
             fileBytes = new byte[0];
