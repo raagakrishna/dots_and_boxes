@@ -25,6 +25,9 @@ public class RoomCrudHandler implements RoomApi {
     @Override
     public Room createRoom(String creatorUsername, String roomName, Integer gridSize) {
         try {
+            if (gridSize > 9) {
+                throw new BadRequestResponse("Grid size cannot be greater than 9.");
+            }
             // assuming the creator exists in identity server
             Player creator = new Player(creatorUsername);
 
