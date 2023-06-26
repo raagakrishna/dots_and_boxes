@@ -3,15 +3,16 @@ package za.resources.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User {
+public class Username {
 
     private String username;
 
-    public User(String username) {
+    public Username(String username) {
         this.username = username;
     }
 
-    public User() {}
+    public Username() {
+    }
 
     public String getUsername() {
         return username;

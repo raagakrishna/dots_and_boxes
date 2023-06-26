@@ -1,5 +1,8 @@
 package za.resources.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RefreshInput {
 
     private String token;

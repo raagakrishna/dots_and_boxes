@@ -7,8 +7,12 @@ import za.resources.database.DatabaseAccess;
 import za.resources.environment.EnvironmentVariables;
 import za.resources.exception.InvalidTokenException;
 import za.resources.exception.OAuthExceptions;
+import za.resources.models.Email;
+import za.resources.models.Password;
 import za.resources.models.RefreshInput;
 import za.resources.models.Result;
+import za.resources.models.User;
+import za.resources.models.Username;
 import za.resources.util.jwt.JwtUtils;
 import za.resources.validation.Validation;
 
@@ -18,6 +22,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class App {
 
@@ -44,10 +49,11 @@ public class App {
     }
 
     private static void register(Context context, JwtUtils utils) {
-        String username = context.formParam("username");
-        String password = context.formParam("password");
-        String email = context.formParam("email");
+        String username = getUsername(context);
+        String password = getPassword(context);
+        String email = getEmail(context);
         if (DatabaseAccess.insertUser(username, email, password)) {
+
             context.status(200).json(utils.generateToken(username));
         } else {
             context.status(400).json(new Result("Failure"));
@@ -55,8 +61,8 @@ public class App {
     }
 
     private static void login(Context context, JwtUtils utils) {
-        String username = context.formParam("username");
-        String password = context.formParam("password");
+        String username = getUsername(context);
+        String password = getPassword(context);
         if (DatabaseAccess.userExists(username, password)) {
             context.status(200).json(utils.generateToken(username));
         } else {
@@ -70,13 +76,26 @@ public class App {
     }
 
     private static void updatePassword(Context context) {
-        String password = context.formParam("password");
-        String email = context.formParam("email");
+
+        String password = getPassword(context);
+        String email = getEmail(context);
         if (DatabaseAccess.UpdatePassword(email, password)) {
             context.status(200).json(new Result("Success"));
         } else {
             context.status(400).json(new Result("Failure"));
         }
+    }
+
+    private static String getEmail(Context context) {
+        return Optional.ofNullable(context.formParam("email")).orElse(context.bodyAsClass(Email.class).getEmail());
+    }
+
+    private static String getPassword(Context context) {
+        return Optional.ofNullable(context.formParam("password")).orElse(context.bodyAsClass(Password.class).getPassword());
+    }
+
+    private static String getUsername(Context context) {
+        return Optional.ofNullable(context.formParam("username")).orElse(context.bodyAsClass(Username.class).getUsername());
     }
 
 
