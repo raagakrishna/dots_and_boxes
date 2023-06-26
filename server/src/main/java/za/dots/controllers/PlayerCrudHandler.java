@@ -55,7 +55,24 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
+    public JWTResponse loginPlayer(String body) throws IOException {
+        URL url = new URL("http://127.0.0.1:7071/login");
+        return getJwtResponse(body, url);
+    }
+
+    private JWTResponse getJwtResponse(String body, URL url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("accept", "application/json");
+        connection.setRequestProperty("body", body);
+        connection.setRequestMethod("POST");
+        InputStream responseStream = connection.getInputStream();
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(responseStream, JWTResponse.class);
+    }
+
+    @Override
     public String loginPlayer(String username, String password) {
+
         throw new NotImplementedResponse("This was not implemented.");
     }
 
@@ -72,12 +89,6 @@ public class PlayerCrudHandler implements PlayerApi {
     @Override
     public JWTResponse registerPlayer(String body) throws IOException {
         URL url = new URL("http://127.0.0.1:7071/register");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("accept", "application/json");
-        connection.setRequestProperty("body", body);
-        connection.setRequestMethod("POST");
-        InputStream responseStream = connection.getInputStream();
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(responseStream, JWTResponse.class);
+        return getJwtResponse(body, url);
     }
 }

@@ -47,7 +47,7 @@ public interface PlayerApi {
     // query: username (String: Username of player)
     // query: password (String: Password of player)
     // POST
-    String loginPlayer(String body);
+    JWTResponse loginPlayer(String body) throws IOException;
 
     // Login a player
     // response 200: Player logged in successfully
@@ -59,6 +59,8 @@ public interface PlayerApi {
     // query: password (String: Password of player)
     // POST
     JWTResponse registerPlayer(String body) throws IOException;
+
+    String loginPlayer(String username, String password);
 
     // Logout a player
     // response 400: Player logged out successfully

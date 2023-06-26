@@ -10,6 +10,7 @@ import za.dots.controllers.RoomCrudHandler;
 import za.dots.models.CoOrdinate;
 import za.dots.models.Player;
 import io.javalin.http.staticfiles.Location;
+import io.javalin.http.HttpStatus;
 
 
 import java.io.IOException;
@@ -147,19 +148,19 @@ public class App
                 // loginPlayer
                 post("login", ctx -> {
                     try {
-                        ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()));
-                        ctx.redirect("/", 200);
+                        ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()).getToken());
+                        ctx.redirect("/", HttpStatus.OK);
                     } catch (IOException e) {
-                        ctx.redirect("/", 403);
+                        ctx.redirect("/", HttpStatus.FORBIDDEN);
                     }
                 });
                 //register a player
                 post("register", ctx -> {
                     try {
-                        ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()));
-                        ctx.redirect("/", 200);
+                        ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()).getToken());
+                        ctx.redirect("/", HttpStatus.OK);
                     } catch (IOException e) {
-                        ctx.redirect("/", 403);
+                        ctx.redirect("/", HttpStatus.FORBIDDEN);
                     }
                 });
             });
