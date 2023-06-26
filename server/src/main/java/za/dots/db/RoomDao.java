@@ -404,7 +404,7 @@ public class RoomDao {
         }
     }
 
-    public Room findRoomByUsername(String usernmae) throws SQLException {
+    public String findRoomByUsername(String usernmae) throws SQLException {
         try {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
 
@@ -428,7 +428,7 @@ public class RoomDao {
             if (roomId.equals(""))
                 return null;
 
-            return getRoomById(roomId);
+            return roomId;
         } catch (Exception e) {
             throw e;
         }

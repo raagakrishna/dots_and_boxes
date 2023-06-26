@@ -23,7 +23,7 @@ public interface PlayerApi {
     // request mapping: /player/{username}/room
     // path: username (String: Username of the player)
     // GET request
-    Room findRoomByUsername(String username);
+    String findRoomByUsername(String username);
 
     // Get player by username
     // response 200: Successfully retrieved the player (Player)
