@@ -265,7 +265,7 @@ public class GameDao {
                 query = "UPDATE [Game] SET status = '" + gameStatus + "' WHERE roomid = '" + roomId + "'";
             }
             else {
-                query = "UPDATE [Game] SET staus = '" + gameStatus + "', winner = '" + winnerName  + "' WHERE roomid = ''";
+                query = "UPDATE [Game] SET status = '" + gameStatus + "', winner = '" + winnerName  + "' WHERE roomid = '" + roomId + "'";
             }
 
             if (datasourceConnection.executeUpdate(query) <= 0)
