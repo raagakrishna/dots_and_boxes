@@ -293,4 +293,32 @@ public class GameDao {
         }
     }
 
+    public boolean deleteClosedGame(String roomId) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            // Delete records from Dot table
+            String deleteDotQuery = "DELETE FROM [Dot] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteDotQuery) <= 0)
+                return false;
+
+            // Delete records from Line table
+            String deleteLineQuery = "DELETE FROM [Line] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteLineQuery) <= 0)
+                return false;
+
+            // Delete records from Box table
+            String deleteBoxQuery = "DELETE FROM [Box] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteBoxQuery) <= 0)
+                return false;
+
+            datasourceConnection.closeConnection();
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
 }

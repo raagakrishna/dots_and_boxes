@@ -417,6 +417,11 @@ public class RoomCrudHandler implements RoomApi {
                     if (!updateRoomStatus)
                         throw new InternalServerErrorResponse("The move could not be played.");
 
+                    // delete dots, lines and boxes
+                    boolean isGameClosed = this.gameDao.deleteClosedGame(roomId);
+                    if (!isGameClosed)
+                        throw new InternalServerErrorResponse("The move could not be played.");
+
                     room.setStatus(Room.StatusEnum.CLOSED);
                 }
             }
