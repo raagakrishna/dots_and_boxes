@@ -49,7 +49,7 @@ public interface PlayerApi {
     // query: username (String: Username of player)
     // query: password (String: Password of player)
     // POST
-    HttpResponse<String> loginPlayer(String body) throws IOException, URISyntaxException, InterruptedException;
+    JWTResponse loginPlayer(String body) throws IOException, URISyntaxException, InterruptedException;
 
     // Login a player
     // response 200: Player logged in successfully
@@ -60,7 +60,7 @@ public interface PlayerApi {
     // query: username (String: Username of player)
     // query: password (String: Password of player)
     // POST
-    HttpResponse<String> registerPlayer(String body) throws IOException, URISyntaxException, InterruptedException;
+    JWTResponse registerPlayer(String body) throws IOException, URISyntaxException, InterruptedException;
 
 //    HttpResponse<String> loginPlayer(String username, String password);
 

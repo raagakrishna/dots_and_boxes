@@ -62,19 +62,21 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public HttpResponse<String> loginPlayer(String body) throws IOException, URISyntaxException, InterruptedException {
+    public JWTResponse loginPlayer(String body) throws IOException, URISyntaxException, InterruptedException {
         URI url = new URI("http://127.0.0.1:7071/login");
         return getJwtResponse(body, url);
     }
 
-    private HttpResponse<String> getJwtResponse(String body, URI uri) throws IOException, InterruptedException {
+    private JWTResponse getJwtResponse(String body, URI uri) throws IOException, InterruptedException {
         byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+        ObjectMapper objectMapper = new ObjectMapper();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .POST(HttpRequest.BodyPublishers.ofString(new String(bytes, StandardCharsets.UTF_8)))
                 .build();
         HttpClient client = HttpClient.newHttpClient();
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
+        byte[] response = client.send(request, HttpResponse.BodyHandlers.ofString()).body().getBytes(StandardCharsets.UTF_8);
+        return objectMapper.readValue(response, JWTResponse.class);
     }
 
 //    @Override
@@ -94,7 +96,7 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public HttpResponse<String> registerPlayer(String body) throws IOException, URISyntaxException, InterruptedException {
+    public JWTResponse registerPlayer(String body) throws IOException, URISyntaxException, InterruptedException {
         URI url = new URI("http://127.0.0.1:7071/register");
         return getJwtResponse(body, url);
     }
