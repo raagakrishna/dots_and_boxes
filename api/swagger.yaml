@@ -92,6 +92,11 @@ paths:
           description: Game room name
           required: true
           type: string
+        - name: gridSize
+          in: query
+          description: Grid size
+          required: true
+          type: integer
       responses:
         '200':
           description: Room created successfully
@@ -531,7 +536,7 @@ paths:
         '200':
           description: Room found
           schema:
-            $ref: '#/definitions/Room'
+            type: string
         '404':
           description: Room not found
           schema:
