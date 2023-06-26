@@ -5,6 +5,8 @@ import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ConflictResponse;
 import io.javalin.http.NotFoundResponse;
 import io.javalin.http.NotImplementedResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import za.dots.controllers.interfaces.PlayerApi;
 import za.dots.models.JWTResponse;
 import za.dots.models.Player;
@@ -23,6 +25,12 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class PlayerCrudHandler implements PlayerApi {
+
+    Logger logger;
+
+    PlayerCrudHandler() {
+        this.logger = LoggerFactory.getLogger("PlayerCrudHandler ->");
+    }
     @Override
     public String createPlayer(Player player) {
         if (player.getUsername().equals("")) {
@@ -68,15 +76,23 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     private JWTResponse getJwtResponse(String body, URI uri) throws IOException, InterruptedException {
+        this.logger.info("getJwtResponse start ->");
         byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
         ObjectMapper objectMapper = new ObjectMapper();
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .POST(HttpRequest.BodyPublishers.ofString(new String(bytes, StandardCharsets.UTF_8)))
                 .build();
         HttpClient client = HttpClient.newHttpClient();
+        Object bodyObj = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
         byte[] response = client.send(request, HttpResponse.BodyHandlers.ofString()).body().getBytes(StandardCharsets.UTF_8);
-        return objectMapper.readValue(response, JWTResponse.class);
+        logger.info(bodyObj.toString());
+        JWTResponse jwtResponse = objectMapper.readValue(response, JWTResponse.class);
+        logger.info("MESSAGE:" + jwtResponse.getMessage());
+        logger.info("TOKEN:" + jwtResponse.getToken());
+        logger.info("REFRESH_TOKEN:" + jwtResponse.getRefreshToken());
+        return jwtResponse;
     }
 
 //    @Override

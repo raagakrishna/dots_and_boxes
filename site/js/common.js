@@ -1,17 +1,17 @@
 const backendUrl = 'https://georgepauer.com';
 
-function test() {
-    fetch(`http://georgepauer.com:7071/register`, {
-        method: 'POST',
-        body: {"username":"test1","email":"georgep@bbd.co.za","password":"test123"}
-    })
-        .then(function (response) {
-            console.log(response)
-        })
-        .catch(function (error) {
-            console.log(error)
-        });
-}
+// function test() {
+//     fetch(`http://georgepauer.com:7071/register`, {
+//         method: 'POST',
+//         body: {"username":"test1","email":"georgep@bbd.co.za","password":"test123"}
+//     })
+//         .then(function (response) {
+//             console.log(response)
+//         })
+//         .catch(function (error) {
+//             console.log(error)
+//         });
+// }
 
 function addHeader() {
     localStorage.setItem("username", "peter");
