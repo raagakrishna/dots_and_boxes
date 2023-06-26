@@ -3,6 +3,8 @@ package za.dots.controllers.interfaces;
 import za.dots.models.Player;
 import za.dots.models.Room;
 
+import java.util.List;
+
 public interface PlayerApi {
 
     // create a player
@@ -24,6 +26,16 @@ public interface PlayerApi {
     // path: username (String: Username of the player)
     // GET request
     String findRoomByUsername(String username);
+
+    // Get the rooms the player is currently in
+    // response 200: Rooms found (List<Room>)
+    // response 404: Rooms not found
+    // response 400: Invalid request
+    // response 500: Internal server error
+    // request mapping: /player/{username}/rooms
+    // path: username (String: Username of the player)
+    // GET request
+    List<Room> findRoomsByUsername(String username);
 
     // Get player by username
     // response 200: Successfully retrieved the player (Player)

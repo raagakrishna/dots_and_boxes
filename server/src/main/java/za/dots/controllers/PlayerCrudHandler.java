@@ -7,6 +7,7 @@ import za.dots.models.Player;
 import za.dots.models.Room;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class PlayerCrudHandler implements PlayerApi {
 
@@ -40,6 +41,11 @@ public class PlayerCrudHandler implements PlayerApi {
         catch (SQLException e) {
             throw new InternalServerErrorResponse("The database could not be connected.");
         }
+    }
+
+    @Override
+    public List<Room> findRoomsByUsername(String username) {
+        return null;
     }
 
     @Override
