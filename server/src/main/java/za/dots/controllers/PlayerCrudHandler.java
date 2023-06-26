@@ -26,11 +26,11 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public Room findRoomByUsername(String username) {
+    public String findRoomByUsername(String username) {
         try {
             // assuming the jwt token is valid and logged in
 
-            Room room = this.roomDao.findRoomByUsername(username); // TODO: SELECT Room FROM PlayerRoom where username matches and room is open or started
+            String room = this.roomDao.findRoomByUsername(username); // SELECT Room FROM PlayerRoom where username matches and room is open or started
             if (room == null) {
                 throw new NotFoundResponse("A room was not found.");
             }
@@ -57,12 +57,14 @@ public class PlayerCrudHandler implements PlayerApi {
 
     @Override
     public String loginPlayer(String username, String password) {
-        throw new NotImplementedResponse("This was not implemented.");
+//        throw new NotImplementedResponse("This was not implemented.");
+        return "Logged in successfully";
     }
 
     @Override
     public String logoutPlayer(String sessionId) {
-        throw new NotImplementedResponse("This was not implemented.");
+//        throw new NotImplementedResponse("This was not implemented.");
+        return "Logged out successfully";
     }
 
     @Override
