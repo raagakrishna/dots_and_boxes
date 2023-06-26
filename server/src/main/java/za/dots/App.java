@@ -159,21 +159,17 @@ public class App {
 
         app.ws("/room/{roomId}", ws -> {
             ws.onConnect(ctx -> {
-                System.out.println("before " + roomSessions.size());
                 String roomId = ctx.pathParam("roomId");
                 roomSessions.put(ctx, roomId);
-                System.out.println("open " + roomSessions.size());
             });
 
             ws.onClose(ctx -> {
                 String roomId = ctx.pathParam("roomId");
                 roomSessions.remove(ctx);
-                System.out.println("close");
             });
 
             ws.onMessage(ctx -> {
                 String roomId = ctx.pathParam("roomId");
-//                String message = ctx.message();
                 Room room = roomCrudHandler.getRoomById(roomId);
                 broadcastRoom(roomId, room);
             });
@@ -182,10 +178,8 @@ public class App {
 
     // Sends a message from one user to all users, along with a list of current usernames
     private static void broadcastRoom(String roomId, Room message) {
-        System.out.println("broadcast " + roomSessions.size());
         for (Map.Entry<WsContext, String> entry : roomSessions.entrySet()) {
             String roomKey = entry.getValue();
-            System.out.println("roomKey " + roomKey);
             WsContext session = entry.getKey();
             if (roomKey.equals(roomId) ) {
                 session.send(message);
