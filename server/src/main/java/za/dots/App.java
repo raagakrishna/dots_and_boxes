@@ -148,7 +148,7 @@ public class App
                 post("login", ctx -> {
                     try {
                         ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()));
-                        ctx.result("/", 200);
+                        ctx.redirect("/", 200);
                     } catch (IOException e) {
                         ctx.redirect("/", 403);
                     }
@@ -157,7 +157,7 @@ public class App
                 post("register", ctx -> {
                     try {
                         ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()));
-                        ctx.result("/", 200);
+                        ctx.redirect("/", 200);
                     } catch (IOException e) {
                         ctx.redirect("/", 403);
                     }
