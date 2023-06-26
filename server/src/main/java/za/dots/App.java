@@ -44,11 +44,17 @@ public class App
         ).start(8080);
 
         app.before((ctx) -> {
-           logger.info("Javalin Before ->", ctx);
+
         });
 
         app.after((ctx) -> {
-            logger.info("Javalin After ->", ctx);
+            logger.info("START REQUEST ->");
+            logger.info("Method -> " + ctx.method().toString());
+            logger.info("Status -> " + ctx.status().toString());
+            logger.info("Headers -> " + ctx.headerMap().toString());
+            logger.info("Url -> " + ctx.fullUrl().toString());
+            logger.info("Request Body -> " + ctx.body().toString());
+            logger.info("<- END REQUEST ");
         });
 
         app.routes(() -> {
