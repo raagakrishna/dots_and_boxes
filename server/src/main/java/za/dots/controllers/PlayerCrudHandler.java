@@ -87,7 +87,7 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public JWTResponse registerPlayer(String body) throws IOException {
+    public JWTResponse  registerPlayer(String body) throws IOException {
         URL url = new URL("http://127.0.0.1:7071/register");
         return getJwtResponse(body, url);
     }

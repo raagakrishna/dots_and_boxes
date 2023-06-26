@@ -151,6 +151,7 @@ public class App
                         ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()).getToken());
                         ctx.redirect("/", HttpStatus.OK);
                     } catch (IOException e) {
+                        logger.error("IOException", e);
                         ctx.redirect("/", HttpStatus.FORBIDDEN);
                     }
                 });
@@ -160,6 +161,7 @@ public class App
                         ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()).getToken());
                         ctx.redirect("/", HttpStatus.OK);
                     } catch (IOException e) {
+                        logger.error("IOException", e);
                         ctx.redirect("/", HttpStatus.FORBIDDEN);
                     }
                 });
