@@ -79,3 +79,18 @@ function registerPlayer(username, password, email) {
             window.location.href = '${backendUrl}/whoops.html';
         });
 }
+
+function setHeaders() {
+    let headers = new Headers();
+
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    headers.append('Accept-Encoding', 'gzip, deflate, br');
+    headers.append('Connection', 'keep-alive');
+    headers.append('Access-Control-Allow-Origin', backendUrl);
+
+    // headers.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
+    // headers.append('Session-Id', localStorage.getItem('sessionId')); // Include session ID in the headers
+
+    return headers;
+}
