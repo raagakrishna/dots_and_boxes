@@ -156,32 +156,32 @@ public class App
                 post("login", ctx -> {
                     try {
                         ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()).getToken());
-                        ctx.redirect("/index.html", HttpStatus.OK);
+                        ctx.redirect("https://georgepauer.com/index.html", HttpStatus.PERMANENT_REDIRECT);
                     } catch (IOException e) {
                         logger.error("IOException", e);
-                        ctx.redirect("/", HttpStatus.UNAUTHORIZED);
+                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
                     } catch (URISyntaxException e) {
                         logger.error("URISyntaxException", e);
-                        ctx.redirect("/", HttpStatus.BAD_REQUEST);
+                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
                     } catch (InterruptedException e) {
                         logger.error("InterruptedException", e);
-                        ctx.redirect("/", HttpStatus.INTERNAL_SERVER_ERROR);
+                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
                     }
                 });
                 //register a player
                 post("register", ctx -> {
                     try {
                         ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()).getRefreshToken());
-                        ctx.redirect("/index.html", HttpStatus.OK);
+                        ctx.redirect("https://georgepauer.com/index.html", HttpStatus.PERMANENT_REDIRECT);
                     } catch (IOException e) {
                         logger.error("IOException", e);
-                        ctx.redirect("/", HttpStatus.UNAUTHORIZED);
+                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
                     } catch (URISyntaxException e) {
                         logger.error("URISyntaxException", e);
-                        ctx.redirect("/", HttpStatus.BAD_REQUEST);
+                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
                     } catch (InterruptedException e) {
                         logger.error("InterruptedException", e);
-                        ctx.redirect("/", HttpStatus.INTERNAL_SERVER_ERROR);
+                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
                     }
                 });
             });
