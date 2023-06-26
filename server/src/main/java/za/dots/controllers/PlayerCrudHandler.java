@@ -26,9 +26,9 @@ import java.nio.charset.StandardCharsets;
 
 public class PlayerCrudHandler implements PlayerApi {
 
-    Logger logger;
+    private Logger logger;
 
-    PlayerCrudHandler() {
+    public PlayerCrudHandler() {
         this.logger = LoggerFactory.getLogger("PlayerCrudHandler ->");
     }
     @Override
