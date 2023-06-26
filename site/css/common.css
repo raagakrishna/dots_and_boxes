@@ -68,7 +68,9 @@ input[type=submit] {
     margin-right: 10%;
 
     margin-bottom: 0px;
-    display: none;
+    /* display: none; */
+
+    display: flex; align-items: center;
 }
 
 .failure {
@@ -80,6 +82,42 @@ input[type=submit] {
     background-color: #aaffaa;
     border: 1px solid #00ff00;   
 }
+
+#loading-screen {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+  
+.loader {
+    border: 4px solid white;
+    border-top: 4px solid #8e8efa;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 2s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+  
+@keyframes spin {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+
+
 
 @media screen and (max-width: 600px) {
     body {

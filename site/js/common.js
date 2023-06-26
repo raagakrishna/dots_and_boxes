@@ -1,7 +1,8 @@
-var backendUrl = 'https://georgepauer.com';
+const backendUrl = 'http://localhost:8080'
+//const backendUrl = 'https://georgepauer.com';
 
 function addHeader() {
-    localStorage.setItem("username", "peter");
+    // localStorage.setItem("username", "peter");
 
     var myHeader = document.getElementById("header");
     myHeader.classList.add("purple_box");
@@ -41,9 +42,24 @@ function addHeader() {
 
     dropdown.appendChild(ul);
     myHeader.appendChild(dropdown);
+
+    addLoader();
+}
+
+function addLoader() {
+    var loadingScreen = document.createElement("section");
+    loadingScreen.setAttribute("id", "loading-screen");
+
+    var loader = document.createElement("p");
+    loader.setAttribute("class", "loader");
+
+    loadingScreen.appendChild(loader);
+    document.body.appendChild(loadingScreen);
 }
 
 function logoutPlayer(username) {
+    showLoadingScreen();
+    
     fetch(`${backendUrl}/player/${username}/logout`, {
         method: 'GET',
         headers: setHeaders()
@@ -60,10 +76,14 @@ function logoutPlayer(username) {
     })
     .then(function (message) {
         // TODO: handle the success response (logout)
+        localStorage.clear();
         window.location.href = 'login.html';
     })
     .catch(function (error) {
         updateDisplayResult('failure', error);
+    })
+    .finally(function () {
+        hideLoadingScreen();
     });
 }
 
@@ -95,8 +115,9 @@ function updateDisplayResult(displayType, message, special) {
     var closeButton = document.createElement('span');
     closeButton.textContent = 'X';
     closeButton.style.cursor = 'pointer';
-    closeButton.style.marginLeft = '5px';
+    closeButton.style.marginLeft = '10px';
     closeButton.style.float = 'right';
+    closeButton.style.transform = 'translateY(-50%)';
 
     if (displayType === 'failure') {
         closeButton.style.color = 'red';
@@ -127,4 +148,13 @@ function setHeaders() {
     // headers.append('Session-Id', localStorage.getItem('sessionId')); // Include session ID in the headers
   
     return headers;
+}
+
+function showLoadingScreen() {
+    document.getElementById('loading-screen').style.display = 'block';
   }
+  
+  function hideLoadingScreen() {
+    document.getElementById('loading-screen').style.display = 'none';
+  }
+  
