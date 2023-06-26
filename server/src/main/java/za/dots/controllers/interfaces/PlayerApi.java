@@ -1,7 +1,10 @@
 package za.dots.controllers.interfaces;
 
+import za.dots.models.JWTResponse;
 import za.dots.models.Player;
 import za.dots.models.Room;
+
+import java.io.IOException;
 
 public interface PlayerApi {
 
@@ -43,8 +46,19 @@ public interface PlayerApi {
     // request mapping: /player/login
     // query: username (String: Username of player)
     // query: password (String: Password of player)
-    // GET response
-    String loginPlayer(String username, String password);
+    // POST
+    String loginPlayer(String body);
+
+    // Login a player
+    // response 200: Player logged in successfully
+    // response 401: Unauthorized
+    // response 400: Invalid request
+    // response 500: Internal server error
+    // request mapping: /player/login
+    // query: username (String: Username of player)
+    // query: password (String: Password of player)
+    // POST
+    JWTResponse registerPlayer(String body) throws IOException;
 
     // Logout a player
     // response 400: Player logged out successfully

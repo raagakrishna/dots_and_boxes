@@ -1,9 +1,11 @@
 package za.dots.models;
 
 public class Player {
-    private String username = null;
+    private String username;
 
-    private String password = null;
+    private String email;
+
+    private String password;
 
     public Player() { }
 
@@ -11,11 +13,19 @@ public class Player {
         this.username = username;
     }
 
-    public Player(String username, String password) {
+    public Player(String username, String password, String email) {
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public String getUsername() {
         return username;
     }

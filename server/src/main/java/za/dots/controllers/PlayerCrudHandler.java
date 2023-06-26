@@ -1,12 +1,19 @@
 package za.dots.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ConflictResponse;
 import io.javalin.http.NotFoundResponse;
 import io.javalin.http.NotImplementedResponse;
 import za.dots.controllers.interfaces.PlayerApi;
+import za.dots.models.JWTResponse;
 import za.dots.models.Player;
 import za.dots.models.Room;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class PlayerCrudHandler implements PlayerApi {
     @Override
@@ -60,5 +67,17 @@ public class PlayerCrudHandler implements PlayerApi {
     @Override
     public Player updatePlayer(String username, Player player) {
         throw new NotImplementedResponse("This was not implemented.");
+    }
+
+    @Override
+    public JWTResponse registerPlayer(String body) throws IOException {
+        URL url = new URL("http://127.0.0.1:7071/register");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("accept", "application/json");
+        connection.setRequestProperty("body", body);
+        connection.setRequestMethod("POST");
+        InputStream responseStream = connection.getInputStream();
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(responseStream, JWTResponse.class);
     }
 }

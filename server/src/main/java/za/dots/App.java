@@ -2,6 +2,8 @@ package za.dots;
 
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SSLPlugin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
@@ -10,6 +12,7 @@ import za.dots.models.Player;
 import io.javalin.http.staticfiles.Location;
 
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -18,6 +21,7 @@ public class App
 {
     public static void main( String[] args )
     {
+        Logger logger = LoggerFactory.getLogger("BACKEND SERV ->");
         SSLPlugin sslPlugin = new SSLPlugin(conf -> {
             conf.pemFromPath(
                     System.getenv("CERT_PATH"),
@@ -36,6 +40,14 @@ public class App
             config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
             });}
         ).start(8080);
+
+        app.before((ctx) -> {
+           logger.info("Javalin Before ->", ctx);
+        });
+
+        app.after((ctx) -> {
+            logger.info("Javalin After ->", ctx);
+        });
 
         app.routes(() -> {
             // room
@@ -134,11 +146,22 @@ public class App
                 });
                 // loginPlayer
                 post("login", ctx -> {
-                    ctx.result(
-                            playerCrudHandler.loginPlayer(ctx.queryParam("username"), ctx.queryParam("password"))
-                    );
+                    try {
+                        ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()));
+                        ctx.result("/", 200);
+                    } catch (IOException e) {
+                        ctx.redirect("/", 403);
+                    }
                 });
-                // logoutPlayer
+                //register a player
+                post("register", ctx -> {
+                    try {
+                        ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()));
+                        ctx.result("/", 200);
+                    } catch (IOException e) {
+                        ctx.redirect("/", 403);
+                    }
+                });
             });
 
         });
