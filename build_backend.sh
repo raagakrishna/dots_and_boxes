@@ -11,4 +11,6 @@ DB_PASS="" \
 CERT_PATH="" \
 CERT_PATH_KEY="" \
 CERT_PASS="" \
+privateKey="" \
+publicKey="" \
 java -jar ./server/target/dots_boxes-1.0-SNAPSHOT-jar-with-dependencies.jar
