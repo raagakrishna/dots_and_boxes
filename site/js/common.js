@@ -1,4 +1,4 @@
-var backendUrl = 'https://georgepauer.com';
+export const backendUrl = 'https://georgepauer.com';
 
 function addHeader() {
     localStorage.setItem("username", "peter");
@@ -31,7 +31,7 @@ function addHeader() {
     ul.appendChild(li1);
 
     var li2 = document.createElement("li");
-    a2 = document.createElement("a");
+    let a2 = document.createElement("a");
     a2.textContent = "Logout";
     a2.onclick = function() {
         logoutPlayer(localStorage.getItem("username"));
@@ -41,6 +41,57 @@ function addHeader() {
 
     dropdown.appendChild(ul);
     myHeader.appendChild(dropdown);
+}
+
+export const loginPlayer = (username, password) => {
+    fetch(`${backendUrl}/player/login`, {
+        method: 'GET',
+        headers: setHeaders(),
+        body: {"username" : username, "password" : password}
+    })
+        .then(function (response) {
+            if (response.ok) {
+                localStorage.setItem("token", response.headers.get("Authorization"))
+                localStorage.setItem("username", username)
+            }
+            else {
+                return response.json().then(function (errorMessage) {
+                    throw new Error(errorMessage.title);
+                });
+            }
+        })
+        .then(function (message) {
+            window.location.href = '${backendUrl}/index.html';
+        })
+        .catch(function (error) {
+            window.location.href = '${backendUrl}/whoops.html';
+        });
+}
+
+export const registerPlayer = (username, password, email) => {
+    let headers = setHeaders();
+    fetch(`${backendUrl}/player/register`, {
+        method: 'POST',
+        headers: headers,
+        body: {"username" : username, "password" : password, "email" : email}
+    })
+        .then(function (response) {
+            if (response.ok) {
+                localStorage.setItem("token", response.headers.get("Authorization"))
+                localStorage.setItem("username", username)
+            }
+            else {
+                return response.json().then(function (errorMessage) {
+                    throw new Error(errorMessage.title);
+                });
+            }
+        })
+        .then(function () {
+            window.location.href = '${backendUrl}/index.html';
+        })
+        .catch(function () {
+            window.location.href = '${backendUrl}/whoops.html';
+        });
 }
 
 function logoutPlayer(username) {
@@ -114,7 +165,7 @@ function updateDisplayResult(displayType, message, special) {
     displayResult.appendChild(closeButton);
 }
 
-function setHeaders() {
+export const setHeaders = () => {
     let headers = new Headers();
   
     headers.append('Content-Type', 'application/json');

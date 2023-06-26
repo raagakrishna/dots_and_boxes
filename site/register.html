@@ -15,14 +15,14 @@
     <section class="tab-form registerForm">
         <h3>Register</h3>
         <p id="display-result"></p>
-        <form action="https://georgepauer.com/player/register" method="post" id="registerForm">
-            <label>Email: </label>
+        <form onsubmit="registerPlayer(this.form.username, this.form.password, this.form.email)">
+            <label for="email">Email: </label>
             <input type="text" name="email" id="email" required="true" maxlength="20" />
             <br/><br/>
-            <label>Username: </label>
+            <label for="username">Username: </label>
             <input type="text" name="username" id="username" required="true" maxlength="20" />
             <br/><br/>
-            <label>Password: </label>
+            <label for="password">Password: </label>
             <input type="password" name="password" id="password" required="true" />
             <br/><br/>
 <!--            <label>Confirm password: </label>-->

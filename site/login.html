@@ -15,12 +15,12 @@
     <section class="tab-form loginForm">
         <h3>Login</h3>
         <p id="display-result"></p>
-        <form action="https://georgepauer.com/player/login" method="post">
+        <form onsubmit="loginPlayer(this.form.username, this.form.password)">
             <label>Username: </label>
-            <input type="text" name="usernameInput" id="usernameInput" required="true" maxlength="20" />
+            <input type="text" name="username" id="username" required="true" maxlength="20" />
             <br/><br/>
             <label>Password: </label>
-            <input type="password" name="passwordInput" id="passwordInput" required="true" />
+            <input type="password" name="password" id="password" required="true" />
             <br/><br/>
             <input type="submit" value="Login" />
         </form>
