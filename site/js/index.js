@@ -64,10 +64,8 @@ function createGameRoom(username, roomName, gridSize) {
     }
   })
   .then(function (data) {
-    console.log(data);
     localStorage.setItem("roomId", data.roomId);
     window.location.href = 'game.html';
-    // TODO: handle the success response (create game)
   })
   .catch(function (error) {
     updateDisplayResult('failure', error, 'create');
@@ -110,8 +108,6 @@ function joinGameRoom(username, gameID) {
     }
   })
   .then(function (data) {
-    console.log(data);
-    // TODO: handle the success response (join room)
     localStorage.setItem("roomId", data.roomId);
     window.location.href = 'game.html';
   })
@@ -152,8 +148,6 @@ function playerRoom(username) {
       }
   })
   .then(function (data) {
-      console.log(data);
-      // updateDisplayResult('success', message);
       localStorage.setItem("roomId", data);
       window.location.href = 'game.html';
       return data;

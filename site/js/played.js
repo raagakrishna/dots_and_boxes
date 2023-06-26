@@ -53,7 +53,6 @@ function roomsFound(data) {
 
     for (let i = 0 ; i < data.length ; i++) {
         const gameData = data[i];
-        console.log(gameData);
         
         var article = document.createElement('article');
         article.classList.add("game-result");

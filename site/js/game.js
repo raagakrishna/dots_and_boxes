@@ -21,18 +21,18 @@ function getSocket() {
     openSocketConnection(roomId);
         
     socket.addEventListener('open', () => {
-        console.log('WebSocket connection established');
+        // console.log('WebSocket connection established');
     });
                 
     socket.addEventListener('message', (event) => {
         // Handle the received message
         thisRoom = JSON.parse(event.data);
-        console.log(thisRoom);
+        // console.log(thisRoom);
         updateGame();
     });
                 
     socket.addEventListener('close', () => {
-        console.log('WebSocket connection closed');
+        // console.log('WebSocket connection closed');
         openSocketConnection(roomId);
         getSocket();
     });
@@ -419,7 +419,6 @@ function sendPlayerMove(roomID, username, x, y){
         }
     })
     .then(function (data) {
-        // TODO: handle the success response (player move)
         updateDisplayResult('success', 'Line selected.');
         thisRoom = JSON.parse(data);
         updateGame();
@@ -473,7 +472,6 @@ function startGame(username, roomID) {
         }
     })
     .then(function (data) {
-        // TODO: handle the success response (start room)
         updateDisplayResult('success', 'Room started successfully!');
         thisRoom = data;
         updateGame();
@@ -504,7 +502,6 @@ function leaveGame(username, roomID) {
         }
     })
     .then(function (data) {
-        // TODO: handle the success response (leave room)
         window.location.href = 'index.html';
     })
     .catch(function (error) {
@@ -533,7 +530,6 @@ function deleteGame(username, roomID) {
         }
     })
     .then(function (data) {
-        // TODO: handle the success response (delete room)
         window.location.href = 'index.html';
     })
     .catch(function (error) {
