@@ -12,24 +12,30 @@ function loadGamePage() {
         const roomId = localStorage.getItem("roomId");
         getRoom(roomId);
         
-        openSocketConnection(roomId);
-        
-        socket.addEventListener('open', () => {
-            console.log('WebSocket connection established');
-        });
-                  
-        socket.addEventListener('message', (event) => {
-            // Handle the received message
-            thisRoom = JSON.parse(event.data);
-            console.log(thisRoom);
-            updateGame();
-        });
-                  
-        socket.addEventListener('close', () => {
-            console.log('WebSocket connection closed');
-            openSocketConnection(roomId);
-        });
+        getSocket();
     }  
+}
+
+function getSocket() {
+    const roomId = localStorage.getItem("roomId");
+    openSocketConnection(roomId);
+        
+    socket.addEventListener('open', () => {
+        console.log('WebSocket connection established');
+    });
+                
+    socket.addEventListener('message', (event) => {
+        // Handle the received message
+        thisRoom = JSON.parse(event.data);
+        console.log(thisRoom);
+        updateGame();
+    });
+                
+    socket.addEventListener('close', () => {
+        console.log('WebSocket connection closed');
+        openSocketConnection(roomId);
+        getSocket();
+    });
 }
 
 function openSocketConnection(roomId) {
@@ -69,6 +75,8 @@ function getRoom(roomID) {
 }
 
 function updateGame() {
+    if (thisRoom.status == 'CLOSED')
+        window.location.href = 'played.html';
     populateGameInfo(thisRoom.roomName, thisRoom.status, thisRoom.roomId, thisRoom.creator.username, thisRoom.game.currentPlayer.username, thisRoom.players);
     populatePlayerScores(thisRoom.game.scores, thisRoom.status);
     populateGrid(thisRoom.game, thisRoom.players);
