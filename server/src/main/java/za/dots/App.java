@@ -2,6 +2,7 @@ package za.dots;
 
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SSLPlugin;
+import io.javalin.http.staticfiles.Location;
 import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
