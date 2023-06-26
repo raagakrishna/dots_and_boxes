@@ -12,4 +12,3 @@ CERT_PATH="" \
 CERT_PATH_KEY="" \
 CERT_PASS="" \
 java -jar ./server/target/dots_boxes-1.0-SNAPSHOT-jar-with-dependencies.jar
-#nohup java -jar ./identity_server/target/dots_boxes-1.0-SNAPSHOT-jar-with-dependencies.jar &
