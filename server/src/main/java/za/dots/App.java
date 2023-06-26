@@ -171,9 +171,12 @@ public class App {
 
     // Sends a message from one user to all users, along with a list of current usernames
     private static void broadcastRoom(String roomId, Room message) {
-        WsContext session = roomSessions.get(roomId);
-        if (session != null) {
-            session.send(message);
+        for (Map.Entry<String, WsContext> entry : roomSessions.entrySet()) {
+            String roomKey = entry.getKey();
+            WsContext session = entry.getValue();
+            if (roomKey.equals(roomId) ) {
+                session.send(message);
+            }
         }
     }
 }

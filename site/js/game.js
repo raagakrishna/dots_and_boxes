@@ -12,16 +12,13 @@ function loadGamePage() {
         const roomId = localStorage.getItem("roomId");
         getRoom(roomId);
         
-        socket = new WebSocket('ws://localhost:8080/room/' + roomId);
+        openSocketConnection(roomId);
         
         socket.addEventListener('open', () => {
             console.log('WebSocket connection established');
         });
                   
         socket.addEventListener('message', (event) => {
-            // console.log('Received message:', event.data);
-            // console.log(event.data);
-
             // Handle the received message
             thisRoom = JSON.parse(event.data);
             console.log(thisRoom);
@@ -30,9 +27,14 @@ function loadGamePage() {
                   
         socket.addEventListener('close', () => {
             console.log('WebSocket connection closed');
-            socket = new WebSocket('ws://localhost:8080/room/' + roomId);
+            openSocketConnection(roomId);
         });
     }  
+}
+
+function openSocketConnection(roomId) {
+    socket = new WebSocket('ws://localhost:8080/room/' + roomId);
+    socket.timeout = 2147483647; // Set a very large timeout value (approximately 24.8 days)
 }
 
 function getRoom(roomID) {
@@ -53,7 +55,6 @@ function getRoom(roomID) {
         }
     })
     .then(function (data) {
-        console.log(data);
         thisRoom = data;
         updateGame();
     })
@@ -425,11 +426,6 @@ function startBtnClicked() {
     var roomID = thisRoom.roomId;
     var username = localStorage.getItem("username");
 
-    // const message = JSON.stringify({ action: 'startGame' });
-    // console.log(message);
-    // console.log(socket);
-    // socket.send(message);
-
     startGame(username, roomID);
 }
 
@@ -463,7 +459,6 @@ function startGame(username, roomID) {
         }
     })
     .then(function (data) {
-        console.log(data);
         // TODO: handle the success response (start room)
         updateDisplayResult('success', 'Room started successfully!');
         thisRoom = data;
@@ -495,7 +490,6 @@ function leaveGame(username, roomID) {
         }
     })
     .then(function (data) {
-        console.log(data);
         // TODO: handle the success response (leave room)
         window.location.href = 'index.html';
     })
@@ -525,7 +519,6 @@ function deleteGame(username, roomID) {
         }
     })
     .then(function (data) {
-        console.log(data);
         // TODO: handle the success response (delete room)
         window.location.href = 'index.html';
     })
