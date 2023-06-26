@@ -7,11 +7,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class GameDao {
-    public Game createGame(String roomId, String creatorUsername) throws SQLException {
+    public Game createGame(String roomId, String creatorUsername, Integer gridSize) throws SQLException {
         try {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
 
-            Game game = new Game();
+            Game game = new Game(gridSize);
 
             String query = "INSERT INTO [Game] (roomid,gridSize,status,currentPlayer) VALUES " +
                     "('" + roomId + "'," + game.getGridSize() + ",'" + Game.StatusEnum.WAITING.toString() + "', '" + creatorUsername + "')";
