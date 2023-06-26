@@ -156,32 +156,32 @@ public class App
                 post("login", ctx -> {
                     try {
                         ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()).getToken());
-                        ctx.redirect("https://georgepauer.com/index.html", HttpStatus.PERMANENT_REDIRECT);
+                        ctx.status(200);
                     } catch (IOException e) {
                         logger.error("IOException", e);
-                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
+                        ctx.status(401);
                     } catch (URISyntaxException e) {
                         logger.error("URISyntaxException", e);
-                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
+                        ctx.status(403);
                     } catch (InterruptedException e) {
                         logger.error("InterruptedException", e);
-                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
+                        ctx.status(500);
                     }
                 });
                 //register a player
                 post("register", ctx -> {
                     try {
                         ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()).getRefreshToken());
-                        ctx.redirect("https://georgepauer.com/index.html", HttpStatus.PERMANENT_REDIRECT);
+                        ctx.status(200);
                     } catch (IOException e) {
                         logger.error("IOException", e);
-                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
+                        ctx.status(401);
                     } catch (URISyntaxException e) {
                         logger.error("URISyntaxException", e);
-                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
+                        ctx.status(403);
                     } catch (InterruptedException e) {
                         logger.error("InterruptedException", e);
-                        ctx.redirect("https://georgepauer.com/whoops.html", HttpStatus.PERMANENT_REDIRECT);
+                        ctx.status(500);
                     }
                 });
             });
