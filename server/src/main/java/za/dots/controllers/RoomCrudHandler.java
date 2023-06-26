@@ -23,7 +23,7 @@ public class RoomCrudHandler implements RoomApi {
     private final SharedFunctions sharedFunctions = new SharedFunctions();
 
     @Override
-    public Room createRoom(String creatorUsername, String roomName) {
+    public Room createRoom(String creatorUsername, String roomName, Integer gridSize) {
         try {
             // assuming the creator exists in identity server
             Player creator = new Player(creatorUsername);
@@ -42,7 +42,7 @@ public class RoomCrudHandler implements RoomApi {
 
             Room room = this.roomDao.createRoom(roomName, creatorUsername); // create Room, create PlayerRoom (with creator = 1)
             if (room != null) {
-                Game game = this.gameDao.createGame(room.getRoomId(), creatorUsername); // insert into Game table
+                Game game = this.gameDao.createGame(room.getRoomId(), creatorUsername, gridSize); // insert into Game table
                 if (game == null)
                     throw new InternalServerErrorResponse("The room could not be created.");
 
@@ -280,7 +280,7 @@ public class RoomCrudHandler implements RoomApi {
             if (room.getCreator().getUsername().equals(username))
                 throw new BadRequestResponse("The creator cannot leave the room.");
             if (room.getStatus().equals(Room.StatusEnum.STARTED))
-                throw new BadRequestResponse("You cannot leave a game which has already started.");
+                throw new BadRequestResponse("You cannot leave a game which has already started; ask the creator to delete the game.");
             if (room.getStatus().equals(Room.StatusEnum.CLOSED))
                 throw new BadRequestResponse("You cannot leave a game which has ended.");
 

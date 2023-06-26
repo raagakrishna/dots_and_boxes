@@ -45,7 +45,7 @@ public class App {
                // createRoom
                 post(ctx -> {
                     ctx.json(
-                            roomCrudHandler.createRoom(ctx.queryParam("creatorUsername"), ctx.queryParam("roomName"))
+                            roomCrudHandler.createRoom(ctx.queryParam("creatorUsername"), ctx.queryParam("roomName"), Integer.valueOf(ctx.queryParam("gridSize")))
                     );
                 });
                 path("{roomId}", () -> {
