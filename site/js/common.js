@@ -1,4 +1,4 @@
-export const backendUrl = 'https://georgepauer.com';
+const backendUrl = 'https://georgepauer.com';
 
 function addHeader() {
     localStorage.setItem("username", "peter");
@@ -43,7 +43,7 @@ function addHeader() {
     myHeader.appendChild(dropdown);
 }
 
-export const loginPlayer = (username, password) => {
+function loginPlayer(username, password) {
     fetch(`${backendUrl}/player/login`, {
         method: 'GET',
         headers: setHeaders(),
@@ -68,7 +68,7 @@ export const loginPlayer = (username, password) => {
         });
 }
 
-export const registerPlayer = (username, password, email) => {
+function registerPlayer(username, password, email) {
     let headers = setHeaders();
     fetch(`${backendUrl}/player/register`, {
         method: 'POST',
@@ -165,7 +165,7 @@ function updateDisplayResult(displayType, message, special) {
     displayResult.appendChild(closeButton);
 }
 
-export const setHeaders = () => {
+function setHeaders() {
     let headers = new Headers();
   
     headers.append('Content-Type', 'application/json');
