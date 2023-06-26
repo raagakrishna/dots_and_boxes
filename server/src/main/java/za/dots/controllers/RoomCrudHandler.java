@@ -187,8 +187,10 @@ public class RoomCrudHandler implements RoomApi {
             // delete Room from database, also delete PlayerRoom, Dot, Line, Game, Score, Box
             boolean isDeleted = this.roomDao.deleteGame(roomId);
 
-            if (isDeleted)
+            if (isDeleted) {
+                room.setStatus(Room.StatusEnum.CLOSED);
                 return room;
+            }
 
             throw new InternalServerErrorResponse("The room could not be deleted.");
         }
