@@ -12,14 +12,14 @@ import za.dots.models.Player;
 import io.javalin.websocket.WsContext;
 import za.dots.models.Room;
 
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class App {
 
-    private static Map<String, WsContext> roomSessions = new ConcurrentHashMap<>();
+    private static Map<WsContext, String> roomSessions = new ConcurrentHashMap<>();
 
     public static void main( String[] args ) {
         SSLPlugin sslPlugin = new SSLPlugin(conf -> {
@@ -122,6 +122,12 @@ public class App {
                                 playerCrudHandler.findRoomByUsername(ctx.pathParam("username"))
                         );
                     });
+                    // findRoomsByUsername
+                    get("rooms", ctx -> {
+                        ctx.json(
+                                playerCrudHandler.findRoomsByUsername(ctx.pathParam("username"))
+                        );
+                    });
                     // getPlayerByUsername
                     get(ctx -> {
                         ctx.json(
@@ -153,27 +159,34 @@ public class App {
 
         app.ws("/room/{roomId}", ws -> {
             ws.onConnect(ctx -> {
+                System.out.println("before " + roomSessions.size());
                 String roomId = ctx.pathParam("roomId");
-                roomSessions.put(roomId, ctx);
+                roomSessions.put(ctx, roomId);
+                System.out.println("open " + roomSessions.size());
             });
 
             ws.onClose(ctx -> {
                 String roomId = ctx.pathParam("roomId");
-                roomSessions.remove(roomId);
+                roomSessions.remove(ctx);
+                System.out.println("close");
             });
 
             ws.onMessage(ctx -> {
                 String roomId = ctx.pathParam("roomId");
-                String message = ctx.message();
+//                String message = ctx.message();
+                Room room = roomCrudHandler.getRoomById(roomId);
+                broadcastRoom(roomId, room);
             });
         });
     }
 
     // Sends a message from one user to all users, along with a list of current usernames
     private static void broadcastRoom(String roomId, Room message) {
-        for (Map.Entry<String, WsContext> entry : roomSessions.entrySet()) {
-            String roomKey = entry.getKey();
-            WsContext session = entry.getValue();
+        System.out.println("broadcast " + roomSessions.size());
+        for (Map.Entry<WsContext, String> entry : roomSessions.entrySet()) {
+            String roomKey = entry.getValue();
+            System.out.println("roomKey " + roomKey);
+            WsContext session = entry.getKey();
             if (roomKey.equals(roomId) ) {
                 session.send(message);
             }
