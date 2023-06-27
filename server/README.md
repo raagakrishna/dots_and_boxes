@@ -3,8 +3,11 @@
 Run `create_tables_scripts.sql` to create the database tables. 
 
 Before running the `App.java`, set the following environmental variables: 
-- `DB_HOST` to `127.0.0.1:1433` for local database
-- `DB_NAME` to `DotsAndBoxes`
-- `DB_USER` to a local user
-- `DB_PASS` to the users password
-
+- `DB_NAME` = "DotsAndBoxes" 
+- `DB_USER` = "root"
+- `DB_PASS` = "RootPasswordForIDDB" 
+- `CERT_PATH` = "/etc/letsencrypt/live/georgepauer.com/fullchain.pem" 
+- `CERT_PATH_KEY` = "/etc/letsencrypt/live/georgepauer.com/privkey.pem" 
+- `CERT_PASS` = "Password@2023" 
+- `privateKey` = "/home/ubuntu/dots_and_boxes/pkcs8.key" 
+- `publicKey` = "/home/ubuntu/dots_and_boxes/publickey.crt" 
