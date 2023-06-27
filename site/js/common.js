@@ -128,6 +128,9 @@ function updateDisplayResult(displayType, message, special) {
     closeButton.style.marginLeft = '10px';
     closeButton.style.float = 'right';
     closeButton.style.transform = 'translateY(-50%)';
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '50%';
+    closeButton.style.right = '15px';
 
     if (displayType === 'failure') {
         closeButton.style.color = 'red';

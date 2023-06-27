@@ -68,9 +68,9 @@ input[type=submit] {
     margin-right: 10%;
 
     margin-bottom: 0px;
-    /* display: none; */
+    position: relative;
 
-    display: flex; align-items: center;
+    align-items: center;
 }
 
 .failure {
