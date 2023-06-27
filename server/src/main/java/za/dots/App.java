@@ -22,14 +22,10 @@ import za.dots.models.Room;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
-
-public class App
-{
-    public static void main( String[] args )
-    {
-        Logger logger = LoggerFactory.getLogger("BACKEND SERV ->");
 
 public class App {
 
@@ -55,14 +51,6 @@ public class App {
             });}
         ).start(8080);
 
-        app.after((ctx) -> {
-            logger.info("START REQUEST ->");
-            logger.info("Method -> " + ctx.method().toString());
-            logger.info("Status -> " + ctx.status().toString());
-            logger.info("Headers -> " + ctx.headerMap().toString());
-            logger.info("Url -> " + ctx.fullUrl().toString());
-            logger.info("Request Body -> " + ctx.body().toString());
-            logger.info("<- END REQUEST ");
         app.before("/room/*", ctx -> {
           if (!BackendJWTVerify.validate(ctx.header("token"))) {
                 ctx.status(403);
@@ -192,13 +180,10 @@ public class App {
                                 playerCrudHandler.loginPlayer(ctx.bodyAsClass(LoginInformation.class)).getToken());
                         ctx.status(200);
                     } catch (IOException e) {
-                        logger.error("IOException", e);
                         ctx.status(400);
                     } catch (URISyntaxException e) {
-                        logger.error("URISyntaxException", e);
                         ctx.status(403);
                     } catch (InterruptedException e) {
-                        logger.error("InterruptedException", e);
                         ctx.status(500);
                     }
                 });
@@ -209,13 +194,10 @@ public class App {
                                 playerCrudHandler.registerPlayer(ctx.bodyAsClass(RegisterInformation.class)).getToken());
                         ctx.status(200);
                     } catch (IOException e) {
-                        logger.error("IOException", e);
                         ctx.status(400);
                     } catch (URISyntaxException e) {
-                        logger.error("URISyntaxException", e);
                         ctx.status(403);
                     } catch (InterruptedException e) {
-                        logger.error("InterruptedException", e);
                         ctx.status(500);
                     }
                 });
