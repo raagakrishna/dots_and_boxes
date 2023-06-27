@@ -7,11 +7,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class GameDao {
-    public Game createGame(String roomId, String creatorUsername) throws SQLException {
+    public Game createGame(String roomId, String creatorUsername, Integer gridSize) throws SQLException {
         try {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
 
-            Game game = new Game();
+            Game game = new Game(gridSize);
 
             String query = "INSERT INTO [Game] (roomid,gridSize,status,currentPlayer) VALUES " +
                     "('" + roomId + "'," + game.getGridSize() + ",'" + Game.StatusEnum.WAITING.toString() + "', '" + creatorUsername + "')";
@@ -265,7 +265,7 @@ public class GameDao {
                 query = "UPDATE [Game] SET status = '" + gameStatus + "' WHERE roomid = '" + roomId + "'";
             }
             else {
-                query = "UPDATE [Game] SET staus = '" + gameStatus + "', winner = '" + winnerName  + "' WHERE roomid = ''";
+                query = "UPDATE [Game] SET status = '" + gameStatus + "', winner = '" + winnerName  + "' WHERE roomid = '" + roomId + "'";
             }
 
             if (datasourceConnection.executeUpdate(query) <= 0)
@@ -285,6 +285,34 @@ public class GameDao {
             String query = "UPDATE [Game] SET currentplayer = '" + currentPlayer + "' WHERE roomid = '" + roomId + "'";
             if (datasourceConnection.executeUpdate(query) <= 0)
                 return false;
+
+            return true;
+        }
+        catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public boolean deleteClosedGame(String roomId) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            // Delete records from Dot table
+            String deleteDotQuery = "DELETE FROM [Dot] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteDotQuery) <= 0)
+                return false;
+
+            // Delete records from Line table
+            String deleteLineQuery = "DELETE FROM [Line] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteLineQuery) <= 0)
+                return false;
+
+            // Delete records from Box table
+            String deleteBoxQuery = "DELETE FROM [Box] WHERE roomid = '" + roomId + "'";
+            if (datasourceConnection.executeUpdate(deleteBoxQuery) <= 0)
+                return false;
+
+            datasourceConnection.closeConnection();
 
             return true;
         }

@@ -12,7 +12,33 @@ function loginFormBtn(event) {
         return;
     }
 
-    loginPlayer(usernameInput, passwordInput);
+    loginPlayer(usernameInput.value, passwordInput.value);
+}
+
+function loginPlayer(username, password) {
+    fetch(`${backendUrl}/player/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
+        method: 'POST',
+        headers: setHeaders()
+    })
+    .then(function (response) {
+        if (response.ok) {
+            return response.text();
+        } 
+        else {
+            return response.json().then(function (errorMessage) {
+                throw new Error(errorMessage.title);
+            });
+        }
+    })
+    .then(function (message) {
+        // TODO: handle the success response (login)
+        updateDisplayResult('success', message);
+        localStorage.setItem("username", username);
+        window.location.href = 'index.html';
+    })
+    .catch(function (error) {
+        updateDisplayResult('failure', error);
+    });
 }
 
 function registerFormBtn(event) {

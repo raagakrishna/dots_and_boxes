@@ -7,6 +7,7 @@ import za.dots.models.Room;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 public interface PlayerApi {
 
@@ -28,7 +29,17 @@ public interface PlayerApi {
     // request mapping: /player/{username}/room
     // path: username (String: Username of the player)
     // GET request
-    Room findRoomByUsername(String username);
+    String findRoomByUsername(String username);
+
+    // Get the rooms the player is currently in
+    // response 200: Rooms found (List<Room>)
+    // response 404: Rooms not found
+    // response 400: Invalid request
+    // response 500: Internal server error
+    // request mapping: /player/{username}/rooms
+    // path: username (String: Username of the player)
+    // GET request
+    List<Room> findRoomsByUsername(String username);
 
     // Get player by username
     // response 200: Successfully retrieved the player (Player)

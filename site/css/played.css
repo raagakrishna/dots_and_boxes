@@ -1,0 +1,20 @@
+.tab-form .game-result {
+    margin: 20px;
+    border-bottom: 1px solid black;
+    font-size: 12px;
+}
+
+.tab-form .game-result .game-name{
+    font-size: 14px;
+    margin: 0;
+    text-align: left;
+}
+
+.tab-form .game-result p {
+    margin-top: 5;
+    margin-bottom: 5;
+}
+
+.tab-form h2 {
+    text-align: center;
+}

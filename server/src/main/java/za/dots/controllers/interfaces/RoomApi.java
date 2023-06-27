@@ -16,7 +16,7 @@ public interface RoomApi {
     // query: creatorUsername (String: Username of the creator)
     // query: roomName (String: Game room name)
     // POST request
-    Room createRoom(String creatorUsername, String roomName) throws SQLException;
+    Room createRoom(String creatorUsername, String roomName, Integer gridSize) throws SQLException;
 
     // delete a room
     // response 200: Room deleted successfully (Room)
@@ -85,7 +85,7 @@ public interface RoomApi {
     // path: username (String: username of the player playing the game)
     // body: coordinate (CoOrdinate: the line the player has played)
     // POST request
-    String sendGameState(String roomId, String username, CoOrdinate coordinate) throws SQLException;
+    Room sendGameState(String roomId, String username, CoOrdinate coordinate) throws SQLException;
 
     // start a room
     // response 200: Room started successfully (Room)
