@@ -77,7 +77,7 @@ function registerPlayer(username, password, email) {
 
      let headers = setHeaders();
 
-     fetch(`${backendUrl}/player/register`, {
+     fetch(`${backendUrl}/register`, {
 
          method: 'POST',
 
