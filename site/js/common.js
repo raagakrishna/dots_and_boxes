@@ -14,7 +14,6 @@ const backendUrl = 'https://georgepauer.com';
 // }
 
 function addHeader() {
-    localStorage.setItem("username", "peter");
 
     var myHeader = document.getElementById("header");
     myHeader.classList.add("purple_box");
