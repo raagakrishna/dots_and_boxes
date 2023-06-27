@@ -26,7 +26,8 @@ public class BackendJWTVerify {
         RSAPublicKey publicKey = getRSAPublicKey(System.getenv("publicKey"));
         Algorithm algorithm = Algorithm.RSA512(publicKey);
         JWTVerifier verifier = JWT.require(algorithm)
-                .withIssuer(System.getenv(""))
+                .withIssuer(System.getenv("issuer"))
+                .withAudience(System.getenv("audience"))
                 .build();
         try {
             verifier.verify(jwt);
