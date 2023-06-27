@@ -33,7 +33,7 @@ public class JwtUtils {
 
     public JWTResponse generateToken(User user) {
 
-        return new JWTResponse(generateToken(user.getUsername(), 300),
+        return new JWTResponse(generateToken(user.getUsername(), 30000),
                 generateRefreshToken(user.getUsername(), 86400));
     }
 
