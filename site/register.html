@@ -14,15 +14,15 @@
     <section class="tab-form registerForm">
         <h3>Register</h3>
         <p id="display-result"></p>
-        <form onsubmit="registerPlayer(this.username.value, this.password.value, this.email.value)">
-            <label for="email">Email: </label>
-            <input type="text" name="email" id="email" required="true"  />
+        <form onsubmit="registerFormBtn(event)">
+            <label for="emailInput">Email: </label>
+            <input type="text" name="email" id="emailInput" required="true"  />
             <br/><br/>
-            <label for="username">Username: </label>
-            <input type="text" name="username" id="username" required="true" />
+            <label for="usernameInput">Username: </label>
+            <input type="text" name="username" id="usernameInput" required="true" />
             <br/><br/>
-            <label for="password">Password: </label>
-            <input type="password" name="password" id="password" required="true" />
+            <label for="passwordInput">Password: </label>
+            <input type="password" name="password" id="passwordInput" required="true" />
             <br/><br/>
 <!--            <label>Confirm password: </label>-->
 <!--            <input type="password" name="confirmPasswordInput" id="confirmPasswordInput" required="true" />-->
