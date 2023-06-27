@@ -1,5 +1,4 @@
-//const backendUrl = 'https://georgepauer.com';
-const backendUrl = 'http://localhost:8080';
+const backendUrl = 'https://georgepauer.com';
 
 function loginFormBtn(event) {
     event.preventDefault();
