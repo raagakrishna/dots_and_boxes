@@ -18,4 +18,4 @@ This game is built using Maven and jdk 11. Use your normal Maven comamnds to bui
 
 ## Things to note 
 
-The hosted game plays very slowly; a manual reload may be necessary to refresh the page. 
+The hosted game plays very slowly; a manual reload may be necessary to refresh the page. Additionally, you will need a very strong password to register; please ensure your password is strong enough.
