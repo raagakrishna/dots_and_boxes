@@ -2,6 +2,7 @@ package za.dots;
 
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SSLPlugin;
+import io.javalin.http.servlet.JavalinServletContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import za.dots.controllers.BackendJWTVerify;
@@ -31,7 +32,7 @@ public class App {
 
     private static Map<WsContext, String> roomSessions = new ConcurrentHashMap<>();
 
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         SSLPlugin sslPlugin = new SSLPlugin(conf -> {
             conf.pemFromPath(
                     System.getenv("CERT_PATH"),
@@ -43,27 +44,52 @@ public class App {
         RoomCrudHandler roomCrudHandler = new RoomCrudHandler();
         Javalin app = Javalin.create(config -> {
             config.plugins.register(sslPlugin);
-            config.plugins.enableCors(cors -> {
-                cors.add(it -> {
-                    it.anyHost();
-                });
-                config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
-            });}
+                    config.plugins.enableCors(cors -> {
+                        cors.add(it -> {
+                            it.anyHost();
+                        });
+                        config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
+                    });
+                }
         ).start(8080);
-
         app.before("/room/*", ctx -> {
-          if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
                 ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
+            }
+        });
+        app.before("/room", ctx -> {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+                ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
             }
         });
         app.before("/player/*", ctx -> {
-          if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+
                 ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
+            }
+        });
+        app.before("/player", ctx -> {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+
+                ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
+            }
+        });
+        app.before("/players", ctx -> {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+
+                ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
             }
         });
         app.before("/players/*", ctx -> {
-          if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+
                 ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
             }
         });
 
@@ -98,11 +124,11 @@ public class App {
             });
             // room
             path("room", () -> {
-               // getRooms
+                // getRooms
                 get(ctx -> {
                     ctx.json(roomCrudHandler.getRooms());
                 });
-               // createRoom
+                // createRoom
                 post(ctx -> {
                     ctx.json(
                             roomCrudHandler.createRoom(ctx.queryParam("creatorUsername"), ctx.queryParam("roomName"), Integer.valueOf(ctx.queryParam("gridSize")))
@@ -136,7 +162,7 @@ public class App {
                         broadcastRoom(roomId, room);
                         ctx.json(room);
                     });
-                   // sendGameState
+                    // sendGameState
                     post("sendPlayerMove/{username}", ctx -> {
                         String roomId = ctx.pathParam("roomId");
                         Room room = roomCrudHandler.sendGameState(roomId, ctx.pathParam("username"), ctx.bodyAsClass(CoOrdinate.class));
@@ -151,7 +177,7 @@ public class App {
                         ctx.json(room);
                     });
                 });
-           });
+            });
 
             path("players", () -> {
                 // getPlayers
@@ -229,7 +255,7 @@ public class App {
         for (Map.Entry<WsContext, String> entry : roomSessions.entrySet()) {
             String roomKey = entry.getValue();
             WsContext session = entry.getKey();
-            if (roomKey.equals(roomId) ) {
+            if (roomKey.equals(roomId)) {
                 session.send(message);
             }
         }
