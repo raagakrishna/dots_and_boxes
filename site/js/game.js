@@ -202,6 +202,17 @@ function populateGameInfo(roomName, roomStatus, roomId, roomCreator, roomCurrent
         const value = document.createTextNode(gameData[key]);
         li.appendChild(value);
 
+        if (key == "Room ID") {
+            li.style.cursor = 'help';
+            li.classList.add("tooltip");
+
+            console.log("here", value)
+            var p = document.createElement("p");
+            p.classList.add("tooltip-text");
+            p.innerHTML = "Use this to join a game";
+            li.appendChild(p);
+        }
+
         gameInfo.appendChild(li);
     }
 

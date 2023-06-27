@@ -119,6 +119,28 @@ button.hidden {
     display: none;
 }
 
+.tooltip {
+    position: relative;
+}
+
+.tooltip .tooltip-text {
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    right: 0;
+}
+  
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+}
+
 
 @media screen and (max-width: 1200px) {
     .game-details {
