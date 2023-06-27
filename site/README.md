@@ -1,3 +1,3 @@
 ## Front end
 
-Replace the `backendUrl` in `js/common.js` to the port your backend is running on.
+Replace the `backendUrl` in `js/common.js` to the localhost url the server is running on your machine.
