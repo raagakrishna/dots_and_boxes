@@ -5,14 +5,14 @@ Create a sql server database and run the `info.sql` script to create the necessa
 
 ### Environment Variables
 Set the following environment variables for the server to work
-- `audience` = "https://georgepauer.com" 
+- `audience` = "" 
 - `dbName` = "OAuth" 
-- `dbPassword` = "ThisPasswordIsForTheOAuthUser12!" 
-- `dbUrl` = "mssqldb.cazaz9ris2iv.af-south-1.rds.amazonaws.com" 
-- `dbUsername` = "IdentityUser" 
-- `issuer` = "https://georgepauer.com" 
-- `privateKey` = "/home/ubuntu/dots_and_boxes/pkcs8.key" 
-- `publicKey` = "/home/ubuntu/dots_and_boxes/publickey.crt" 
+- `dbPassword` = "" 
+- `dbUrl` = "" 
+- `dbUsername` = "" 
+- `issuer` = "" 
+- `privateKey` = "" 
+- `publicKey` = "" 
 
 ### RSAKeys
 Run the following commands to generate the RSA keys for the program
