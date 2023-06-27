@@ -30,7 +30,7 @@ function loginPlayer(username, password) {
     })
     .then((response) => {
         if (response.ok) {
-            if (response.headers.get("Authorization") != null && response.headers.get("Authorization") != 'null') {
+            if (response.headers.get("Authorization") != 'Bearer null') {
                 localStorage.setItem("token", response.headers.get("Authorization"));
                 localStorage.setItem("username", username);
                 window.location.href = `${backendUrl}/index.html`;
@@ -58,7 +58,7 @@ function registerPlayer(username, password, email) {
     })
     .then((response) => {
         if (response.ok) {
-            if (response.headers.get("Authorization") != null && response.headers.get("Authorization") != 'null') {
+            if (response.headers.get("Authorization") != 'Bearer null') {
                 localStorage.setItem("token", response.headers.get("Authorization"));
                 localStorage.setItem("username", username);
                 window.location.href = `${backendUrl}/index.html`;
