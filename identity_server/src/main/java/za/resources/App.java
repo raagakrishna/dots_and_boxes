@@ -76,7 +76,6 @@ public class App {
     }
 
     private static void updatePassword(Context context) {
-
         String password = getPassword(context);
         String email = getEmail(context);
         if (DatabaseAccess.UpdatePassword(email, password)) {

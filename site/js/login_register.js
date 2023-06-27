@@ -1,4 +1,5 @@
-const backendUrl = 'https://georgepauer.com';
+//const backendUrl = 'https://georgepauer.com';
+const backendUrl = 'http://localhost:8080';
 
 function loginFormBtn(event) {
     event.preventDefault();
@@ -38,21 +39,24 @@ function registerFormBtn(event) {
 
 function loginPlayer(username, password) {
     fetch(`${backendUrl}/player/login`, {
-        method: 'GET',
+        method: 'POST',
         headers: setHeaders(),
-        body: {"username" : username, "password" : password}
+        body: JSON.stringify({"username" : username, "password" : password})
     })
         .then((response) => {
+            console.log("REGISTERED")
             if (response.ok) {
                 localStorage.setItem("token", response.headers.get("Authorization"))
                 localStorage.setItem("username", username)
                 window.location.href = '${backendUrl}/index.html';
             }
             else {
+                console.log("REGISTERED")
                 window.location.href = '${backendUrl}/whoops.html';
             }
         })
         .catch(function (error) {
+            console.log("REGISTERED")
             window.location.href = '${backendUrl}/whoops.html';
         });
 }
@@ -62,7 +66,7 @@ function registerPlayer(username, password, email) {
     fetch(`${backendUrl}/player/register`, {
         method: 'POST',
         headers: headers,
-        body: {"username" : username, "password" : password, "email" : email}
+        body: JSON.stringify({username : username, password : password, email : email})
     })
         .then((response) => {
             if (response.ok) {

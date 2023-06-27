@@ -70,36 +70,33 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public JWTResponse loginPlayer(String body) throws IOException, URISyntaxException, InterruptedException {
+    public JWTResponse loginPlayer(Object body) throws IOException, URISyntaxException, InterruptedException {
         URI url = new URI("http://127.0.0.1:7071/login");
         return getJwtResponse(body, url);
     }
 
-    private JWTResponse getJwtResponse(String body, URI uri) throws IOException, InterruptedException {
+    private JWTResponse getJwtResponse(Object body, URI uri) throws IOException, InterruptedException {
         this.logger.info("getJwtResponse start ->");
-        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
         ObjectMapper objectMapper = new ObjectMapper();
+        byte[] bytes = objectMapper.writeValueAsString(body).getBytes(StandardCharsets.UTF_8);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .POST(HttpRequest.BodyPublishers.ofString(new String(bytes, StandardCharsets.UTF_8)))
                 .build();
         HttpClient client = HttpClient.newHttpClient();
-        Object bodyObj = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-        byte[] response = client.send(request, HttpResponse.BodyHandlers.ofString()).body().getBytes(StandardCharsets.UTF_8);
-        logger.info(bodyObj.toString());
-        JWTResponse jwtResponse = objectMapper.readValue(response, JWTResponse.class);
-        logger.info("MESSAGE:" + jwtResponse.getMessage());
-        logger.info("TOKEN:" + jwtResponse.getToken());
-        logger.info("REFRESH_TOKEN:" + jwtResponse.getRefreshToken());
-        return jwtResponse;
+        HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (httpResponse.statusCode() == 200) {
+            String bodyObj = httpResponse.body();
+            logger.info(bodyObj);
+            JWTResponse jwtResponse = objectMapper.readValue(bodyObj, JWTResponse.class);
+            logger.info("MESSAGE:" + jwtResponse.getMessage());
+            logger.info("TOKEN:" + jwtResponse.getToken());
+            logger.info("REFRESH_TOKEN:" + jwtResponse.getRefreshToken());
+            return jwtResponse;
+        }
+        throw new IOException();
     }
-
-//    @Override
-//    public String loginPlayer(String username, String password) {
-//
-//        throw new NotImplementedResponse("This was not implemented.");
-//    }
 
     @Override
     public String logoutPlayer(String sessionId) {
@@ -112,7 +109,7 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public JWTResponse registerPlayer(String body) throws IOException, URISyntaxException, InterruptedException {
+    public JWTResponse registerPlayer(Object body) throws IOException, URISyntaxException, InterruptedException {
         URI url = new URI("http://127.0.0.1:7071/register");
         return getJwtResponse(body, url);
     }

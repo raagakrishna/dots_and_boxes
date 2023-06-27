@@ -8,9 +8,11 @@ import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
 import za.dots.models.CoOrdinate;
+import za.dots.models.LoginInformation;
 import za.dots.models.Player;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.http.HttpStatus;
+import za.dots.models.RegisterInformation;
 
 
 import java.io.IOException;
@@ -39,7 +41,7 @@ public class App
                 cors.add(it -> {
                     it.anyHost();
                 });
-            config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
+                config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
             });}
         ).start(8080);
 
@@ -155,11 +157,12 @@ public class App
                 // loginPlayer
                 post("login", ctx -> {
                     try {
-                        ctx.header("Authorization", "Bearer " + playerCrudHandler.loginPlayer(ctx.body()).getToken());
+                        ctx.header("Authorization", "Bearer " +
+                                playerCrudHandler.loginPlayer(ctx.bodyAsClass(LoginInformation.class)).getToken());
                         ctx.status(200);
                     } catch (IOException e) {
                         logger.error("IOException", e);
-                        ctx.status(401);
+                        ctx.status(400);
                     } catch (URISyntaxException e) {
                         logger.error("URISyntaxException", e);
                         ctx.status(403);
@@ -171,11 +174,12 @@ public class App
                 //register a player
                 post("register", ctx -> {
                     try {
-                        ctx.header("Authorization", "Bearer " + playerCrudHandler.registerPlayer(ctx.body()).getRefreshToken());
+                        ctx.header("Authorization", "Bearer " +
+                                playerCrudHandler.registerPlayer(ctx.bodyAsClass(RegisterInformation.class)).getToken());
                         ctx.status(200);
                     } catch (IOException e) {
                         logger.error("IOException", e);
-                        ctx.status(401);
+                        ctx.status(400);
                     } catch (URISyntaxException e) {
                         logger.error("URISyntaxException", e);
                         ctx.status(403);
