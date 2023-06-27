@@ -52,17 +52,17 @@ public class App {
         ).start(8080);
 
         app.before("/room/*", ctx -> {
-          if (!BackendJWTVerify.validate(ctx.header("token"))) {
+          if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
                 ctx.status(403);
             }
         });
         app.before("/player/*", ctx -> {
-          if (!BackendJWTVerify.validate(ctx.header("token"))) {
+          if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
                 ctx.status(403);
             }
         });
         app.before("/players/*", ctx -> {
-          if (!BackendJWTVerify.validate(ctx.header("token"))) {
+          if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
                 ctx.status(403);
             }
         });
