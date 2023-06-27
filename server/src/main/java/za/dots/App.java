@@ -2,17 +2,28 @@ package za.dots;
 
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SSLPlugin;
+import io.javalin.http.servlet.JavalinServletContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import za.dots.controllers.BackendJWTVerify;
 import io.javalin.http.staticfiles.Location;
+import za.dots.common.ResourceAccessValidate;
 import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
 import za.dots.models.CoOrdinate;
+import za.dots.models.LoginInformation;
 import za.dots.models.Player;
-
+import io.javalin.http.staticfiles.Location;
+import io.javalin.http.HttpStatus;
+import za.dots.models.RegisterInformation;
 import io.javalin.websocket.WsContext;
 import za.dots.models.Room;
 
-import java.util.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -21,7 +32,7 @@ public class App {
 
     private static Map<WsContext, String> roomSessions = new ConcurrentHashMap<>();
 
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         SSLPlugin sslPlugin = new SSLPlugin(conf -> {
             conf.pemFromPath(
                     System.getenv("CERT_PATH"),
@@ -33,22 +44,91 @@ public class App {
         RoomCrudHandler roomCrudHandler = new RoomCrudHandler();
         Javalin app = Javalin.create(config -> {
             config.plugins.register(sslPlugin);
-            config.plugins.enableCors(cors -> {
-                cors.add(it -> {
-                    it.anyHost();
-                });
-            config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
-            });}
+                    config.plugins.enableCors(cors -> {
+                        cors.add(it -> {
+                            it.anyHost();
+                        });
+                        config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
+                    });
+                }
         ).start(8080);
+        app.before("/room/*", ctx -> {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+                ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
+            }
+        });
+        app.before("/room", ctx -> {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+                ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
+            }
+        });
+        app.before("/player/*", ctx -> {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+
+                ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
+            }
+        });
+        app.before("/player", ctx -> {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+
+                ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
+            }
+        });
+        app.before("/players", ctx -> {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+
+                ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
+            }
+        });
+        app.before("/players/*", ctx -> {
+            if (!BackendJWTVerify.validate(ctx.header("Authorization"))) {
+
+                ctx.status(403);
+                ((JavalinServletContext) ctx).getTasks().clear();
+            }
+        });
 
         app.routes(() -> {
+            //register a player
+            post("register", ctx -> {
+                try {
+                    ctx.header("Authorization", "Bearer " +
+                            playerCrudHandler.registerPlayer(ctx.bodyAsClass(RegisterInformation.class)).getToken());
+                    ctx.status(200);
+                } catch (IOException e) {
+                    ctx.status(400);
+                } catch (URISyntaxException e) {
+                    ctx.status(403);
+                } catch (InterruptedException e) {
+                    ctx.status(500);
+                }
+            });
+            // loginPlayer
+            post("login", ctx -> {
+                try {
+                    ctx.header("Authorization", "Bearer " +
+                            playerCrudHandler.loginPlayer(ctx.bodyAsClass(LoginInformation.class)).getToken());
+                    ctx.status(200);
+                } catch (IOException e) {
+                    ctx.status(400);
+                } catch (URISyntaxException e) {
+                    ctx.status(403);
+                } catch (InterruptedException e) {
+                    ctx.status(500);
+                }
+            });
             // room
             path("room", () -> {
-               // getRooms
+                // getRooms
                 get(ctx -> {
                     ctx.json(roomCrudHandler.getRooms());
                 });
-               // createRoom
+                // createRoom
                 post(ctx -> {
                     ctx.json(
                             roomCrudHandler.createRoom(ctx.queryParam("creatorUsername"), ctx.queryParam("roomName"), Integer.valueOf(ctx.queryParam("gridSize")))
@@ -82,7 +162,7 @@ public class App {
                         broadcastRoom(roomId, room);
                         ctx.json(room);
                     });
-                   // sendGameState
+                    // sendGameState
                     post("sendPlayerMove/{username}", ctx -> {
                         String roomId = ctx.pathParam("roomId");
                         Room room = roomCrudHandler.sendGameState(roomId, ctx.pathParam("username"), ctx.bodyAsClass(CoOrdinate.class));
@@ -97,7 +177,7 @@ public class App {
                         ctx.json(room);
                     });
                 });
-           });
+            });
 
             path("players", () -> {
                 // getPlayers
@@ -147,13 +227,6 @@ public class App {
                         );
                     });
                 });
-                // loginPlayer
-                post("login", ctx -> {
-                    ctx.result(
-                            playerCrudHandler.loginPlayer(ctx.queryParam("username"), ctx.queryParam("password"))
-                    );
-                });
-                // logoutPlayer
             });
 
         });
@@ -182,7 +255,7 @@ public class App {
         for (Map.Entry<WsContext, String> entry : roomSessions.entrySet()) {
             String roomKey = entry.getValue();
             WsContext session = entry.getKey();
-            if (roomKey.equals(roomId) ) {
+            if (roomKey.equals(roomId)) {
                 session.send(message);
             }
         }

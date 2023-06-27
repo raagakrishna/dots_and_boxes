@@ -27,7 +27,6 @@ public class RoomDao {
                 }
             }
 
-            System.out.println(roomIds);
             List<Room> rooms = new ArrayList<>();
             roomIds.forEach(roomId -> {
                 try {

@@ -7,20 +7,20 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/login_register.css">
 
-    <script src="js/common.js"></script>  
-    <script src="js/login_register.js"></script> 
+    <script src="js/common.js"></script>
+    <script src="js/login_register.js"></script>
 </head>
 
 <body>
     <section class="tab-form loginForm">
         <h3>Login</h3>
         <p id="display-result"></p>
-        <form onsubmit="loginFormBtn(event)" method="post">
-            <label>Username: </label>
-            <input type="text" name="usernameInput" id="usernameInput" required="true" maxlength="20" />
+        <form onsubmit="loginFormBtn(event)">
+            <label for="username">Username: </label>
+            <input type="text" name="username" id="username" required="true" maxlength="20" />
             <br/><br/>
-            <label>Password: </label>
-            <input type="password" name="passwordInput" id="passwordInput" required="true" />
+            <label for="password">Password: </label>
+            <input type="password" name="password" id="password" required="true" />
             <br/><br/>
             <input type="submit" value="Login" />
         </form>

@@ -1,8 +1,18 @@
-const backendUrl = 'http://localhost:8080'
-//const backendUrl = 'https://georgepauer.com';
+const backendUrl = 'https://georgepauer.com';
 
+// function test() {
+//     fetch(`http://georgepauer.com:7071/register`, {
+//         method: 'POST',
+//         body: {"username":"test1","email":"georgep@bbd.co.za","password":"test123"}
+//     })
+//         .then(function (response) {
+//             console.log(response)
+//         })
+//         .catch(function (error) {
+//             console.log(error)
+//         });
+// }
 function addHeader() {
-    // localStorage.setItem("username", "peter");
 
     var myHeader = document.getElementById("header");
     myHeader.classList.add("purple_box");
@@ -35,6 +45,11 @@ function addHeader() {
     ul.appendChild(li1);
 
     var li2 = document.createElement("li");
+    let a2 = document.createElement("a");
+    a2.textContent = "Logout";
+    a2.onclick = function() {
+        logoutPlayer(localStorage.getItem("username"));
+    }
     a2 = document.createElement("a");
     a2.textContent = "Play a game";
     a2.href = 'index.html';

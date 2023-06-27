@@ -7,24 +7,27 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/login_register.css">
 
-    <script src="js/common.js"></script> 
-    <script src="js/login_register.js"></script> 
+    <script src="js/common.js"></script>
+    <script src="js/login_register.js"></script>
 </head>
 
 <body>
-    <section class="tab-form loginForm">
+    <section class="tab-form registerForm">
         <h3>Register</h3>
         <p id="display-result"></p>
-        <form onsubmit="registerFormBtn(event)" method="post" id="registerForm">
-            <label>Username: </label>
-            <input type="text" name="usernameInput" id="usernameInput" required="true" maxlength="20" />
+        <form onsubmit="registerFormBtn(event)">
+            <label for="emailInput">Email: </label>
+            <input type="text" name="email" id="emailInput" required="true"  />
             <br/><br/>
-            <label>Password: </label>
-            <input type="password" name="passwordInput" id="passwordInput" required="true" />
+            <label for="usernameInput">Username: </label>
+            <input type="text" name="username" id="usernameInput" required="true" />
             <br/><br/>
-            <label>Confirm password: </label>
-            <input type="password" name="confirmPasswordInput" id="confirmPasswordInput" required="true" />
+            <label for="passwordInput">Password: </label>
+            <input type="password" name="password" id="passwordInput" required="true" />
             <br/><br/>
+<!--            <label>Confirm password: </label>-->
+<!--            <input type="password" name="confirmPasswordInput" id="confirmPasswordInput" required="true" />-->
+<!--            <br/><br/>-->
             <input type="submit" value="Register" />
         </form>
         <p class="not-registered">Already registered? <a href="login.html">Login</a></p>
