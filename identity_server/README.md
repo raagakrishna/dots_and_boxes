@@ -11,8 +11,9 @@ Set the following environment variables for the server to work
 - `dbUrl` = "" 
 - `dbUsername` = "" 
 - `issuer` = "" 
-- `privateKey` = "" 
-- `publicKey` = "" 
+- `privateKey` = "" (path to the file)  
+- `publicKey` = "" (path to the file) 
+
 
 ### RSAKeys
 Run the following commands to generate the RSA keys for the program
