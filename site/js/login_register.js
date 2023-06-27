@@ -4,15 +4,15 @@ const backendUrl = 'http://localhost:8080';
 function loginFormBtn(event) {
     event.preventDefault();
 
-    var usernameInput = document.getElementById("usernameInput");
-    var passwordInput = document.getElementById("passwordInput");
+    var usernameInput = document.getElementById("username");
+    var passwordInput = document.getElementById("password");
 
     if (usernameInput.value == "" || passwordInput.value == "") {
         updateDisplayResult('failure', "Username and password cannot be empty.");
         return;
     }
 
-    loginPlayer(usernameInput, passwordInput);
+    loginPlayer(usernameInput.value, passwordInput.value);
 }
 
 function registerFormBtn(event) {
@@ -43,20 +43,19 @@ function loginPlayer(username, password) {
         body: JSON.stringify({"username" : username, "password" : password})
     })
         .then((response) => {
-            console.log("REGISTERED")
             if (response.ok) {
                 localStorage.setItem("token", response.headers.get("Authorization"))
                 localStorage.setItem("username", username)
-                window.location.href = '${backendUrl}/index.html';
+                window.location.href = `${backendUrl}/index.html`;
             }
             else {
                 console.log("REGISTERED")
-                window.location.href = '${backendUrl}/whoops.html';
+                window.location.href = `${backendUrl}/whoops.html`;
             }
         })
         .catch(function (error) {
             console.log("REGISTERED")
-            window.location.href = '${backendUrl}/whoops.html';
+            window.location.href = `${backendUrl}/whoops.html`;
         });
 }
 
@@ -74,45 +73,21 @@ function registerPlayer(username, password, email) {
 
      })
 
-     .then(function (response) {
-
-         if (response.ok) {
-
-             return response.text();
-
-         }
-
-         else {
-
-             return response.json().then(function (errorMessage) {
-
-                 throw new Error(errorMessage);
-
+     .then((response) => {
+                 if (response.ok) {
+                     localStorage.setItem("token", response.headers.get("Authorization"))
+                     localStorage.setItem("username", username)
+                     window.location.href = `${backendUrl}/index.html`;
+                 }
+                 else {
+                     console.log("REGISTERED")
+                     window.location.href = `${backendUrl}/whoops.html`;
+                 }
+             })
+             .catch(function (error) {
+                 console.log("REGISTERED")
+                 window.location.href = `${backendUrl}/whoops.html`;
              });
-
-         }
-
-     })
-
-     .then(function (data) {
-
-         console.log(data);
-
-         // TODO: handle the success response (register)
-
-         // updateDisplayResult('success', message);
-
-         // window.location.href = 'login.html';
-
-     })
-
-     .catch(function (error) {
-
-         console.log(error);
-
-         updateDisplayResult('failure', error);
-
-     });
 
  }
 

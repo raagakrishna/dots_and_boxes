@@ -11,7 +11,6 @@ import za.resources.models.Email;
 import za.resources.models.Password;
 import za.resources.models.RefreshInput;
 import za.resources.models.Result;
-import za.resources.models.User;
 import za.resources.models.Username;
 import za.resources.util.jwt.JwtUtils;
 import za.resources.validation.Validation;

@@ -15,7 +15,7 @@
     <section class="tab-form loginForm">
         <h3>Login</h3>
         <p id="display-result"></p>
-        <form onsubmit="loginPlayer(this.username.value, this.password.value)">
+        <form onsubmit="loginFormBtn(event)">
             <label for="username">Username: </label>
             <input type="text" name="username" id="username" required="true" maxlength="20" />
             <br/><br/>
