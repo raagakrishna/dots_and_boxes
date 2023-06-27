@@ -7,6 +7,7 @@ import za.dots.models.Player;
 import za.dots.models.Room;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class PlayerCrudHandler implements PlayerApi {
 
@@ -26,16 +27,34 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public Room findRoomByUsername(String username) {
+    public String findRoomByUsername(String username) {
         try {
             // assuming the jwt token is valid and logged in
 
-            Room room = this.roomDao.findRoomByUsername(username); // TODO: SELECT Room FROM PlayerRoom where username matches and room is open or started
+            String room = this.roomDao.findRoomByUsername(username); // SELECT Room FROM PlayerRoom where username matches and room is open or started
             if (room == null) {
                 throw new NotFoundResponse("A room was not found.");
             }
 
             return room;
+        }
+        catch (SQLException e) {
+            throw new InternalServerErrorResponse("The database could not be connected.");
+        }
+    }
+
+    @Override
+    public List<Room> findRoomsByUsername(String username) {
+        try {
+            // assuming the jwt token is valid and logged in
+
+            // SELECT Room FROM PlayerRoom where username matches and room is open or started
+            List<Room> rooms = this.roomDao.findRoomsByUsername(username);
+            if (rooms == null) {
+                throw new NotFoundResponse("Rooms was not found.");
+            }
+
+            return rooms;
         }
         catch (SQLException e) {
             throw new InternalServerErrorResponse("The database could not be connected.");
@@ -57,12 +76,14 @@ public class PlayerCrudHandler implements PlayerApi {
 
     @Override
     public String loginPlayer(String username, String password) {
-        throw new NotImplementedResponse("This was not implemented.");
+//        throw new NotImplementedResponse("This was not implemented.");
+        return "Logged in successfully";
     }
 
     @Override
     public String logoutPlayer(String sessionId) {
-        throw new NotImplementedResponse("This was not implemented.");
+//        throw new NotImplementedResponse("This was not implemented.");
+        return "Logged out successfully";
     }
 
     @Override

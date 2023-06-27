@@ -23,8 +23,11 @@ public class RoomCrudHandler implements RoomApi {
     private final SharedFunctions sharedFunctions = new SharedFunctions();
 
     @Override
-    public Room createRoom(String creatorUsername, String roomName) {
+    public Room createRoom(String creatorUsername, String roomName, Integer gridSize) {
         try {
+            if (gridSize > 9) {
+                throw new BadRequestResponse("Grid size cannot be greater than 9.");
+            }
             // assuming the creator exists in identity server
             Player creator = new Player(creatorUsername);
 
@@ -42,7 +45,7 @@ public class RoomCrudHandler implements RoomApi {
 
             Room room = this.roomDao.createRoom(roomName, creatorUsername); // create Room, create PlayerRoom (with creator = 1)
             if (room != null) {
-                Game game = this.gameDao.createGame(room.getRoomId(), creatorUsername); // insert into Game table
+                Game game = this.gameDao.createGame(room.getRoomId(), creatorUsername, gridSize); // insert into Game table
                 if (game == null)
                     throw new InternalServerErrorResponse("The room could not be created.");
 
@@ -184,8 +187,10 @@ public class RoomCrudHandler implements RoomApi {
             // delete Room from database, also delete PlayerRoom, Dot, Line, Game, Score, Box
             boolean isDeleted = this.roomDao.deleteGame(roomId);
 
-            if (isDeleted)
+            if (isDeleted) {
+                room.setStatus(Room.StatusEnum.CLOSED);
                 return room;
+            }
 
             throw new InternalServerErrorResponse("The room could not be deleted.");
         }
@@ -280,7 +285,7 @@ public class RoomCrudHandler implements RoomApi {
             if (room.getCreator().getUsername().equals(username))
                 throw new BadRequestResponse("The creator cannot leave the room.");
             if (room.getStatus().equals(Room.StatusEnum.STARTED))
-                throw new BadRequestResponse("You cannot leave a game which has already started.");
+                throw new BadRequestResponse("You cannot leave a game which has already started; ask the creator to delete the game.");
             if (room.getStatus().equals(Room.StatusEnum.CLOSED))
                 throw new BadRequestResponse("You cannot leave a game which has ended.");
 
@@ -313,7 +318,7 @@ public class RoomCrudHandler implements RoomApi {
     }
 
     @Override
-    public String sendGameState(String roomId, String username, CoOrdinate coordinate) {
+    public Room sendGameState(String roomId, String username, CoOrdinate coordinate) {
         try {
             // assuming the player is valid and logged in
 
@@ -417,6 +422,11 @@ public class RoomCrudHandler implements RoomApi {
                     if (!updateRoomStatus)
                         throw new InternalServerErrorResponse("The move could not be played.");
 
+                    // delete dots, lines and boxes
+                    boolean isGameClosed = this.gameDao.deleteClosedGame(roomId);
+                    if (!isGameClosed)
+                        throw new InternalServerErrorResponse("The move could not be played.");
+
                     room.setStatus(Room.StatusEnum.CLOSED);
                 }
             }
@@ -439,7 +449,8 @@ public class RoomCrudHandler implements RoomApi {
                 room.getGame().setCurrentPlayer(room.getPlayers().get(nextPlayerIndex));
             }
 
-            return "Line selected.";
+//            return "Line selected.";
+            return room;
         }
         catch (SQLException e) {
             throw new InternalServerErrorResponse("The database could not be connected.");

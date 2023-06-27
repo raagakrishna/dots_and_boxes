@@ -2,19 +2,25 @@ package za.dots;
 
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SSLPlugin;
+import io.javalin.http.staticfiles.Location;
 import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
 import za.dots.models.CoOrdinate;
 import za.dots.models.Player;
-import io.javalin.http.staticfiles.Location;
 
+import io.javalin.websocket.WsContext;
+import za.dots.models.Room;
 
-import java.sql.SQLException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class App {
+
+    private static Map<WsContext, String> roomSessions = new ConcurrentHashMap<>();
+
     public static void main( String[] args ) {
         SSLPlugin sslPlugin = new SSLPlugin(conf -> {
             conf.pemFromPath(
@@ -45,15 +51,16 @@ public class App {
                // createRoom
                 post(ctx -> {
                     ctx.json(
-                            roomCrudHandler.createRoom(ctx.queryParam("creatorUsername"), ctx.queryParam("roomName"))
+                            roomCrudHandler.createRoom(ctx.queryParam("creatorUsername"), ctx.queryParam("roomName"), Integer.valueOf(ctx.queryParam("gridSize")))
                     );
                 });
                 path("{roomId}", () -> {
                     // deleteRoomById
                     delete("delete/{username}", ctx -> {
-                        ctx.json(
-                                roomCrudHandler.deleteRoomById(ctx.pathParam("roomId"), ctx.pathParam("username"))
-                        );
+                        String roomId = ctx.pathParam("roomId");
+                        Room room = roomCrudHandler.deleteRoomById(roomId, ctx.pathParam("username"));
+                        broadcastRoom(roomId, room);
+                        ctx.json(room);
                     });
                     // getRoomById
                     get(ctx -> {
@@ -63,27 +70,31 @@ public class App {
                     });
                     // joinRoom
                     post("join/{username}", ctx -> {
-                        ctx.json(
-                                roomCrudHandler.joinRoom(ctx.pathParam("roomId"), ctx.pathParam("username"))
-                        );
+                        String roomId = ctx.pathParam("roomId");
+                        Room room = roomCrudHandler.joinRoom(roomId, ctx.pathParam("username"));
+                        broadcastRoom(roomId, room);
+                        ctx.json(room);
                     });
                     // leaveRoom
                     post("leave/{username}", ctx -> {
-                        ctx.json(
-                                roomCrudHandler.leaveRoom(ctx.pathParam("roomId"), ctx.pathParam("username"))
-                        );
+                        String roomId = ctx.pathParam("roomId");
+                        Room room = roomCrudHandler.leaveRoom(roomId, ctx.pathParam("username"));
+                        broadcastRoom(roomId, room);
+                        ctx.json(room);
                     });
                    // sendGameState
                     post("sendPlayerMove/{username}", ctx -> {
-                       ctx.json(
-                               roomCrudHandler.sendGameState(ctx.pathParam("roomId"), ctx.pathParam("username"), ctx.bodyAsClass(CoOrdinate.class))
-                       );
+                        String roomId = ctx.pathParam("roomId");
+                        Room room = roomCrudHandler.sendGameState(roomId, ctx.pathParam("username"), ctx.bodyAsClass(CoOrdinate.class));
+                        broadcastRoom(roomId, room);
+                        ctx.json(room);
                     });
                     // startRoom
                     get("start/{username}", ctx -> {
-                        ctx.json(
-                                roomCrudHandler.startRoom(ctx.pathParam("roomId"), ctx.pathParam("username"))
-                        );
+                        String roomId = ctx.pathParam("roomId");
+                        Room room = roomCrudHandler.startRoom(roomId, ctx.pathParam("username"));
+                        broadcastRoom(roomId, room);
+                        ctx.json(room);
                     });
                 });
            });
@@ -110,6 +121,12 @@ public class App {
                     get("room", ctx -> {
                         ctx.json(
                                 playerCrudHandler.findRoomByUsername(ctx.pathParam("username"))
+                        );
+                    });
+                    // findRoomsByUsername
+                    get("rooms", ctx -> {
+                        ctx.json(
+                                playerCrudHandler.findRoomsByUsername(ctx.pathParam("username"))
                         );
                     });
                     // getPlayerByUsername
@@ -140,5 +157,34 @@ public class App {
             });
 
         });
+
+        app.ws("/room/{roomId}", ws -> {
+            ws.onConnect(ctx -> {
+                String roomId = ctx.pathParam("roomId");
+                roomSessions.put(ctx, roomId);
+            });
+
+            ws.onClose(ctx -> {
+                String roomId = ctx.pathParam("roomId");
+                roomSessions.remove(ctx);
+            });
+
+            ws.onMessage(ctx -> {
+                String roomId = ctx.pathParam("roomId");
+                Room room = roomCrudHandler.getRoomById(roomId);
+                broadcastRoom(roomId, room);
+            });
+        });
+    }
+
+    // Sends a message from one user to all users, along with a list of current usernames
+    private static void broadcastRoom(String roomId, Room message) {
+        for (Map.Entry<WsContext, String> entry : roomSessions.entrySet()) {
+            String roomKey = entry.getValue();
+            WsContext session = entry.getKey();
+            if (roomKey.equals(roomId) ) {
+                session.send(message);
+            }
+        }
     }
 }

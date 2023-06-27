@@ -245,7 +245,8 @@ public class RoomDao {
         try {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
 
-            String queryRoom = "SELECT 1 FROM Room WHERE roomname = '" + roomName + "'";
+            String queryRoom = "SELECT 1 FROM Room WHERE roomname = '" + roomName + "' " +
+                    "AND (status = '" + Room.StatusEnum.OPEN + "' OR status = '" + Room.StatusEnum.STARTED + "')";
             ResultSet resultSet = datasourceConnection.executeStatement(queryRoom);
             return resultSet.next(); // Return true if no row is returned, indicating roomName is available
         }
@@ -404,7 +405,7 @@ public class RoomDao {
         }
     }
 
-    public Room findRoomByUsername(String usernmae) throws SQLException {
+    public String findRoomByUsername(String usernmae) throws SQLException {
         try {
             DatasourceConnection datasourceConnection = new DatasourceConnection();
 
@@ -428,7 +429,40 @@ public class RoomDao {
             if (roomId.equals(""))
                 return null;
 
-            return getRoomById(roomId);
+            return roomId;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public List<Room> findRoomsByUsername(String username) throws SQLException {
+        try {
+            DatasourceConnection datasourceConnection = new DatasourceConnection();
+
+            // get RoomId
+            List<String> roomIds = new ArrayList<>();
+            String query = "SELECT R.roomid, R.status FROM PlayerRoom as PR " +
+                    "JOIN [Room] AS R ON PR.roomid = R.roomid " +
+                    "WHERE username = '" + username + "'";
+
+            try (ResultSet resultSet = datasourceConnection.executeStatement(query)){
+                while (resultSet.next()) {
+                    roomIds.add(resultSet.getString("roomid"));
+                }
+            }
+
+            datasourceConnection.closeConnection();
+
+            // no room found
+            if (roomIds.size() == 0)
+                return null;
+
+            List<Room> rooms = new ArrayList<>();
+            for (String roomId : roomIds) {
+                rooms.add(getRoomById(roomId));
+            }
+
+            return rooms;
         } catch (Exception e) {
             throw e;
         }

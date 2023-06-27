@@ -26,19 +26,30 @@ function createRoomFormBtn(event) {
   event.preventDefault();
 
   var gameNameCreate = document.getElementById("gameNameCreate");
+  var gridSizeCreate = document.getElementById("gridSizeCreate");
 
   if (gameNameCreate.value === "") {
     updateDisplayResult('failure', 'Game name cannot be empty!', 'create');
     return;
   }
+  else if (gridSizeCreate.value === "") {
+    updateDisplayResult('failure', 'Grid size cannot be empty!', 'create');
+    return;
+  }
+  else if (gridSizeCreate.value <= 1) {
+    updateDisplayResult('failure', 'Grid size has to be greater than 1!', 'create');
+    return;
+  }
 
   var username = localStorage.getItem("username");
 
-  createGameRoom(username, gameNameCreate.value);
+  createGameRoom(username, gameNameCreate.value, gridSizeCreate.value);
 }
 
-function createGameRoom(username, roomName) {
-  fetch(`${backendUrl}/room?creatorUsername=${encodeURIComponent(username)}&roomName=${encodeURIComponent(roomName)}`, {
+function createGameRoom(username, roomName, gridSize) {
+  showLoadingScreen();
+
+  fetch(`${backendUrl}/room?creatorUsername=${encodeURIComponent(username)}&roomName=${encodeURIComponent(roomName)}&gridSize=${encodeURIComponent(gridSize)}`, {
     method: 'POST',
     headers: setHeaders(),
   })
@@ -53,12 +64,15 @@ function createGameRoom(username, roomName) {
     }
   })
   .then(function (data) {
-    console.log(data);
-    // TODO: handle the success response (create game)
+    localStorage.setItem("roomId", data.roomId);
+    window.location.href = 'game.html';
   })
   .catch(function (error) {
     updateDisplayResult('failure', error, 'create');
-  });
+  })
+  .finally(function () {
+    hideLoadingScreen();
+});
 }
 
 function joinRoomFormBtn(event) {
@@ -77,6 +91,8 @@ function joinRoomFormBtn(event) {
 }
 
 function joinGameRoom(username, gameID) {
+  showLoadingScreen();
+
   fetch(`${backendUrl}/room/${encodeURIComponent(gameID)}/join/${encodeURIComponent(username)}`, {
     method: 'POST',
     headers: setHeaders(),
@@ -92,11 +108,55 @@ function joinGameRoom(username, gameID) {
     }
   })
   .then(function (data) {
-    console.log(data);
-    // TODO: handle the success response (join room)
+    localStorage.setItem("roomId", data.roomId);
+    window.location.href = 'game.html';
   })
   .catch(function (error) {
     updateDisplayResult('failure', error, 'join');
+  })
+  .finally(function () {
+    hideLoadingScreen();
+});
+}
+
+function loadPage() {
+  var username = localStorage.getItem("username");
+
+  if (username == null) {
+    window.location.href = 'login.html';
+  }
+  else {
+    playerRoom(username);
+  }
+}
+
+function playerRoom(username) {
+  showLoadingScreen();
+
+  fetch(`${backendUrl}/player/${encodeURIComponent(username)}/room`, {
+      method: 'GET',
+      headers: setHeaders()
+  })
+  .then(function (response) {
+      if (response.ok) {
+          return response.text();
+      } 
+      else {
+          return response.json().then(function (errorMessage) {
+              throw new Error(errorMessage.title);
+          });
+      }
+  })
+  .then(function (data) {
+      localStorage.setItem("roomId", data);
+      window.location.href = 'game.html';
+      return data;
+  })
+  .catch(function (error) {
+      return;
+  })
+  .finally(function () {
+    hideLoadingScreen();
   });
 }
 
