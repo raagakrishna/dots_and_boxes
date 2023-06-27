@@ -15,7 +15,7 @@ function loginFormBtn(event) {
 }
 
 function loginPlayer(username, password) {
-    fetch(`${backendUrl}/player/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
+    fetch(`${backendUrl}/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
         method: 'POST',
         headers: setHeaders()
     })
@@ -51,7 +51,7 @@ function registerFormBtn(event) {
 }
 
 function loginPlayer(username, password) {
-    fetch(`${backendUrl}/player/login`, {
+    fetch(`${backendUrl}/login`, {
         method: 'POST',
         headers: setHeaders(),
         body: JSON.stringify({"username" : username, "password" : password})
