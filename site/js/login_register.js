@@ -30,9 +30,14 @@ function loginPlayer(username, password) {
     })
     .then((response) => {
         if (response.ok) {
-            localStorage.setItem("token", response.headers.get("Authorization"))
-            localStorage.setItem("username", username)
-            window.location.href = `${backendUrl}/index.html`;
+            if (response.headers.get("Authorization") != null) {
+                localStorage.setItem("token", response.headers.get("Authorization"))
+                localStorage.setItem("username", username)
+                window.location.href = `${backendUrl}/index.html`;
+            }
+            else {
+                window.location.href = `${backendUrl}/login.html`;
+            }
         }
         else {
             window.location.href = `${backendUrl}/whoops.html`;
@@ -53,9 +58,14 @@ function registerPlayer(username, password, email) {
     })
     .then((response) => {
         if (response.ok) {
-            localStorage.setItem("token", response.headers.get("Authorization"))
-            localStorage.setItem("username", username)
-            window.location.href = `${backendUrl}/index.html`;
+            if (response.headers.get("Authorization") != null){
+                localStorage.setItem("token", response.headers.get("Authorization"));
+                localStorage.setItem("username", username);
+                window.location.href = `${backendUrl}/index.html`;
+            }
+            else {
+                window.location.href = `${backendUrl}/login.html`;
+            }
         }
         else {
             window.location.href = `${backendUrl}/whoops.html`;
