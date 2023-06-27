@@ -4,6 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.community.ssl.SSLPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import za.dots.controllers.BackendJWTVerify;
 import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
@@ -44,7 +45,9 @@ public class App
         ).start(8080);
 
         app.before((ctx) -> {
-
+            if (!BackendJWTVerify.validate(ctx.header("token"))) {
+                ctx.status(403);
+            }
         });
 
         app.after((ctx) -> {

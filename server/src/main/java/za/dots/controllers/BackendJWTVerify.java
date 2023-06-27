@@ -6,8 +6,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
@@ -17,8 +19,22 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
-class BackendJWTVerify {
+public class BackendJWTVerify {
     private final JWTVerifier verifier;
+
+    public static boolean validate(String jwt) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        RSAPublicKey publicKey = getRSAPublicKey(System.getenv("publicKey"));
+        Algorithm algorithm = Algorithm.RSA512(publicKey);
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer(System.getenv(""))
+                .build();
+        try {
+            verifier.verify(jwt);
+            return true;
+        } catch (JWTVerificationException jwtVerificationException) {
+            return false;
+        }
+    }
 
     BackendJWTVerify() throws NoSuchAlgorithmException, InvalidKeySpecException {
         RSAPrivateKey privateKey = getRSAPrivateKey(System.getenv("privateKey"));
@@ -39,7 +55,7 @@ class BackendJWTVerify {
                 .generatePrivate(keySpec);
     }
 
-    private RSAPublicKey getRSAPublicKey(String fileLoc) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private static RSAPublicKey getRSAPublicKey(String fileLoc) throws NoSuchAlgorithmException, InvalidKeySpecException {
         final byte[] bytes = getFileBytes(fileLoc, "PUBLIC");
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(bytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
