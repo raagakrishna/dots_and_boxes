@@ -3,6 +3,7 @@ package za.dots;
 import io.javalin.Javalin;
 import io.javalin.community.ssl.SSLPlugin;
 import io.javalin.http.staticfiles.Location;
+import za.dots.common.ResourceAccessValidate;
 import za.dots.controllers.PlayerCrudHandler;
 import za.dots.controllers.PlayersCrudHandler;
 import za.dots.controllers.RoomCrudHandler;
@@ -40,6 +41,13 @@ public class App {
             config.staticFiles.add("/home/ubuntu/dots_and_boxes/site", Location.EXTERNAL);
             });}
         ).start(8080);
+
+        app.before("/room/*", ctx -> {
+        });
+        app.before("/player/*", ctx -> {
+        });
+        app.before("/players/*", ctx -> {
+        });
 
         app.routes(() -> {
             // room
