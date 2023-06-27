@@ -31,8 +31,8 @@ function loginPlayer(username, password) {
     .then((response) => {
         if (response.ok) {
             if (response.headers.get("Authorization") != null) {
-                localStorage.setItem("token", response.headers.get("Authorization"))
-                localStorage.setItem("username", username)
+                localStorage.setItem("token", response.headers.get("Authorization"));
+                localStorage.setItem("username", username);
                 window.location.href = `${backendUrl}/index.html`;
             }
             else {
