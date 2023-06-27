@@ -68,6 +68,20 @@ public class App {
         });
 
         app.routes(() -> {
+            //register a player
+            post("register", ctx -> {
+                try {
+                    ctx.header("Authorization", "Bearer " +
+                            playerCrudHandler.registerPlayer(ctx.bodyAsClass(RegisterInformation.class)).getToken());
+                    ctx.status(200);
+                } catch (IOException e) {
+                    ctx.status(400);
+                } catch (URISyntaxException e) {
+                    ctx.status(403);
+                } catch (InterruptedException e) {
+                    ctx.status(500);
+                }
+            });
             // loginPlayer
             post("login", ctx -> {
                 try {
@@ -186,20 +200,6 @@ public class App {
                                 playerCrudHandler.logoutPlayer(ctx.pathParam("username"))
                         );
                     });
-                });
-                //register a player
-                post("register", ctx -> {
-                    try {
-                        ctx.header("Authorization", "Bearer " +
-                                playerCrudHandler.registerPlayer(ctx.bodyAsClass(RegisterInformation.class)).getToken());
-                        ctx.status(200);
-                    } catch (IOException e) {
-                        ctx.status(400);
-                    } catch (URISyntaxException e) {
-                        ctx.status(403);
-                    } catch (InterruptedException e) {
-                        ctx.status(500);
-                    }
                 });
             });
 
