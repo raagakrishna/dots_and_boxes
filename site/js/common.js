@@ -1,5 +1,6 @@
 const backendUrl = 'https://georgepauer.com';
 
+
 // function test() {
 //     fetch(`http://georgepauer.com:7071/register`, {
 //         method: 'POST',
@@ -172,7 +173,7 @@ function setHeaders() {
     headers.append('Connection', 'keep-alive');
     headers.append('Access-Control-Allow-Origin', backendUrl);
     
-    // headers.append('Authorization', 'Bearer ' + localStorage.getItem('token'));
+     headers.append('Authorization', localStorage.getItem('token'));
     // headers.append('Session-Id', localStorage.getItem('sessionId')); // Include session ID in the headers
   
     return headers;

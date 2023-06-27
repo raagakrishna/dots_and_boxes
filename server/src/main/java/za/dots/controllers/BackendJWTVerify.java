@@ -17,12 +17,15 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.stream.Collectors;
 
 public class BackendJWTVerify {
     private final JWTVerifier verifier;
 
     public static boolean validate(String jwt) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        String token = jwt.split(" ").length == 2 ? jwt.split(" ")[1] : "";
         RSAPublicKey publicKey = getRSAPublicKey(System.getenv("publicKey"));
         Algorithm algorithm = Algorithm.RSA512(publicKey);
         JWTVerifier verifier = JWT.require(algorithm)
@@ -30,7 +33,7 @@ public class BackendJWTVerify {
                 .withAudience(System.getenv("audience"))
                 .build();
         try {
-            verifier.verify(jwt);
+            verifier.verify(token);
             return true;
         } catch (JWTVerificationException jwtVerificationException) {
             return false;
@@ -57,7 +60,7 @@ public class BackendJWTVerify {
     }
 
     private static RSAPublicKey getRSAPublicKey(String fileLoc) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        final byte[] bytes = getFileBytes(fileLoc, "PUBLIC");
+        final byte[] bytes = getFileBytes(fileLoc);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(bytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return (RSAPublicKey) kf
@@ -72,6 +75,19 @@ public class BackendJWTVerify {
                     .replaceAll("-----BEGIN " + key + " KEY-----", "")
                     .replaceAll("-----END " + key + " KEY-----", "")
                     .trim()
+                    .getBytes());
+        } catch (IOException e) {
+            fileBytes = new byte[0];
+        }
+        return fileBytes;
+    }
+
+    private static byte[] getFileBytes(String fileLoc) {
+        byte[] fileBytes;
+        try (FileInputStream fis = new FileInputStream(fileLoc)) {
+            String key = new String(fis.readAllBytes());
+            key = Arrays.stream(key.split("(\n|\r)")).filter(str -> !str.contains("KEY")).collect(Collectors.joining());
+            fileBytes = Base64.getDecoder().decode(key
                     .getBytes());
         } catch (IOException e) {
             fileBytes = new byte[0];
