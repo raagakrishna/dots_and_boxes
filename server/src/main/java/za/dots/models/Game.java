@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-    private Integer gridSize = 9;
+    private Integer gridSize = null;
 
     private List<Dot> dots = null;
 

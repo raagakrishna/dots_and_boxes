@@ -5,9 +5,11 @@ import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ConflictResponse;
 import io.javalin.http.NotFoundResponse;
 import io.javalin.http.NotImplementedResponse;
+import io.javalin.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import za.dots.controllers.interfaces.PlayerApi;
+import za.dots.db.RoomDao;
 import za.dots.models.JWTResponse;
 import za.dots.models.Player;
 import za.dots.models.Room;
@@ -23,6 +25,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
+import java.util.List;
 
 public class PlayerCrudHandler implements PlayerApi {
 
@@ -31,6 +35,8 @@ public class PlayerCrudHandler implements PlayerApi {
     public PlayerCrudHandler() {
         this.logger = LoggerFactory.getLogger("PlayerCrudHandler ->");
     }
+    private final RoomDao roomDao = new RoomDao();
+
     @Override
     public String createPlayer(Player player) {
         if (player.getUsername().equals("")) {
@@ -45,15 +51,38 @@ public class PlayerCrudHandler implements PlayerApi {
     }
 
     @Override
-    public Room findRoomByUsername(String username) {
-        // assuming the jwt token is valid and logged in
+    public String findRoomByUsername(String username) {
+        try {
+            // assuming the jwt token is valid and logged in
 
-        Room room = null; // TODO: SELECT Room FROM PlayerRoom where username matches and room is open or started
-        if (room == null) {
-            throw new NotFoundResponse("A room was not found.");
+            String room = this.roomDao.findRoomByUsername(username); // SELECT Room FROM PlayerRoom where username matches and room is open or started
+            if (room == null) {
+                throw new NotFoundResponse("A room was not found.");
+            }
+
+            return room;
         }
+        catch (SQLException e) {
+            throw new InternalServerErrorResponse("The database could not be connected.");
+        }
+    }
 
-        return room;
+    @Override
+    public List<Room> findRoomsByUsername(String username) {
+        try {
+            // assuming the jwt token is valid and logged in
+
+            // SELECT Room FROM PlayerRoom where username matches and room is open or started
+            List<Room> rooms = this.roomDao.findRoomsByUsername(username);
+            if (rooms == null) {
+                throw new NotFoundResponse("Rooms was not found.");
+            }
+
+            return rooms;
+        }
+        catch (SQLException e) {
+            throw new InternalServerErrorResponse("The database could not be connected.");
+        }
     }
 
     @Override
@@ -95,12 +124,17 @@ public class PlayerCrudHandler implements PlayerApi {
             logger.info("REFRESH_TOKEN:" + jwtResponse.getRefreshToken());
             return jwtResponse;
         }
-        throw new IOException();
+        return new JWTResponse();
+    }
+    public String loginPlayer(String username, String password) {
+//        throw new NotImplementedResponse("This was not implemented.");
+        return "Logged in successfully";
     }
 
     @Override
     public String logoutPlayer(String sessionId) {
-        throw new NotImplementedResponse("This was not implemented.");
+//        throw new NotImplementedResponse("This was not implemented.");
+        return "Logged out successfully";
     }
 
     @Override

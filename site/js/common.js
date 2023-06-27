@@ -12,7 +12,6 @@ const backendUrl = 'https://georgepauer.com';
 //             console.log(error)
 //         });
 // }
-
 function addHeader() {
 
     var myHeader = document.getElementById("header");
@@ -39,7 +38,10 @@ function addHeader() {
 
     // adding li
     var li1 = document.createElement("li");
-    li1.textContent = "Your played games";
+    a1 = document.createElement("a");
+    a1.textContent = "Your played games";
+    a1.href = 'played.html';
+    li1.appendChild(a1);
     ul.appendChild(li1);
 
     var li2 = document.createElement("li");
@@ -48,14 +50,41 @@ function addHeader() {
     a2.onclick = function() {
         logoutPlayer(localStorage.getItem("username"));
     }
+    a2 = document.createElement("a");
+    a2.textContent = "Play a game";
+    a2.href = 'index.html';
     li2.appendChild(a2);
     ul.appendChild(li2);
 
+    var li3 = document.createElement("li");
+    a3 = document.createElement("a");
+    a3.textContent = "Logout";
+    a3.onclick = function() {
+        logoutPlayer(localStorage.getItem("username"));
+    }
+    li3.appendChild(a3);
+    ul.appendChild(li3);
+
     dropdown.appendChild(ul);
     myHeader.appendChild(dropdown);
+
+    addLoader();
+}
+
+function addLoader() {
+    var loadingScreen = document.createElement("section");
+    loadingScreen.setAttribute("id", "loading-screen");
+
+    var loader = document.createElement("p");
+    loader.setAttribute("class", "loader");
+
+    loadingScreen.appendChild(loader);
+    document.body.appendChild(loadingScreen);
 }
 
 function logoutPlayer(username) {
+    showLoadingScreen();
+
     fetch(`${backendUrl}/player/${username}/logout`, {
         method: 'GET',
         headers: setHeaders()
@@ -72,10 +101,14 @@ function logoutPlayer(username) {
     })
     .then(function (message) {
         // TODO: handle the success response (logout)
+        localStorage.clear();
         window.location.href = 'login.html';
     })
     .catch(function (error) {
         updateDisplayResult('failure', error);
+    })
+    .finally(function () {
+        hideLoadingScreen();
     });
 }
 
@@ -107,8 +140,12 @@ function updateDisplayResult(displayType, message, special) {
     var closeButton = document.createElement('span');
     closeButton.textContent = 'X';
     closeButton.style.cursor = 'pointer';
-    closeButton.style.marginLeft = '5px';
+    closeButton.style.marginLeft = '10px';
     closeButton.style.float = 'right';
+    closeButton.style.transform = 'translateY(-50%)';
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '50%';
+    closeButton.style.right = '15px';
 
     if (displayType === 'failure') {
         closeButton.style.color = 'red';
@@ -139,4 +176,13 @@ function setHeaders() {
     // headers.append('Session-Id', localStorage.getItem('sessionId')); // Include session ID in the headers
   
     return headers;
+}
+
+function showLoadingScreen() {
+    document.getElementById('loading-screen').style.display = 'block';
   }
+  
+  function hideLoadingScreen() {
+    document.getElementById('loading-screen').style.display = 'none';
+  }
+  
